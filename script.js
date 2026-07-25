@@ -44,9 +44,16 @@ function addXP(amount){
     updateProfile();
 }
 var confettiCanvas = document.getElementById("confettiCanvas");
-var confettiCtx = confettiCanvas.getContext("2d");
+console.log(confettiCanvas);
+var confettiCtx;
 
+if (confettiCanvas) {
+    confettiCtx = confettiCanvas.getContext("2d");
+}
 function resizeConfettiCanvas(){
+
+    if (!confettiCanvas) return;
+
     confettiCanvas.width = window.innerWidth;
     confettiCanvas.height = window.innerHeight;
 }
@@ -55,7 +62,7 @@ window.addEventListener("resize", resizeConfettiCanvas);
 resizeConfettiCanvas();
 
 function launchConfetti(){
-
+if (!confettiCtx) return;
     const pieces = [];
 
     const colors = [
@@ -130,7 +137,7 @@ function launchConfetti(){
 
 window.addEventListener("load", updateProfile);
 // Oyun kartları
-const cards = document.querySelectorAll(".card");
+const cards = document.querySelectorAll(".game-card");
 
 cards.forEach((card) => {
     card.addEventListener("click", () => {
@@ -242,16 +249,11 @@ function showNotification(message){
     }, 3000);
 
 }
-window.confettiCtx = confettiCanvas.getContext("2d");
-function resizeConfettiCanvas(){
-    confettiCanvas.width = window.innerWidth;
-    confettiCanvas.height = window.innerHeight;
-}
 
 window.addEventListener("resize", resizeConfettiCanvas);
 resizeConfettiCanvas();
 
-function launchConfetti(){
+{
 
     const pieces = [];
 
