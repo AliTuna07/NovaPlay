@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NovaPlay Snake 2.0</title>
+    <title>NovaPlay Snake</title>
 
     <link rel="stylesheet" href="style.css">
 </head>
@@ -13,28 +13,47 @@
 
 <div class="container">
 
-    <h1>🐍 NovaPlay Snake 2.0</h1>
-
+    <h1>🐍 NovaPlay Snake</h1>
+<div class="game-status" id="gameStatus">
+    🟢 Hazır
+</div>
     <div class="topBar">
 
-        <div>
-            Skor
-            <h2 id="score">0</h2>
-        </div>
+        
 
-        <div>
-            Rekor
-            <h2 id="highscore">0</h2>
-        </div>
-
+    <div class="stat">
+        <span>🍎 Skor</span>
+        <h2 id="score">0</h2>
     </div>
+
+    <div class="stat">
+        <span>🏆 Rekor</span>
+        <h2 id="highscore">0</h2>
+    </div>
+
+    <div class="stat">
+        <span>⚡ Hız</span>
+        <h2 id="speed">1x</h2>
+    </div>
+
+</div>
 
     <canvas
         id="game"
         width="400"
         height="400">
     </canvas>
+<div class="game-info">
 
+    🐍 Uzunluk:
+    <span id="length">1</span>
+
+    |
+
+    🍎 Yenilen:
+    <span id="foods">0</span>
+
+</div>
     <div class="buttons">
 
         <button id="restart">
@@ -43,7 +62,7 @@
 
     </div>
 
-    <div class="help">
+       <div class="help">
 
         ⌨️ Ok Tuşları / WASD
 
@@ -54,6 +73,30 @@
     </div>
 
 </div>
+
+
+<div id="gameOverScreen" class="game-over">
+
+    <div class="game-over-box">
+
+        <h2>💀 Oyun Bitti</h2>
+
+        <p>🍎 Skor: <span id="finalScore">0</span></p>
+
+        <p>🏆 Rekor: <span id="finalHighscore">0</span></p>
+
+        <button id="playAgainBtn">
+            🔄 Tekrar Oyna
+        </button>
+
+        <a href="../../index.html">
+            <button>🏠 Ana Sayfa</button>
+        </a>
+
+    </div>
+
+</div>
+
 
 <script src="script.js"></script>
 

@@ -34,13 +34,98 @@ function addXP(amount){
         xp -= getRequiredXP(level);
         level++;
 
-        alert("🎉 Tebrikler! Seviye " + level + " oldun!");
+        showNotification("🎉 Tebrikler! ⭐ Seviye " + level + " oldun!");
+        launchConfetti();
     }
 
     localStorage.setItem("novaXP", xp);
     localStorage.setItem("novaLevel", level);
 
     updateProfile();
+}
+var confettiCanvas = document.getElementById("confettiCanvas");
+var confettiCtx = confettiCanvas.getContext("2d");
+
+function resizeConfettiCanvas(){
+    confettiCanvas.width = window.innerWidth;
+    confettiCanvas.height = window.innerHeight;
+}
+
+window.addEventListener("resize", resizeConfettiCanvas);
+resizeConfettiCanvas();
+
+function launchConfetti(){
+
+    const pieces = [];
+
+    const colors = [
+        "#00ff88",
+        "#00c8ff",
+        "#ffd700",
+        "#ff4d4d",
+        "#ffffff",
+        "#ff66ff"
+    ];
+
+    for(let i = 0; i < 180; i++){
+
+        pieces.push({
+            x: Math.random() * confettiCanvas.width,
+            y: -20,
+            size: Math.random() * 8 + 4,
+            speed: Math.random() * 4 + 3,
+            drift: (Math.random() - 0.5) * 4,
+            color: colors[Math.floor(Math.random() * colors.length)],
+            rotation: Math.random() * 360
+        });
+
+    }
+
+    function animate(){
+
+        confettiCtx.clearRect(0,0,confettiCanvas.width,confettiCanvas.height);
+
+        pieces.forEach(p=>{
+
+            p.y += p.speed;
+            p.x += p.drift;
+            p.rotation += 8;
+
+            confettiCtx.save();
+
+            confettiCtx.translate(p.x,p.y);
+            confettiCtx.rotate(p.rotation*Math.PI/180);
+
+            confettiCtx.fillStyle = p.color;
+            confettiCtx.fillRect(
+                -p.size/2,
+                -p.size/2,
+                p.size,
+                p.size
+            );
+
+            confettiCtx.restore();
+
+        });
+
+        for(let i=pieces.length-1;i>=0;i--){
+
+            if(pieces[i].y > confettiCanvas.height+20){
+                pieces.splice(i,1);
+            }
+
+        }
+
+        if(pieces.length>0){
+            requestAnimationFrame(animate);
+        }else{
+            confettiCtx.clearRect(0,0,confettiCanvas.width,confettiCanvas.height);
+        }
+
+    }
+
+    animate();
+
 }
 
 window.addEventListener("load", updateProfile);
@@ -143,4 +228,99 @@ const oldAvatar = localStorage.getItem("avatar");
 if (oldAvatar) {
     document.getElementById("avatar").textContent = oldAvatar;
 }
-addXP(10);
+function showNotification(message){
+
+    const notification = document.getElementById("notification");
+    const text = document.getElementById("notificationText");
+
+    text.textContent = message;
+
+    notification.classList.add("show");
+
+    setTimeout(() => {
+        notification.classList.remove("show");
+    }, 3000);
+
+}
+window.confettiCtx = confettiCanvas.getContext("2d");
+function resizeConfettiCanvas(){
+    confettiCanvas.width = window.innerWidth;
+    confettiCanvas.height = window.innerHeight;
+}
+
+window.addEventListener("resize", resizeConfettiCanvas);
+resizeConfettiCanvas();
+
+function launchConfetti(){
+
+    const pieces = [];
+
+    const colors = [
+        "#00ff88",
+        "#00c8ff",
+        "#ffd700",
+        "#ff4d4d",
+        "#ffffff",
+        "#ff66ff"
+    ];
+
+    for(let i = 0; i < 180; i++){
+
+        pieces.push({
+            x: Math.random() * confettiCanvas.width,
+            y: -20,
+            size: Math.random() * 8 + 4,
+            speed: Math.random() * 4 + 3,
+            drift: (Math.random() - 0.5) * 4,
+            color: colors[Math.floor(Math.random() * colors.length)],
+            rotation: Math.random() * 360
+        });
+
+    }
+
+    function animate(){
+
+        confettiCtx.clearRect(0,0,confettiCanvas.width,confettiCanvas.height);
+
+        pieces.forEach(p=>{
+
+            p.y += p.speed;
+            p.x += p.drift;
+            p.rotation += 8;
+
+            confettiCtx.save();
+
+            confettiCtx.translate(p.x,p.y);
+            confettiCtx.rotate(p.rotation*Math.PI/180);
+
+            confettiCtx.fillStyle = p.color;
+            confettiCtx.fillRect(
+                -p.size/2,
+                -p.size/2,
+                p.size,
+                p.size
+            );
+
+            confettiCtx.restore();
+
+        });
+
+        for(let i=pieces.length-1;i>=0;i--){
+
+            if(pieces[i].y > confettiCanvas.height+20){
+                pieces.splice(i,1);
+            }
+
+        }
+
+        if(pieces.length>0){
+            requestAnimationFrame(animate);
+        }else{
+            confettiCtx.clearRect(0,0,confettiCanvas.width,confettiCanvas.height);
+        }
+
+    }
+
+    animate();
+
+}
