@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+
+<url>
+    <loc>https://alituna07.github.io/NovaPlay/</loc>
+</url>
+
+<url>
+    <loc>https://alituna07.github.io/NovaPlay/games/snake/</loc>
+</url>
+
+<url>
+    <loc>https://alituna07.github.io/NovaPlay/games/tictactoe/</loc>
+</url>
+
+<url>
+    <loc>https://alituna07.github.io/NovaPlay/games/breakout/</loc>
+</url>
+
+<url>
+    <loc>https://alituna07.github.io/NovaPlay/games/flappy/</loc>
+</url>
+
+</urlset>
