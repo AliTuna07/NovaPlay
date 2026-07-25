@@ -1,90 +1,399 @@
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-    font-family:Arial, Helvetica, sans-serif;
+* {
+    box-sizing: border-box;
 }
 
-body{
-    background:#0b1020;
-    color:white;
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    font-family: Arial, sans-serif;
+    color: white;
+
+    background:
+        radial-gradient(circle at top, #1a1a40, transparent 40%),
+        radial-gradient(circle at bottom, #003322, transparent 40%),
+        linear-gradient(135deg, #050510, #10102a);
+
+    overflow-x: hidden;
+}
+body::before {
+
+    content: "";
+
+    position: fixed;
+
+    width: 400px;
+    height: 400px;
+
+    background: #00ff88;
+
+    filter: blur(120px);
+
+    opacity: 0.25;
+
+    top: -100px;
+    left: -100px;
+
+    animation: glowMove 8s infinite alternate;
+
+    z-index: -1;
 }
 
-header{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    padding:20px 60px;
-    background:#121a33;
-    position:sticky;
-    top:0;
+
+@keyframes glowMove {
+
+    from {
+        transform: translate(0,0);
+    }
+
+    to {
+        transform: translate(500px,300px);
+    }
+
 }
 
-header h1{
-    color:#00d9ff;
+
+header {
+    text-align: center;
+    padding: 100px 40px 40px;
 }
 
-nav a{
-    color:white;
-    text-decoration:none;
-    margin-left:20px;
-    transition:.3s;
+
+header h1 {
+
+    font-size: 60px;
+
+    color:#00ff88;
+
+    text-shadow:
+    0 0 10px #00ff88,
+    0 0 30px #00ff88,
+    0 0 60px #00ff88;
+
 }
 
-nav a:hover{
-    color:#00d9ff;
+
+.games {
+    display: grid;
+    grid-template-columns: repeat(3, 280px);
+    gap: 30px;
+    justify-content: center;
+    padding: 40px;
 }
 
-.hero{
+
+
+.game-card {
+
+    width:280px;
+    height:360px;
+
+    background:#161625;
+
+    border-radius:20px;
+
     text-align:center;
-    padding:100px 20px;
+
+    padding:25px;
+
+    box-shadow:
+    0 0 15px rgba(0,255,136,0.3);
+
+    transition:0.4s;
+
+    position:relative;
+
+    overflow:hidden;
+
 }
 
-.hero h2{
-    font-size:48px;
-    margin-bottom:20px;
+
+
+.game-card::before {
+
+    content:"";
+
+    position:absolute;
+
+    width:150%;
+    height:150%;
+
+    background:linear-gradient(
+    45deg,
+    transparent,
+    rgba(0,255,136,0.2),
+    transparent
+    );
+
+    transform:translateX(-100%);
+
+    transition:0.6s;
+
 }
 
-.hero p{
-    font-size:20px;
-    color:#bfc8e0;
-    margin-bottom:30px;
+
+
+.game-card:hover::before {
+
+    transform:translateX(100%);
+
 }
 
-button{
-    background:#00d9ff;
-    color:#000;
+
+
+.game-card:hover {
+
+    transform:translateY(-15px) scale(1.05);
+
+    box-shadow:
+    0 0 30px #00ff88;
+
+}
+
+
+
+.icon {
+
+    font-size:70px;
+
+    margin:20px;
+
+}
+
+
+
+.game-card h2 {
+
+    font-size:30px;
+
+}
+
+
+
+.game-card p {
+
+    height:60px;
+
+    color:#ccc;
+
+}
+
+
+
+button {
+
+    margin-top:20px;
+
+    padding:12px 35px;
+
     border:none;
-    padding:15px 35px;
-    border-radius:10px;
-    cursor:pointer;
+
+    border-radius:30px;
+
+    background:#00ff88;
+
+    color:black;
+
     font-size:18px;
-    font-weight:bold;
+
+    cursor:pointer;
+
+    transition:0.3s;
+
 }
 
-button:hover{
-    transform:scale(1.05);
+
+
+button:hover {
+
+    background:white;
+
+    transform:scale(1.1);
+
+}
+.search-box {
+    text-align:center;
+    margin:20px;
 }
 
-.games{
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
-    gap:25px;
-    padding:50px;
+
+.search-box input {
+
+    width:350px;
+
+    padding:15px;
+
+    border-radius:30px;
+
+    border:none;
+
+    outline:none;
+
+    font-size:18px;
+
+    background:#161625;
+
+    color:white;
+
+    box-shadow:0 0 15px rgba(0,255,136,0.4);
+
 }
 
-.card{
-    background:#182344;
-    padding:30px;
-    border-radius:15px;
-    transition:.3s;
+
+.search-box input:focus {
+
+    box-shadow:0 0 25px #00ff88;
+
+}
+.modal {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    color: black;
+    padding: 30px;
+    border-radius: 15px;
+    z-index: 9999;
+}
+/* Yakında olan oyun kartı */
+.coming-soon {
+    opacity: 0.85;
 }
 
-.card:hover{
-    transform:translateY(-8px);
-    box-shadow:0 0 20px #00d9ff55;
+.coming-soon button {
+    background: #777;
+    color: white;
+    cursor: not-allowed;
 }
 
-.card h3{
-    margin-bottom:15px;
+.coming-soon button:hover {
+    transform: none;
+    background: #777;
+}
+/* Profil Kutusu */
+/* =========================
+   PROFİL KUTUSU
+========================= */
+
+.profile-box{
+    position: fixed;
+    top: 20px;
+    left: 20px;
+
+    display: flex;
+    align-items: center;
+    gap: 15px;
+
+    width: 280px;
+    padding: 15px;
+
+    background: rgba(20,20,45,0.85);
+    backdrop-filter: blur(12px);
+
+    border: 2px solid #00ff88;
+    border-radius: 18px;
+
+    box-shadow: 0 0 20px rgba(0,255,136,.35);
+
+    transition: .3s;
+    z-index: 999;
+}
+
+.profile-box:hover{
+    transform: translateY(-4px);
+    box-shadow: 0 0 30px #00ff88;
+}
+
+#avatar{
+    width: 60px;
+    height: 60px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    font-size: 34px;
+
+    background: #10102a;
+
+    border: 2px solid #00ff88;
+    border-radius: 50%;
+
+    flex-shrink: 0;
+}
+
+.profile-info{
+    flex: 1;
+}
+
+#username{
+    display: block;
+
+    font-size: 20px;
+    font-weight: bold;
+    color: white;
+}
+
+.profile-info small{
+    display: block;
+
+    margin-top: 4px;
+
+    color: #00ff88;
+    font-size: 13px;
+}
+
+#profileBtn{
+    width: 45px;
+    height: 45px;
+
+    border: none;
+    border-radius: 50%;
+
+    background: linear-gradient(135deg,#00ff88,#00c8ff);
+
+    color: white;
+    font-size: 20px;
+
+    cursor: pointer;
+    transition: .3s;
+
+    margin: 0;
+    padding: 0;
+}
+
+#profileBtn:hover{
+    transform: rotate(90deg) scale(1.1);
+    box-shadow: 0 0 20px #00ff88;
+}
+.xp-bar{
+    width:100%;
+    height:8px;
+    margin-top:8px;
+
+    background:#2b2b50;
+    border-radius:20px;
+
+    overflow:hidden;
+}
+
+#xp-fill{
+    width:25%;
+    height:100%;
+
+    background:linear-gradient(90deg,#00ff88,#00c8ff);
+
+    border-radius:20px;
+
+    transition:.5s;
+}
+
+#levelText{
+    display:block;
+    margin-top:6px;
+
+    font-size:12px;
+    color:#ccc;
 }

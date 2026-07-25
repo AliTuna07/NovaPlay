@@ -1,22 +1,61 @@
 <!DOCTYPE html>
 <html lang="tr">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NovaPlay | Snake</title>
+    <title>NovaPlay Snake 2.0</title>
+
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
 
-    <h1>🐍 NovaPlay Snake</h1>
+<div class="container">
 
-    <p>Skor: <span id="score">0</span></p>
+    <h1>🐍 NovaPlay Snake 2.0</h1>
 
-    <canvas id="game" width="400" height="400"></canvas>
+    <div class="topBar">
 
-    <button id="restartBtn">Yeniden Başlat</button>
+        <div>
+            Skor
+            <h2 id="score">0</h2>
+        </div>
 
-    <script src="script.js"></script>
+        <div>
+            Rekor
+            <h2 id="highscore">0</h2>
+        </div>
+
+    </div>
+
+    <canvas
+        id="game"
+        width="400"
+        height="400">
+    </canvas>
+
+    <div class="buttons">
+
+        <button id="restart">
+            🔄 Yeniden Oyna
+        </button>
+
+    </div>
+
+    <div class="help">
+
+        ⌨️ Ok Tuşları / WASD
+
+        <br>
+
+        ⏸️ P = Duraklat
+
+    </div>
+
+</div>
+
+<script src="script.js"></script>
 
 </body>
 </html>

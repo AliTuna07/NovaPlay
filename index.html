@@ -1,63 +1,111 @@
 <!DOCTYPE html>
 <html lang="tr">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NovaPlay</title>
+
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
+<div class="profile-box">
+    <div id="avatar">👤</div>
 
-    <header>
-        <h1>🎮 NovaPlay</h1>
+    <div class="profile-info">
+        <span id="username">Misafir</span>
+        <small>🎮 Nova Oyuncusu</small>
 
-        <nav>
-            <a href="#">Ana Sayfa</a>
-            <a href="#">Oyunlar</a>
-            <a href="#">Popüler</a>
-            <a href="#">İletişim</a>
-        </nav>
-    </header>
+        <div class="xp-bar">
+            <div id="xp-fill"></div>
+        </div>
 
-    <main>
+        <span id="levelText">⭐ Seviye 1</span>
+    </div>
 
-        <section class="hero">
-            <h2>Ücretsiz Oyun Dünyasına Hoş Geldin!</h2>
-            <p>Yüzlerce ücretsiz oyunu tek tıkla oyna.</p>
+    <button id="profileBtn">⚙️</button>
+</div>
+<header>
+    <h1>🎮 NovaPlay</h1>
+    <p>Ücretsiz oyun merkezi</p>
+    
+</header>
+<div class="search-box">
 
-            <button id="playBtn">Şimdi Oyna</button>
-        </section>
+    <input 
+    type="text" 
+    id="searchInput" 
+    placeholder="🔎 Oyun ara..."
+    >
 
-        <section class="games">
+</div>
 
-            <div class="card">
-                <h3>🐍 Yılan</h3>
-                <p>Klasik Snake oyunu.</p>
-                <br>
-                <a href="games/snake/index.html">
-                    <button>Oyna</button>
-                </a>
-            </div>
+<div class="games">
 
-            <div class="card">
-                <h3>❌⭕ X-O-X</h3>
-                <p>Arkadaşına meydan oku.</p>
-                <br>
-                <a href="games/tictactoe/index.html">
-                    <button>Oyna</button>
-                </a>
-            </div>
+<div class="game-card">
+<h3>🐍 Snake</h3>
+<p>Klasik yılan oyunu</p>
+<a href="games/snake/index.html">
+<button>Oyna</button>
+</a>
+</div>
 
-            <div class="card">
-                <h3>🧱 Breakout</h3>
-                <p>Tüm tuğlaları kır.</p>
-            </div>
 
-        </section>
+<div class="game-card">
+<h3>❌⭕ XOX</h3>
+<p>Zeka ve strateji oyunu</p>
+<a href="games/xox/index.html">
+<button>Oyna</button>
+</a>
+</div>
 
-    </main>
 
-    <script src="script.js"></script>
+<div class="game-card">
+<h3>🧱 Breakout</h3>
+<p>Tuğlaları kır!</p>
+<a href="games/breakout/index.html">
+<button>Oyna</button>
+</a>
+</div>
 
+
+<div class="game-card">
+<h3>🐦 Flappy</h3>
+<p>Engellerden kaç!</p>
+<a href="games/flappy/index.html">
+<button>Oyna</button>
+</a>
+</div>
+<div class="game-card coming-soon">
+    <div class="game-icon">🏓</div>
+    <h3>Ping Pong</h3>
+    <p>Klasik masa tenisi oyunu. Rakibini yen ve en yüksek skoru yap!</p>
+
+    <button disabled>🚧 YAKINDA</button>
+</div>
+
+</div>
+
+<div id="profileModal" class="modal">
+    <div class="modal-content">
+        <h2>Profil Oluştur</h2>
+
+        <input id="nameInput" placeholder="Kullanıcı adı">
+
+        <h3>Avatar Seç</h3>
+
+        <div class="avatars">
+            <button onclick="selectAvatar('🐺')">🐺</button>
+            <button onclick="selectAvatar('🤖')">🤖</button>
+            <button onclick="selectAvatar('🐱')">🐱</button>
+            <button onclick="selectAvatar('🦊')">🦊</button>
+            <button onclick="selectAvatar('👾')">👾</button>
+        </div>
+
+        <button onclick="saveProfile()">Kaydet</button>
+    </div>
+</div>
+<script src="script.js"></script>
 </body>
 </html>
