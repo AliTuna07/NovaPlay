@@ -19,7 +19,7 @@ let nextDirection;
 let score;
 let game;
 let particles = [];
-let speed = 100;
+let speed = 150;
 let highscore = Number(localStorage.getItem("snakeHighscore")) || 0;
 highscoreText.textContent = highscore;
 
@@ -141,7 +141,7 @@ createParticles(
 
     if(score % 5 === 0){
 
-        speed -= 10;
+        speed -= 5;
 
         clearInterval(game);
 
