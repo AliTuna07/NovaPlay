@@ -40,8 +40,35 @@ document.addEventListener("keydown", e => {
 document.addEventListener("keyup", e => {
     keys[e.key] = false;
 });
+// 📱 Mobil dokunmatik kontrol
+
+canvas.addEventListener("touchstart", movePaddleTouch);
+canvas.addEventListener("touchmove", movePaddleTouch);
+
+function movePaddleTouch(e){
+
+    e.preventDefault();
+
+    const rect = canvas.getBoundingClientRect();
+
+    const touch = e.touches[0];
+
+    let y = touch.clientY - rect.top;
+
+    player.y = y - player.height / 2;
 
 
+    // sınırlar
+
+    if(player.y < 0){
+        player.y = 0;
+    }
+
+    if(player.y + player.height > canvas.height){
+        player.y = canvas.height - player.height;
+    }
+
+}
 function draw(){
 
     ctx.clearRect(0,0,canvas.width,canvas.height);
@@ -222,3 +249,21 @@ function gameLoop(){
 
 
 gameLoop();
+// 📱 Mobil buton kontrolü
+
+const upBtn = document.getElementById("upBtn");
+const downBtn = document.getElementById("downBtn");
+
+
+if(upBtn && downBtn){
+
+    upBtn.addEventListener("touchstart", () => {
+        player.y -= 40;
+    });
+
+
+    downBtn.addEventListener("touchstart", () => {
+        player.y += 40;
+    });
+
+}
