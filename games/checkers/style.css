@@ -1,0 +1,611 @@
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial, Helvetica, sans-serif;
+}
+
+body{
+
+    background:linear-gradient(135deg,#081321,#16385d);
+
+    color:white;
+
+    min-height:100vh;
+
+    display:flex;
+
+    flex-direction:column;
+
+    align-items:center;
+
+    justify-content:center;
+
+}
+
+h1{
+
+    margin-bottom:10px;
+
+    font-size:42px;
+
+}
+
+#status{
+
+    font-size:22px;
+
+    margin-bottom:25px;
+
+    color:#7fe8ff;
+
+}
+
+#board{
+
+    display:grid;
+
+    grid-template-columns:repeat(8,70px);
+
+    grid-template-rows:repeat(8,70px);
+
+    border:5px solid #00d9ff;
+
+    border-radius:15px;
+
+    overflow:hidden;
+
+    box-shadow:
+        0 0 20px #00d9ff,
+        0 0 40px rgba(0,217,255,.35);
+
+}
+
+.square{
+
+    width:70px;
+    height:70px;
+
+    display:flex;
+
+    justify-content:center;
+    align-items:center;
+
+}
+
+.light{
+
+    background:#0f2f1f;
+
+}
+
+
+.dark{
+
+    background:#050505;
+
+}
+
+button{
+
+    margin-top:25px;
+
+    padding:12px 24px;
+
+    border:none;
+
+    border-radius:12px;
+
+    background:#00d9ff;
+
+    color:#081321;
+
+    font-size:17px;
+
+    font-weight:bold;
+
+    cursor:pointer;
+
+    transition:.2s;
+
+}
+
+button:hover{
+
+    transform:scale(1.05);
+
+}
+
+a{
+
+    margin-top:20px;
+
+    color:white;
+
+    text-decoration:none;
+
+}
+
+@media(max-width:700px){
+
+    #board{
+
+        grid-template-columns:repeat(8,42px);
+
+        grid-template-rows:repeat(8,42px);
+
+    }
+
+    .square{
+
+        width:42px;
+        height:42px;
+
+    }
+
+}
+.piece{
+
+    width:45px;
+    height:45px;
+
+    border-radius:50%;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    cursor:pointer;
+
+    transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+
+    border:3px solid rgba(255,255,255,0.25);
+
+}
+
+
+/* Beyaz taş */
+
+.white{
+
+    background:
+    radial-gradient(circle at 30% 30%,
+    #ffffff,
+    #cccccc);
+
+    box-shadow:
+
+    inset -5px -5px 10px rgba(0,0,0,0.3),
+    0 0 15px rgba(255,255,255,0.5);
+
+}
+
+
+
+/* Siyah taş */
+
+.black{
+
+    background:
+    radial-gradient(circle at 30% 30%,
+    #555,
+    #050505);
+
+    box-shadow:
+
+    inset -5px -5px 10px rgba(0,0,0,0.8),
+    0 0 15px rgba(0,255,100,0.4);
+
+}
+
+
+
+/* Üzerine gelince */
+
+.piece:hover{
+
+    transform:scale(1.12);
+
+}
+
+
+
+/* Seçilen taş */
+
+.selected{
+
+    transform:scale(1.15);
+
+    box-shadow:
+
+    0 0 25px #00ff66;
+
+}
+
+
+
+/* Şah taşı */
+
+.king{
+
+    border-color:#ffd700;
+
+    box-shadow:
+
+    0 0 20px gold,
+    inset 0 0 10px gold;
+
+}
+
+.white{
+
+    background:linear-gradient(#ffffff,#d9d9d9);
+
+    border:2px solid #888;
+
+}
+
+.black{
+
+    background:linear-gradient(#444,#111);
+
+    border:2px solid #000;
+
+}
+
+.square:hover .piece{
+
+    transform:scale(1.08);
+
+}
+.selected{
+
+    box-shadow:
+        0 0 15px #00d9ff,
+        0 0 35px #00d9ff;
+
+    transform:scale(1.12);
+
+}
+.move{
+
+    background:#42ff7b !important;
+
+    cursor:pointer;
+
+    animation:pulse .8s infinite;
+
+}
+
+@keyframes pulse{
+
+    0%{
+
+        filter:brightness(1);
+
+    }
+
+    50%{
+
+        filter:brightness(1.4);
+
+    }
+
+    100%{
+
+        filter:brightness(1);
+
+    }
+
+}
+.capture{
+
+    background:#ff4040 !important;
+
+    animation:captureBlink .6s infinite;
+
+}
+
+@keyframes captureBlink{
+
+    0%{
+
+        filter:brightness(1);
+
+    }
+
+    50%{
+
+        filter:brightness(1.6);
+
+    }
+
+    100%{
+
+        filter:brightness(1);
+
+    }
+
+}
+.king{
+
+    border:4px solid gold !important;
+
+    box-shadow:
+        0 0 10px gold,
+        0 0 25px gold;
+
+}
+#gameOverScreen{
+
+    position:fixed;
+    inset:0;
+
+    display:none;
+
+    justify-content:center;
+    align-items:center;
+
+    background:rgba(0,0,0,.7);
+
+    z-index:999;
+
+}
+
+.gameOverBox{
+
+    width:340px;
+
+    background:#16253b;
+
+    border-radius:20px;
+
+    padding:30px;
+
+    text-align:center;
+
+    box-shadow:0 0 30px #00d9ff;
+
+    animation:popup .3s ease;
+
+}
+
+.gameOverBox h2{
+
+    margin-bottom:20px;
+
+}
+
+.gameOverBox button{
+
+    width:100%;
+    margin-top:12px;
+
+}
+.piece{
+
+    width:45px;
+    height:45px;
+
+    border-radius:50%;
+
+    transition: 
+    transform 0.25s ease,
+    box-shadow 0.25s ease;
+
+}
+
+
+/* Taş seçilince */
+.piece.selected{
+
+    transform:scale(1.15);
+
+    box-shadow:
+    0 0 15px yellow;
+
+}
+
+
+
+/* Hareket edebilen kare */
+.square.move{
+
+    animation:pulse 1s infinite;
+
+}
+
+
+
+@keyframes pulse{
+
+    0%{
+
+        box-shadow:
+        inset 0 0 0 0 rgba(0,255,120,0.5);
+
+    }
+
+
+    50%{
+
+        box-shadow:
+        inset 0 0 20px rgba(0,255,120,0.8);
+
+    }
+
+
+    100%{
+
+        box-shadow:
+        inset 0 0 0 0 rgba(0,255,120,0.5);
+
+    }
+
+}
+
+
+
+
+/* Şah parlaması */
+
+.king{
+
+    animation:
+    kingGlow 1.5s infinite alternate;
+
+}
+
+
+
+@keyframes kingGlow{
+
+
+    from{
+
+        box-shadow:
+        0 0 5px gold;
+
+    }
+
+
+    to{
+
+        box-shadow:
+        0 0 20px gold;
+
+    }
+
+
+}
+.moving{
+
+    animation:movePiece 0.3s ease;
+
+}
+
+
+@keyframes movePiece{
+
+    from{
+
+        transform:scale(0.7);
+
+        opacity:0.5;
+
+    }
+
+
+    to{
+
+        transform:scale(1);
+
+        opacity:1;
+
+    }
+
+}
+.moving{
+
+    animation:movePiece 0.3s ease;
+
+}
+
+
+@keyframes movePiece{
+
+    from{
+
+        transform:scale(0.7);
+
+        opacity:0.5;
+
+    }
+
+
+    to{
+
+        transform:scale(1);
+
+        opacity:1;
+
+    }
+
+}
+.captureEffect{
+
+    animation:captureBoom 0.35s ease;
+
+}
+
+
+@keyframes captureBoom{
+
+    0%{
+
+        transform:scale(1);
+
+        opacity:1;
+
+    }
+
+
+    50%{
+
+        transform:scale(1.5) rotate(20deg);
+
+        opacity:0.5;
+
+    }
+
+
+    100%{
+
+        transform:scale(0);
+
+        opacity:0;
+
+    }
+
+}
+.square{
+
+    transition:0.2s ease;
+
+}
+
+
+.square.dark{
+
+    box-shadow:
+    inset 0 0 10px rgba(0,255,100,0.15);
+
+}
+
+
+.square.light{
+
+    box-shadow:
+    inset 0 0 10px rgba(0,255,100,0.05);
+
+}
+
+
+.square.move{
+
+    box-shadow:
+    0 0 15px #00ff66;
+
+}
+#board{
+
+    border:4px solid #00ff66;
+
+    border-radius:15px;
+
+    box-shadow:
+    0 0 25px rgba(0,255,100,0.5);
+
+}

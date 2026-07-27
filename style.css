@@ -731,3 +731,139 @@ button:hover {
 #rematchBtn {
     top: 70px;
 }
+.winner{
+
+    background:#00ff88 !important;
+
+    color:#000;
+
+    box-shadow:
+    0 0 20px #00ff88,
+    0 0 40px #00ff88;
+
+    animation:winnerGlow .8s infinite alternate;
+
+}
+
+@keyframes winnerGlow{
+
+    from{
+
+        transform:scale(1);
+
+    }
+
+    to{
+
+        transform:scale(1.08);
+
+    }
+
+}
+.cell{
+
+    cursor:pointer;
+
+    user-select:none;
+
+    transition:
+        background .25s,
+        transform .2s,
+        box-shadow .2s;
+
+}
+
+.cell.play{
+
+    animation:placeMark .25s ease;
+
+}
+
+@keyframes placeMark{
+
+    0%{
+
+        transform:scale(0.3);
+        opacity:0;
+
+    }
+
+    70%{
+
+        transform:scale(1.15);
+
+    }
+
+    100%{
+
+        transform:scale(1);
+        opacity:1;
+
+    }
+
+}
+#gameOverScreen{
+
+    position:fixed;
+    inset:0;
+
+    background:rgba(0,0,0,.65);
+
+    display:none;
+
+    justify-content:center;
+    align-items:center;
+
+    z-index:999;
+
+}
+
+.gameOverBox{
+
+    background:#1b1b35;
+
+    padding:30px;
+
+    border-radius:20px;
+
+    text-align:center;
+
+    width:320px;
+
+    animation:popup .35s ease;
+
+    box-shadow:0 0 30px #00d9ff;
+
+}
+
+.gameOverBox h2{
+
+    margin-bottom:20px;
+
+}
+
+.gameOverBox button{
+
+    width:100%;
+
+    margin:8px 0;
+
+}
+
+@keyframes popup{
+
+    from{
+
+        transform:scale(.6);
+        opacity:0;
+
+    }
+
+    to{
+
+        transform:scale(1);
+        opacity:1;
+
+    }
+
+}

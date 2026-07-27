@@ -1,267 +1,391 @@
 const shop = document.getElementById("shop");
 const coinDisplay = document.getElementById("coins");
 
-function getCoins() {
+
+function getCoins(){
+
     return Number(localStorage.getItem("novaCoins")) || 0;
+
 }
+
+
 
 const items = [
 
-    // =====================
-    // AVATARLAR
-    // =====================
 
-    {
-        id: "avatarWolf",
-        category: "avatar",
-        icon: "🐺",
-        name: "Kurt Avatar",
-        price: 100
-    },
+{
+id:"avatarWolf",
+category:"avatar",
+icon:"🐺",
+name:"Kurt Avatar",
+rarity:"Yaygın",
+price:100
+},
 
-    {
-        id: "avatarRobot",
-        category: "avatar",
-        icon: "🤖",
-        name: "Robot Avatar",
-        price: 150
-    },
+{
+id:"avatarRobot",
+category:"avatar",
+icon:"🤖",
+name:"Robot Avatar",
+rarity:"Nadir",
+price:150
+},
 
-    {
-        id: "avatarCat",
-        category: "avatar",
-        icon: "🐱",
-        name: "Kedi Avatar",
-        price: 150
-    },
+{
+id:"avatarCat",
+category:"avatar",
+icon:"🐱",
+name:"Kedi Avatar",
+rarity:"Yaygın",
+price:150
+},
 
-    {
-        id: "avatarFox",
-        category: "avatar",
-        icon: "🦊",
-        name: "Tilki Avatar",
-        price: 200
-    },
+{
+id:"avatarFox",
+category:"avatar",
+icon:"🦊",
+name:"Tilki Avatar",
+rarity:"Epik",
+price:200
+},
 
-    {
-        id: "avatarAlien",
-        category: "avatar",
-        icon: "👾",
-        name: "Uzaylı Avatar",
-        price: 300
-    },
-
-
-
-    // =====================
-    // XP
-    // =====================
-
-    {
-        id: "xp100",
-        category: "xp",
-        icon: "⭐",
-        name: "+100 XP",
-        price: 250,
-        xp: 100
-    },
-
-    {
-        id: "xp250",
-        category: "xp",
-        icon: "🌟",
-        name: "+250 XP",
-        price: 500,
-        xp: 250
-    },
-
-    {
-        id: "xp500",
-        category: "xp",
-        icon: "✨",
-        name: "+500 XP",
-        price: 900,
-        xp: 500
-    },
+{
+id:"avatarAlien",
+category:"avatar",
+icon:"👾",
+name:"Uzaylı Avatar",
+rarity:"Efsane",
+price:300
+},
 
 
 
-    // =====================
-    // PROFİL ÇERÇEVELERİ
-    // =====================
+{
+id:"xp100",
+category:"xp",
+icon:"⭐",
+name:"+100 XP",
+rarity:"Yaygın",
+price:250,
+xp:100
+},
 
-    {
-        id: "frameSilver",
-        category: "frame",
-        icon: "⚪",
-        name: "Gümüş Çerçeve",
-        price: 300
-    },
+{
+id:"xp250",
+category:"xp",
+icon:"🌟",
+name:"+250 XP",
+rarity:"Nadir",
+price:500,
+xp:250
+},
 
-    {
-        id: "frameGold",
-        category: "frame",
-        icon: "🟡",
-        name: "Altın Çerçeve",
-        price: 600
-    },
+{
+id:"xp500",
+category:"xp",
+icon:"✨",
+name:"+500 XP",
+rarity:"Epik",
+price:900,
+xp:500
+},
 
-    {
-        id: "frameDiamond",
-        category: "frame",
-        icon: "💎",
-        name: "Elmas Çerçeve",
-        price: 1000
-    }
+
+
+{
+id:"frameSilver",
+category:"frame",
+icon:"⚪",
+name:"Gümüş Çerçeve",
+rarity:"Yaygın",
+price:300
+},
+
+{
+id:"frameGold",
+category:"frame",
+icon:"🟡",
+name:"Altın Çerçeve",
+rarity:"Nadir",
+price:600
+},
+
+{
+id:"frameDiamond",
+category:"frame",
+icon:"💎",
+name:"Elmas Çerçeve",
+rarity:"Efsane",
+price:1000
+},
+// =====================
+// ARABALAR
+// =====================
+
+{
+id:"carStarter",
+category:"car",
+icon:"🚗",
+name:"Neon Starter",
+rarity:"Yaygın",
+price:0
+},
+
+{
+id:"carSpeed",
+category:"car",
+icon:"🏎️",
+name:"Nova Speed",
+rarity:"Nadir",
+price:500
+},
+
+{
+id:"carGT",
+category:"car",
+icon:"🚘",
+name:"Nova GT",
+rarity:"Epik",
+price:1000
+}
 
 ];
 
-updateCoins();
+
+
+function drawShop(){
+
+
+shop.innerHTML="";
+
+
+const categories=[
+
+{
+id:"car",
+title:"🏎️ Arabalar"
+},
+
+{
+id:"avatar",
+title:"👤 Avatarlar"
+},
+
+{
+id:"xp",
+title:"⭐ XP Paketleri"
+},
+
+{
+id:"frame",
+title:"🖼️ Profil Çerçeveleri"
+}
+
+];
+
+
+
+categories.forEach(cat=>{
+
+
+let title=document.createElement("h2");
+
+title.className="categoryTitle";
+
+title.textContent=cat.title;
+
+shop.appendChild(title);
+
+
+
+let row=document.createElement("div");
+
+row.className="categoryRow";
+
+
+
+items
+.filter(item=>item.category===cat.id)
+.forEach(item=>{
+
+
+let card=document.createElement("div");
+
+card.className="card";
+
+
+card.innerHTML=`
+
+<div class="itemImage">
+${item.icon}
+</div>
+
+
+<h2>
+${item.name}
+</h2>
+
+
+<p>
+Nadirlik:
+<span class="rare">
+${item.rarity}
+</span>
+</p>
+
+
+<p>
+NovaPlay özel ürünü
+</p>
+
+
+<div class="price">
+🪙 ${item.price}
+</div>
+
+
+<button class="buyBtn">
+Satın Al
+</button>
+
+`;
+
+
+const owned = localStorage.getItem(item.id) === "true";
+
+const isCar = item.category === "car";
+card.querySelector("button").onclick=()=>{
+
+
+const owned = localStorage.getItem(item.id) === "true";
+
+
+if(owned && item.category==="car"){
+
+localStorage.setItem(
+"selectedCar",
+item.id
+);
+
 drawShop();
 
-function updateCoins() {
+alert("🏎️ "+item.name+" seçildi!");
 
-    coinDisplay.textContent = getCoins();
+return;
 
 }
 
-function drawShop() {
 
-    shop.innerHTML = "";
+buy(item);
 
-    const categories = [
-
-        {
-            id: "avatar",
-            title: "👤 Avatarlar"
-        },
-
-        {
-            id: "xp",
-            title: "⭐ XP Paketleri"
-        },
-
-        {
-            id: "frame",
-            title: "🖼️ Profil Çerçeveleri"
-        }
-
-    ];
-
-    categories.forEach(category => {
-
-        const title = document.createElement("h2");
-
-        title.className = "categoryTitle";
-        title.textContent = category.title;
-
-        shop.appendChild(title);
-
-        const row = document.createElement("div");
-
-        row.className = "categoryRow";
-
-        items
-            .filter(item => item.category === category.id)
-            .forEach(item => {
-
-                const owned = localStorage.getItem(item.id) === "true";
-                const isXP = item.category === "xp";
-
-                const card = document.createElement("div");
-
-                card.className = "card";
-
-                card.innerHTML = `
-                    <div style="font-size:60px">${item.icon}</div>
-
-                    <h2>${item.name}</h2>
-
-                    <div class="price">
-                        🪙 ${item.price}
-                    </div>
-
-                    <button class="buyBtn">
-
-${
-isXP
-? "Satın Al"
-:
-(
-owned
-? "Kullan"
-: "Satın Al"
-)
-}
-
-</button>
-                `;
-card.querySelector("button").onclick = () => {
-
-    if(item.category==="avatar" &&
-       localStorage.getItem(item.id)==="true"){
-
-        setAvatar(item.icon);
-
-        alert(item.name + " kullanılıyor!");
-
-        return;
-
-    }
-
-    buy(item);
 
 };
-                row.appendChild(card);
 
-            });
 
-        shop.appendChild(row);
+row.appendChild(card);
 
-    });
+
+});
+
+
+
+shop.appendChild(row);
+
+
+});
+
 
 }
+
+
+
 function buy(item){
 
-    const owned = localStorage.getItem(item.id) === "true";
-    const isXP = item.category === "xp";
 
-    // Avatar ve çerçeveler tekrar alınamaz
-    if(!isXP && owned){
+let coins=getCoins();
 
-        alert("Bu ürüne zaten sahipsin.");
-        return;
 
-    }
+if(coins < item.price){
 
-    let coins = getCoins();
+alert("Yeterli NovaCoin yok!");
 
-    if(coins < item.price){
-
-        alert("Yeterli NovaCoin yok!");
-        return;
-
-    }
-
-    // Coin düş
-    coins -= item.price;
-    localStorage.setItem("novaCoins", coins);
-
-    // XP paketleri
-    if(isXP){
-
-        addXP(item.xp);
-
-    }else{
-
-        // Avatar ve çerçeveyi sahip olunanlara ekle
-        localStorage.setItem(item.id, "true");
-
-    }
-
-    updateCoins();
-    drawShop();
-
-    alert("🎉 " + item.name + " satın alındı!");
+return;
 
 }
+
+
+
+coins-=item.price;
+
+
+localStorage.setItem(
+"novaCoins",
+coins
+);
+
+
+
+if(item.category==="xp"){
+
+let xp=
+Number(localStorage.getItem("xp")) || 0;
+
+
+xp+=item.xp;
+
+
+localStorage.setItem(
+"xp",
+xp
+);
+
+
+}
+
+
+else{
+
+localStorage.setItem(
+item.id,
+"true"
+);
+
+}
+if(item.category==="car" && item.price===0){
+
+localStorage.setItem(
+item.id,
+"true"
+);
+
+localStorage.setItem(
+"selectedCar",
+item.id
+);
+
+}
+
+
+
+updateCoins();
+
+drawShop();
+
+
+alert("🎉 "+item.name+" satın alındı!");
+
+}
+
+
+
+function updateCoins(){
+
+coinDisplay.textContent=getCoins();
+
+}
+
+
+
+updateCoins();
+
+drawShop();

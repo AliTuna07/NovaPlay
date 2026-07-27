@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Neon Yarış</title>
+
+<link rel="stylesheet" href="style.css">
+
+</head>
+
+
+<body>
+
+<div class="gameHUD">
+
+    <div>
+        🏁 Skor:
+        <span id="hudScore">0</span>
+    </div>
+
+    <div>
+        🪙
+        <span id="hudCoin">0</span>
+    </div>
+
+    <div>
+        ⭐
+        <span id="hudXP">0</span>
+    </div>
+
+</div>
+<h1>🏎️ Neon Yarış</h1>
+
+
+<div id="game">
+    <div id="mobileControls">
+
+    <button id="leftBtn">⬅️</button>
+
+    <button id="rightBtn">➡️</button>
+
+</div>
+
+
+    <div id="road">
+
+
+        <div id="roadLines"></div>
+
+
+        <div id="enemyContainer"></div>
+
+
+        <div id="playerCar">
+
+        </div>
+
+
+    </div>
+
+
+</div>
+
+
+
+<div id="info">
+
+
+    <h2>
+    Skor:
+    <span id="score">0</span>
+    </h2>
+
+
+</div>
+
+
+
+<!-- Oyun bitiş ekranı -->
+
+<div id="gameOver">
+
+
+    <div id="gameOverBox">
+
+
+        <h1>💥 Oyun Bitti</h1>
+
+
+        <h2>
+        Skor:
+        <span id="finalScore">0</span>
+        </h2>
+
+
+        <p>
+        🪙 NovaCoin:
+        <span id="earnedCoin">0</span>
+        </p>
+
+
+        <p>
+        ⭐ XP:
+        <span id="earnedXP">0</span>
+        </p>
+
+
+
+        <button onclick="restartGame()">
+
+        🔄 Tekrar Oyna
+
+        </button>
+
+
+        <button onclick="goMenu()">
+
+        🏠 Ana Menü
+
+        </button>
+
+
+    </div>
+
+
+</div>
+
+
+
+
+<script src="script.js"></script>
+
+
+</body>
+
+</html>
