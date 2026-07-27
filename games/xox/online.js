@@ -3,9 +3,9 @@ import {
     getFirestore,
     doc,
     setDoc,
-    getDoc
+    getDoc,
+    updateDoc
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-
 const firebaseConfig = {
     apiKey: "AIzaSyAYFP6B_nK5wpsDes8h0bOcyOAcvRNpvfc",
     authDomain: "novaplay-5fc85.firebaseapp.com",
@@ -62,13 +62,18 @@ joinBtn.onclick = async ()=>{
 
     if(!snap.exists()){
 
-        alert("Oda bulunamadı.");
-        return;
+    alert("Oda bulunamadı.");
+    return;
 
-    }
+}
 
-    localStorage.setItem("roomCode", code);
+await updateDoc(ref, {
+
+    playerO: playerInput.value
+
+});
+
+localStorage.setItem("roomCode", code);
 
 location.href = "room.html";
-
 };
