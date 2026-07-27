@@ -207,7 +207,10 @@ function update(){
         playerScore++;
         playerScoreText.textContent = playerScore;
         resetBall();
+addXP(2);
+addCoins(3);
 
+showNotification("⭐ +2 XP | 🪙 +3 NovaCoin");
     }
 
 }

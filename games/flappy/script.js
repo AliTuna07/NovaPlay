@@ -154,7 +154,10 @@ function draw(){
             ){
 
                 score++;
+addXP(1);
+addCoins(1);
 
+showNotification("⭐ +1 XP | 🪙 +1 NovaCoin");
                 scoreText.innerHTML=score;
 
                 countedPipes.push(pipe);

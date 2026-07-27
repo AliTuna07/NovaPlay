@@ -530,3 +530,95 @@ button:hover {
     transform:scale(1.08);
 
 }
+.onlineMenu{
+
+    width:400px;
+
+    max-width:90%;
+
+    margin:40px auto;
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:15px;
+
+}
+
+.onlineMenu input{
+
+    padding:15px;
+
+    border-radius:10px;
+
+    border:none;
+
+    font-size:18px;
+
+    text-align:center;
+
+}
+
+.onlineMenu button{
+
+    padding:15px;
+
+    font-size:20px;
+
+}
+
+#status{
+
+    margin-top:30px;
+
+    text-align:center;
+
+    font-size:22px;
+
+    color:#00ff88;
+
+}
+.board{
+
+    width:330px;
+
+    margin:30px auto;
+
+    display:grid;
+
+    grid-template-columns:repeat(3,100px);
+
+    gap:10px;
+
+}
+
+.cell{
+
+    width:100px;
+
+    height:100px;
+
+    background:#13233f;
+
+    border-radius:15px;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    font-size:55px;
+
+    cursor:pointer;
+
+    transition:.2s;
+
+}
+
+.cell:hover{
+
+    background:#1b335b;
+
+}
