@@ -1,43 +1,76 @@
 const canvas = document.getElementById("game");
 const ctx = canvas.getContext("2d");
 
-const scoreText = document.getElementById("score");
+const scoreEl = document.getElementById("score");
+const livesEl = document.getElementById("lives");
+const levelEl = document.getElementById("level");
 const playButton = document.getElementById("playButton");
 
+// --------------------
+// OYUN DURUMU
+// --------------------
 
 let gameStarted = false;
 let paused = false;
 let gameOver = false;
 
-
 let score = 0;
 let lives = 3;
+let level = 1;
 
+let speed = 4;
 
+// --------------------
+// TOP
+// --------------------
 
-let ballX = 240;
-let ballY = 250;
+const ball = {
 
-let dx = 3;
-let dy = -3;
+    x: canvas.width / 2,
 
-let ballRadius = 8;
+    y: canvas.height - 60,
 
+    r: 8,
 
+    dx: speed,
 
-let paddleWidth = 90;
-let paddleHeight = 10;
-let paddleX = 195;
+    dy: -speed
 
+};
 
+// --------------------
+// RAKET
+// --------------------
 
-const rows = 4;
+const paddle = {
+
+    width: 90,
+
+    height: 12,
+
+    x: canvas.width / 2 - 45,
+
+    y: canvas.height - 25
+
+};
+
+// --------------------
+// TUĞLALAR
+// --------------------
+
+const rows = 5;
 const cols = 7;
 
+const brickWidth = 55;
+const brickHeight = 18;
+
+const brickPadding = 10;
+const brickOffsetTop = 50;
+const brickOffsetLeft = 20;
+
 let bricks = [];
-
-
-
+let particles = [];
+let powerUps = [];
 function createBricks(){
 
     bricks=[];
@@ -50,13 +83,11 @@ function createBricks(){
 
             bricks[r][c]={
 
-                x:c*65+25,
-                y:r*25+30,
+                x:brickOffsetLeft+c*(brickWidth+brickPadding),
 
-                width:55,
-                height:15,
+                y:brickOffsetTop+r*(brickHeight+brickPadding),
 
-                alive:true
+                hp:Math.floor(Math.random()*3)+1
 
             };
 
@@ -66,23 +97,54 @@ function createBricks(){
 
 }
 
-
-
 createBricks();
+function createParticles(x,y,color){
 
+    for(let i=0;i<12;i++){
 
+        particles.push({
 
-document.addEventListener("mousemove", e=>{
+            x:x,
+            y:y,
 
-    let rect = canvas.getBoundingClientRect();
+            size:Math.random()*5+2,
 
-    paddleX = e.clientX - rect.left - paddleWidth/2;
+            dx:(Math.random()-0.5)*6,
+
+            dy:(Math.random()-0.5)*6,
+
+            life:30,
+
+            color:color
+
+        });
+
+    }
+
+}
+// --------------------
+// MOUSE
+// --------------------
+
+document.addEventListener("mousemove",(e)=>{
+
+    const rect=canvas.getBoundingClientRect();
+
+    paddle.x=e.clientX-rect.left-paddle.width/2;
+
+    if(paddle.x<0)
+        paddle.x=0;
+
+    if(paddle.x+paddle.width>canvas.width)
+        paddle.x=canvas.width-paddle.width;
 
 });
 
+// --------------------
+// KLAVYE
+// --------------------
 
-
-document.addEventListener("keydown", e=>{
+document.addEventListener("keydown",(e)=>{
 
     if(e.code==="Space" && gameStarted){
 
@@ -92,67 +154,321 @@ document.addEventListener("keydown", e=>{
 
 });
 
+// --------------------
+// ÇİZİM
+// --------------------
+function createPowerUp(x,y){
+
+    let types = [
+        "bigPaddle",
+        "extraLife",
+        "slowBall",
+        "coin"
+    ];
 
 
+    let type = types[
+        Math.floor(Math.random()*types.length)
+    ];
 
 
-function draw(){
+    powerUps.push({
+
+        x:x,
+
+        y:y,
+
+        size:18,
+
+        dy:2,
+
+        type:type
+
+    });
+
+}
+function drawPowerUps(){
+
+    for(let i=powerUps.length-1;i>=0;i--){
+
+        let p = powerUps[i];
 
 
-ctx.clearRect(0,0,canvas.width,canvas.height);
+        if(p.type==="bigPaddle")
+            ctx.fillStyle="#00ff88";
+
+        if(p.type==="extraLife")
+            ctx.fillStyle="#ff3366";
+
+        if(p.type==="slowBall")
+            ctx.fillStyle="#9966ff";
+
+        if(p.type==="coin")
+            ctx.fillStyle="#ffd700";
 
 
-
-// top
-
-ctx.beginPath();
-
-ctx.arc(
-ballX,
-ballY,
-ballRadius,
-0,
-Math.PI*2
-);
-
-ctx.fillStyle="yellow";
-ctx.fill();
+        ctx.fillRect(
+            p.x,
+            p.y,
+            p.size,
+            p.size
+        );
 
 
+        p.y += p.dy;
 
 
-// paddle
+        // Paddle yakaladı mı?
 
-ctx.fillStyle="cyan";
+        if(
+            p.y+p.size >= paddle.y &&
+            p.x+p.size >= paddle.x &&
+            p.x <= paddle.x+paddle.width
+        ){
 
-ctx.fillRect(
-paddleX,
-canvas.height-20,
-paddleWidth,
-paddleHeight
-);
+            collectPowerUp(p.type);
+
+            powerUps.splice(i,1);
+
+        }
 
 
+        // Ekrandan çıktıysa sil
 
+        if(p.y > canvas.height){
 
-// bricks
+            powerUps.splice(i,1);
 
-for(let r=0;r<rows;r++){
+        }
 
-    for(let c=0;c<cols;c++){
+    }
 
-        let b=bricks[r][c];
+}
+function drawBricks(){
 
-        if(b.alive){
+    for(let r=0;r<rows;r++){
 
-            ctx.fillStyle="orange";
+        for(let c=0;c<cols;c++){
+
+            const b=bricks[r][c];
+
+            if(b.hp<=0) continue;
+
+            if(b.hp==3)
+                ctx.fillStyle="#ff4444";
+
+            else if(b.hp==2)
+                ctx.fillStyle="#ff9800";
+
+            else
+                ctx.fillStyle="#00e5ff";
 
             ctx.fillRect(
-            b.x,
-            b.y,
-            b.width,
-            b.height
+                b.x,
+                b.y,
+                brickWidth,
+                brickHeight
             );
+
+        }
+
+    }
+
+}
+
+function drawBall(){
+
+    ctx.beginPath();
+
+    ctx.arc(
+        ball.x,
+        ball.y,
+        ball.r,
+        0,
+        Math.PI*2
+    );
+
+    ctx.fillStyle="yellow";
+
+    ctx.fill();
+
+}
+
+function drawPaddle(){
+
+    ctx.fillStyle="#00ffff";
+
+    ctx.fillRect(
+
+        paddle.x,
+
+        paddle.y,
+
+        paddle.width,
+
+        paddle.height
+
+    );
+
+}
+function drawParticles(){
+
+    for(let i=particles.length-1;i>=0;i--){
+
+        let p=particles[i];
+
+
+        ctx.fillStyle=p.color;
+
+        ctx.fillRect(
+            p.x,
+            p.y,
+            p.size,
+            p.size
+        );
+
+
+        p.x+=p.dx;
+        p.y+=p.dy;
+
+        p.life--;
+
+
+        if(p.life<=0){
+
+            particles.splice(i,1);
+
+        }
+
+    }
+
+}
+function updateHUD(){
+
+    scoreEl.textContent=score;
+    livesEl.textContent=lives;
+    levelEl.textContent=level;
+
+}
+// --------------------
+// OYUN MOTORU
+// --------------------
+
+function moveBall(){
+
+    ball.x += ball.dx;
+    ball.y += ball.dy;
+
+
+    // Duvar çarpışmaları
+
+    if(ball.x + ball.r >= canvas.width ||
+       ball.x - ball.r <= 0){
+
+        ball.dx = -ball.dx;
+
+    }
+
+
+    if(ball.y - ball.r <= 0){
+
+        ball.dy = -ball.dy;
+
+    }
+
+
+    // Raket çarpışması
+
+    if(
+        ball.y + ball.r >= paddle.y &&
+        ball.y - ball.r <= paddle.y + paddle.height &&
+        ball.x >= paddle.x &&
+        ball.x <= paddle.x + paddle.width
+    ){
+
+        ball.dy = -Math.abs(ball.dy);
+
+    }
+
+
+    // Tuğla çarpışması
+
+    for(let r=0;r<rows;r++){
+
+        for(let c=0;c<cols;c++){
+
+            let b=bricks[r][c];
+
+            if(b.hp<=0) continue;
+
+
+            if(
+                ball.x > b.x &&
+                ball.x < b.x+brickWidth &&
+                ball.y > b.y &&
+                ball.y < b.y+brickHeight
+            ){
+
+                b.hp--;
+
+                ball.dy=-ball.dy;
+
+
+               if(b.hp===0){
+
+    score+=10;
+
+
+    createParticles(
+        b.x + brickWidth/2,
+        b.y + brickHeight/2,
+        "#00e5ff"
+    );
+
+
+    if(Math.random()<0.25){
+
+        createPowerUp(
+            b.x,
+            b.y
+        );
+
+    }
+
+}
+
+                updateHUD();
+
+                break;
+
+            }
+
+        }
+
+    }
+
+
+    // Top düştü
+
+    if(ball.y-ball.r > canvas.height){
+
+        lives--;
+
+        updateHUD();
+
+
+        if(lives<=0){
+
+            gameOver=true;
+
+            alert(
+                "🎮 Oyun Bitti!\nSkor: "+score
+            );
+
+        }
+        else{
+
+            resetBall();
 
         }
 
@@ -162,192 +478,188 @@ for(let r=0;r<rows;r++){
 
 
 
+// Topu yeniden başlat
 
-if(gameStarted && !paused && !gameOver){
+function resetBall(){
 
+    ball.x=canvas.width/2;
+    ball.y=canvas.height-60;
 
-ballX += dx;
-ballY += dy;
-
-
-
-// duvar
-
-if(
-ballX + ballRadius > canvas.width ||
-ballX - ballRadius < 0
-){
-
-dx=-dx;
+    ball.dx=speed;
+    ball.dy=-speed;
 
 }
 
 
 
-if(ballY-ballRadius<0){
+// Level kontrolü
 
-dy=-dy;
+function checkLevel(){
 
-}
-
-
+    let left=0;
 
 
+    for(let r=0;r<rows;r++){
 
-// paddle
+        for(let c=0;c<cols;c++){
 
-if(
-ballY+ballRadius >= canvas.height-20 &&
-ballX > paddleX &&
-ballX < paddleX+paddleWidth
-){
+            if(bricks[r][c].hp>0){
 
-dy=-dy;
+                left++;
 
-}
+            }
 
+        }
 
-
+    }
 
 
-// tuğla
+    if(left===0){
 
-for(let r=0;r<rows;r++){
+        level++;
 
-for(let c=0;c<cols;c++){
+        speed+=0.5;
 
+        createBricks();
 
-let b=bricks[r][c];
+        resetBall();
 
+        updateHUD();
 
-if(
-b.alive &&
-ballX>b.x &&
-ballX<b.x+b.width &&
-ballY>b.y &&
-ballY<b.y+b.height
-){
-
-
-dy=-dy;
-
-b.alive=false;
-
-score++;
-
-scoreText.innerHTML=score;
-
-
-}
-
-}
+    }
 
 }
 
 
 
+// Çizim döngüsü
+
+function gameLoop(){
+
+    ctx.clearRect(
+        0,
+        0,
+        canvas.width,
+        canvas.height
+    );
 
 
-// düşme
+    drawBricks();
 
-if(ballY > canvas.height){
+    drawPaddle();
 
+    drawBall();
 
-lives--;
+drawParticles();
+drawPowerUps();
+    if(gameStarted && !paused && !gameOver){
 
+        moveBall();
 
-if(lives<=0){
+        checkLevel();
 
-gameOver=true;
-
-alert("Oyun Bitti! Skor: "+score);
-
-}
-
-
-else{
+    }
 
 
-ballX=240;
-ballY=250;
-
-dx=3;
-dy=-3;
-
-
-}
-
-
-}
-
-
-
+    requestAnimationFrame(gameLoop);
 
 }
 
 
 
-requestAnimationFrame(draw);
-
-
-}
-
-
-
-
+// Başlat
 
 function startGame(){
 
-gameStarted=true;
+    if(gameStarted) return;
 
-playButton.disabled=true;
 
-playButton.innerHTML="Oyun Başladı";
+    gameStarted=true;
+
+    paused=false;
+
+    gameOver=false;
+
+    playButton.textContent="🎮 Oynanıyor";
 
 }
 
 
 
-
+// Yeniden başlat
 
 function restartGame(){
 
+    score=0;
 
-score=0;
+    lives=3;
 
-lives=3;
+    level=1;
 
-
-scoreText.innerHTML=score;
-
-
-ballX=240;
-ballY=250;
+    speed=4;
 
 
-dx=3;
-dy=-3;
+    createBricks();
+
+    resetBall();
+
+    updateHUD();
 
 
-gameOver=false;
+    gameStarted=false;
 
-paused=false;
+    gameOver=false;
 
-gameStarted=false;
-
-
-createBricks();
+    paused=false;
 
 
-playButton.disabled=false;
-
-playButton.innerHTML="Başlat";
-
+    playButton.textContent="▶ Oyna";
 
 }
 
 
 
+updateHUD();
+
+gameLoop();
+function collectPowerUp(type){
+
+    if(type==="bigPaddle"){
+
+        paddle.width = 140;
+
+        setTimeout(()=>{
+
+            paddle.width = 90;
+
+        },8000);
+
+    }
 
 
-draw();
+    if(type==="extraLife"){
+
+        if(lives<5)
+            lives++;
+
+    }
+
+
+    if(type==="slowBall"){
+
+        ball.dx *= 0.7;
+        ball.dy *= 0.7;
+
+    }
+
+
+    if(type==="coin"){
+
+        score += 50;
+
+    }
+
+
+    updateHUD();
+
+}

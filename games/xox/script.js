@@ -24,6 +24,8 @@ function play(){
         cells.forEach(c=>c.removeEventListener("click",play));
         return;
     }
+    addXP(15);
+addCoins(20);
 
     if([...cells].every(c=>c.textContent!="")){
         statusText.textContent="Berabere!";

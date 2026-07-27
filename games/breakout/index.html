@@ -1,22 +1,45 @@
 <!DOCTYPE html>
-<html>
+<html lang="tr">
 <head>
-    <title>NovaPlay - Breakout</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NovaPlay | Breakout 2.0</title>
+
     <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-<h1>🧱 Breakout</h1>
+    <h1>🧱 Breakout 2.0</h1>
 
-<canvas id="game" width="480" height="320"></canvas>
+    <div class="hud">
 
-<p>Skor: <span id="score">0</span></p>
+        <div>⭐ Skor: <span id="score">0</span></div>
 
-<button id="playButton" onclick="startGame()">Oyna</button>
-<button onclick="restartGame()">Yeniden Başlat</button>
+        <div>❤️ Can: <span id="lives">3</span></div>
 
-<script src="script.js"></script>
+        <div>📈 Level: <span id="level">1</span></div>
+
+    </div>
+
+   <canvas
+    id="game"
+    width="400"
+    height="500">
+</canvas>
+    <div class="buttons">
+
+        <button id="playButton" onclick="startGame()">
+            ▶ Oyna
+        </button>
+
+        <button onclick="restartGame()">
+            🔄 Yeniden Başlat
+        </button>
+
+    </div>
+
+    <script src="script.js"></script>
 
 </body>
 </html>

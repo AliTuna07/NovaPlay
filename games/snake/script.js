@@ -43,7 +43,7 @@ function startGame(){
 
    clearInterval(game);
 
-speed = 100;
+speed = 90;
 
 game = setInterval(draw, speed);
     gameOverScreen.style.display="none";
@@ -134,6 +134,11 @@ function draw(){
     score++;
 
     scoreText.textContent=score;
+    if(typeof rewardPlayer==="function"){
+
+    rewardPlayer(1,2);
+
+}
 createParticles(
     food.x + box/2,
     food.y + box/2

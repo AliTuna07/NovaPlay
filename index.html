@@ -13,6 +13,7 @@
 <meta name="author" content="NovaPlay">
 
 </head>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NovaPlay</title>
@@ -47,7 +48,15 @@
 </head>
 
 <body>
+    <div class="topBar">
+
     
+
+    <a href="shop.html">
+        <button class="shopButton">🛒 NovaShop</button>
+    </a>
+
+</div>
 <div class="profile-box">
     <div id="avatar">👤</div>
 
@@ -60,6 +69,7 @@
         </div>
 
         <span id="levelText">⭐ Seviye 1</span>
+        <span id="coinText">🪙 0</span>
     </div>
 
     <button id="profileBtn">⚙️</button>
@@ -138,16 +148,14 @@
         <h3>Avatar Seç</h3>
 
         <div class="avatars">
-            <button onclick="selectAvatar('🐺')">🐺</button>
-            <button onclick="selectAvatar('🤖')">🤖</button>
-            <button onclick="selectAvatar('🐱')">🐱</button>
-            <button onclick="selectAvatar('🦊')">🦊</button>
-            <button onclick="selectAvatar('👾')">👾</button>
-        </div>
+            <h3>Avatarlarım</h3>
+
+<div id="avatarInventory" class="avatars"></div>
 
         <button onclick="saveProfile()">Kaydet</button>
     </div>
 </div>
+<script src="common.js"></script>
 <script src="script.js"></script>
 <div id="notification" class="notification">
     <span id="notificationText"></span>

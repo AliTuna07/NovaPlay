@@ -1,9 +1,4 @@
-// ==========================
-// NOVA XP SİSTEMİ
-// ==========================
 
-let xp = Number(localStorage.getItem("novaXP")) || 0;
-let level = Number(localStorage.getItem("novaLevel")) || 1;
 
 function getRequiredXP(level){
     return level * 100;
@@ -136,6 +131,10 @@ if (!confettiCtx) return;
 }
 
 window.addEventListener("load", updateProfile);
+
+
+
+
 // Oyun kartları
 const cards = document.querySelectorAll(".game-card");
 
@@ -217,7 +216,27 @@ if (oldName) {
 let selectedAvatar = "👤";
 
 function selectAvatar(avatar) {
-    selectedAvatar = avatar;
+
+    const avatarIds = {
+        "🐺": "avatarWolf",
+        "🤖": "avatarRobot",
+        "🐱": "avatarCat",
+        "🦊": "avatarFox",
+        "👾": "avatarAlien"
+    };
+
+    // Varsayılan avatar her zaman kullanılabilir
+    if (avatar === "👤") {
+        selectedAvatar = avatar;
+        return;
+    }
+
+    // Satın alınmış mı?
+    if (localStorage.getItem(avatarIds[avatar]) === "true") {
+        selectedAvatar = avatar;
+    } else {
+        alert("❌ Bu avatarı önce NovaShop'tan satın almalısın!");
+    }
 }
 
 
@@ -228,7 +247,69 @@ function saveAvatar() {
 
     localStorage.setItem("avatar", selectedAvatar);
 }
+function loadAvatarInventory(){
 
+    const inventory = document.getElementById("avatarInventory");
+
+    if(!inventory) return;
+
+    inventory.innerHTML = "";
+
+    const avatars = [
+
+        {
+            icon:"👤",
+            id:null
+        },
+
+        {
+            icon:"🐺",
+            id:"avatarWolf"
+        },
+
+        {
+            icon:"🤖",
+            id:"avatarRobot"
+        },
+
+        {
+            icon:"🐱",
+            id:"avatarCat"
+        },
+
+        {
+            icon:"🦊",
+            id:"avatarFox"
+        },
+
+        {
+            icon:"👾",
+            id:"avatarAlien"
+        }
+
+    ];
+
+    avatars.forEach(a=>{
+
+        if(a.id && localStorage.getItem(a.id)!=="true"){
+            return;
+        }
+
+        const btn=document.createElement("button");
+
+        btn.textContent=a.icon;
+
+        btn.onclick=()=>{
+
+            selectedAvatar=a.icon;
+
+        };
+
+        inventory.appendChild(btn);
+
+    });
+
+}
 
 const oldAvatar = localStorage.getItem("avatar");
 
@@ -250,79 +331,8 @@ function showNotification(message){
 
 }
 
-window.addEventListener("resize", resizeConfettiCanvas);
-resizeConfettiCanvas();
 
-{
-
-    const pieces = [];
-
-    const colors = [
-        "#00ff88",
-        "#00c8ff",
-        "#ffd700",
-        "#ff4d4d",
-        "#ffffff",
-        "#ff66ff"
-    ];
-
-    for(let i = 0; i < 180; i++){
-
-        pieces.push({
-            x: Math.random() * confettiCanvas.width,
-            y: -20,
-            size: Math.random() * 8 + 4,
-            speed: Math.random() * 4 + 3,
-            drift: (Math.random() - 0.5) * 4,
-            color: colors[Math.floor(Math.random() * colors.length)],
-            rotation: Math.random() * 360
-        });
-
-    }
-
-    function animate(){
-
-        confettiCtx.clearRect(0,0,confettiCanvas.width,confettiCanvas.height);
-
-        pieces.forEach(p=>{
-
-            p.y += p.speed;
-            p.x += p.drift;
-            p.rotation += 8;
-
-            confettiCtx.save();
-
-            confettiCtx.translate(p.x,p.y);
-            confettiCtx.rotate(p.rotation*Math.PI/180);
-
-            confettiCtx.fillStyle = p.color;
-            confettiCtx.fillRect(
-                -p.size/2,
-                -p.size/2,
-                p.size,
-                p.size
-            );
-
-            confettiCtx.restore();
-
-        });
-
-        for(let i=pieces.length-1;i>=0;i--){
-
-            if(pieces[i].y > confettiCanvas.height+20){
-                pieces.splice(i,1);
-            }
-
-        }
-
-        if(pieces.length>0){
-            requestAnimationFrame(animate);
-        }else{
-            confettiCtx.clearRect(0,0,confettiCanvas.width,confettiCanvas.height);
-        }
-
-    }
-
-    animate();
-
-}
+window.addEventListener("load", () => {
+    updateProfile();
+    updateCoins();
+});

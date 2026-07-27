@@ -1,0 +1,175 @@
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+
+    background:#08111f;
+    color:white;
+    font-family:Arial, sans-serif;
+
+}
+
+h1{
+
+    text-align:center;
+    margin:25px 0;
+    color:#00f7ff;
+    text-shadow:0 0 15px cyan;
+
+}
+
+.topBar{
+
+    width:90%;
+    max-width:1000px;
+
+    margin:auto;
+
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+
+    margin-bottom:30px;
+
+}
+
+#coinBox{
+
+    background:#111;
+
+    border:2px solid gold;
+
+    border-radius:10px;
+
+    padding:12px 20px;
+
+    font-size:22px;
+
+    box-shadow:0 0 15px gold;
+
+}
+
+button{
+
+    padding:10px 20px;
+
+    border:none;
+
+    border-radius:10px;
+
+    background:#00bcd4;
+
+    color:white;
+
+    cursor:pointer;
+
+    font-size:18px;
+
+    transition:.25s;
+
+}
+
+button:hover{
+
+    transform:scale(1.05);
+
+}
+
+.shop{
+
+    width:90%;
+    max-width:1100px;
+
+    margin:auto;
+
+    display:grid;
+
+    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+
+    gap:25px;
+
+}
+
+.card{
+
+    background:#121b2e;
+
+    border:2px solid #00f7ff;
+
+    border-radius:15px;
+
+    padding:20px;
+
+    text-align:center;
+
+    box-shadow:0 0 15px rgba(0,255,255,.4);
+
+}
+
+.card h2{
+
+    margin:15px 0;
+
+}
+
+.card p{
+
+    margin-bottom:15px;
+
+}
+
+.price{
+
+    color:gold;
+
+    font-size:20px;
+
+    margin-bottom:15px;
+
+}
+
+.buyBtn{
+
+    width:100%;
+
+}
+
+.owned{
+
+    background:#2ecc71 !important;
+}
+
+@media(max-width:600px){
+
+    .topBar{
+
+        flex-direction:column;
+        gap:15px;
+
+    }
+
+}
+.categoryTitle{
+
+    margin:30px 0 15px;
+
+    color:#00f7ff;
+
+    text-shadow:0 0 10px cyan;
+
+}
+
+.categoryRow{
+
+    display:grid;
+
+    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+
+    gap:25px;
+
+    margin-bottom:40px;
+
+}
