@@ -1,90 +1,155 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { initializeApp } from 
+"https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+
+
 import {
     getFirestore,
     doc,
     setDoc,
-    getDoc,
-    updateDoc
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    getDoc
+} from 
+"https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+
+
 const firebaseConfig = {
+
     apiKey: "AIzaSyAYFP6B_nK5wpsDes8h0bOcyOAcvRNpvfc",
     authDomain: "novaplay-5fc85.firebaseapp.com",
     projectId: "novaplay-5fc85",
     storageBucket: "novaplay-5fc85.firebasestorage.app",
     messagingSenderId: "144086098290",
-    appId: "1:144086098290:web:d36c076f4cce2cc197fdeb",
-    measurementId: "G-059QZBBV6Y"
+    appId: "1:144086098290:web:d36c076f4cce2cc197fdeb"
+
 };
+
+
 
 const app = initializeApp(firebaseConfig);
+
 const db = getFirestore(app);
 
-const createBtn = document.getElementById("createRoom");
-const joinBtn = document.getElementById("joinRoom");
 
-const roomInput = document.getElementById("roomCode");
-const playerInput = document.getElementById("playerName");
+
+const createRoom = document.getElementById("createRoom");
+const joinRoom = document.getElementById("joinRoom");
+const roomCodeInput = document.getElementById("roomCode");
 const status = document.getElementById("status");
 
-createBtn.onclick = async () => {
 
-    const code = Math.random().toString(36).substring(2,8).toUpperCase();
 
-   await setDoc(doc(db,"odalar",code),{
+createRoom.onclick = async () => {
 
-    board:["","","","","","","","",""],
 
-    turn:"X",
+    let code = Math.random()
+.toString(36)
+.substring(2,8)
+.toUpperCase()
+.substring(0,6);
 
-    playerX:playerInput.value || "Oyuncu X",
+    await setDoc(
+        doc(db,"odalar",code),
+        {
 
-    playerO:""
+            playerX:true,
+            playerO:false,
 
-});
+            board:[
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+            ],
 
-    status.innerHTML =
-        "✅ Oda oluşturuldu.<br>Kod: <b>"+code+"</b>";
-localStorage.setItem("roomCode", code);
-setTimeout(() => {
+            turn:"X"
 
-    location.href = "room.html";
+        }
+    );
 
-}, 800);
+
+    localStorage.setItem("roomCode",code);
+    localStorage.setItem("player","X");
+
+
+    location.href="room.html";
+
+
 };
 
-joinBtn.onclick = async ()=>{
 
-    const code = roomInput.value.toUpperCase();
 
-    const ref = doc(db,"rooms",code);
+joinRoom.onclick = async () => {
 
-    const snap = await getDoc(ref);
 
-    
-};
-joinBtn.onclick = async ()=>{
+    let code = roomCodeInput.value
+    .toUpperCase();
 
-    const code = roomInput.value.toUpperCase();
 
-    const ref = doc(db,"odalar",code);
 
-    const snap = await getDoc(ref);
+    if(!code){
 
-    if(!snap.exists()){
+        alert("Oda kodu gir");
 
-        alert("❌ Oda bulunamadı.");
         return;
 
     }
 
-    await updateDoc(ref,{
 
-        playerO: playerInput.value || "Oyuncu O"
 
-    });
+    let roomRef = doc(db,"odalar",code);
+
+    let snap = await getDoc(roomRef);
+
+
+
+    if(!snap.exists()){
+
+        alert("Oda bulunamadı");
+
+        return;
+
+    }
+
+
+
+    let data = snap.data();
+
+
+
+    if(data.playerO){
+
+        alert("Oda dolu");
+
+        return;
+
+    }
+
+
+
+    await setDoc(
+        roomRef,
+        {
+
+            playerO:true
+
+        },
+        {
+            merge:true
+        }
+    );
+
+
 
     localStorage.setItem("roomCode",code);
+    localStorage.setItem("player","O");
+
 
     location.href="room.html";
+
 
 };
