@@ -3,11 +3,9 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/fireba
 import {
     getFirestore,
     doc,
-   getDoc,
-updateDoc
-   
+    getDoc,
+    onSnapshot
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-
 const firebaseConfig = {
 
     apiKey: "AIzaSyAYFP6B_nK5wpsDes8h0bOcyOAcvRNpvfc",
@@ -37,29 +35,43 @@ roomTitle.textContent =
 "🏠 Oda : " + roomCode;
 async function loadRoom(){
 
-    const ref = doc(db,"rooms",roomCode);
+    const ref = doc(db, "rooms", roomCode);
 
     const snap = await getDoc(ref);
-await updateDoc(ref,{
 
-    playerO: playerInput.value
-
-});
     if(!snap.exists()){
 
-        status.textContent =
-        "❌ Oda bulunamadı.";
-
+        status.textContent = "❌ Oda bulunamadı.";
         return;
 
     }
 
-    status.textContent =
-    "✅ Rakip bekleniyor...";
+    status.textContent = "⌛ Rakip bekleniyor...";
 
 }
 
 loadRoom();
+const roomRef = doc(db, "rooms", roomCode);
+
+onSnapshot(roomRef, (snap) => {
+
+    if (!snap.exists()) {
+        return;
+    }
+
+    const room = snap.data();
+
+    if (room.playerO !== "") {
+
+        status.textContent = "🎉 Rakip bağlandı!";
+
+    } else {
+
+        status.textContent = "⌛ Rakip bekleniyor...";
+
+    }
+
+});
 const roomRef = doc(db, "rooms", roomCode);
 
 onSnapshot(roomRef, (snap)=>{

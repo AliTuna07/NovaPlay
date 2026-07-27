@@ -30,17 +30,17 @@ createBtn.onclick = async () => {
 
     const code = Math.random().toString(36).substring(2,8).toUpperCase();
 
-    await setDoc(doc(db,"rooms",code),{
+   await setDoc(doc(db,"odalar",code),{
 
-        board:["","","","","","","","",""],
+    board:["","","","","","","","",""],
 
-        turn:"X",
+    turn:"X",
 
-        playerX:playerInput.value,
+    playerX:playerInput.value || "Oyuncu X",
 
-        playerO:""
+    playerO:""
 
-    });
+});
 
     status.innerHTML =
         "✅ Oda oluşturuldu.<br>Kod: <b>"+code+"</b>";
@@ -60,20 +60,31 @@ joinBtn.onclick = async ()=>{
 
     const snap = await getDoc(ref);
 
+    
+};
+joinBtn.onclick = async ()=>{
+
+    const code = roomInput.value.toUpperCase();
+
+    const ref = doc(db,"odalar",code);
+
+    const snap = await getDoc(ref);
+
     if(!snap.exists()){
 
-    alert("Oda bulunamadı.");
-    return;
+        alert("❌ Oda bulunamadı.");
+        return;
 
-}
+    }
 
-await updateDoc(ref, {
+    await updateDoc(ref,{
 
-    playerO: playerInput.value
+        playerO: playerInput.value || "Oyuncu O"
 
-});
+    });
 
-localStorage.setItem("roomCode", code);
+    localStorage.setItem("roomCode",code);
 
-location.href = "room.html";
+    location.href="room.html";
+
 };
