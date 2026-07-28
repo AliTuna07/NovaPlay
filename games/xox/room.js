@@ -37,6 +37,19 @@ console.log("Oda:", roomCode);
 
 
 const roomRef = doc(db, "odalar", roomCode);
+if (player === "X") {
+
+    updateDoc(roomRef, {
+        playerXOnline: true
+    });
+
+} else {
+
+    updateDoc(roomRef, {
+        playerOOnline: true
+    });
+
+}
 
 
 const cells = document.querySelectorAll(".cell");
@@ -44,7 +57,17 @@ const status = document.getElementById("status");
 const roomTitle = document.getElementById("roomTitle");
 const rematchBtn = document.getElementById("rematchBtn");
 const winCount = document.getElementById("winCount");
+const playerXAvatar = document.getElementById("playerXAvatar");
+const playerXName = document.getElementById("playerXName");
+const playerXLevel = document.getElementById("playerXLevel");
+const playerXCoins = document.getElementById("playerXCoins");
+const playerXWins = document.getElementById("playerXWins");
 
+const playerOAvatar = document.getElementById("playerOAvatar");
+const playerOName = document.getElementById("playerOName");
+const playerOLevel = document.getElementById("playerOLevel");
+const playerOCoins = document.getElementById("playerOCoins");
+const playerOWins = document.getElementById("playerOWins");
 winCount.textContent =
 "🏆 Galibiyet: " + (localStorage.getItem("novaWins") || 0);
 rematchBtn.onclick = async ()=>{
@@ -86,8 +109,51 @@ onSnapshot(roomRef, async (snapshot)=>{
 
     }
 
+if (!gameData.playerO) {
 
+    status.textContent = "⌛ Rakip bekleniyor...";
+    return;
+
+}
     gameData = snapshot.data();
+    if(gameData.playerX){
+
+    playerXAvatar.textContent = gameData.playerX.avatar;
+    playerXName.textContent = gameData.playerX.username;
+    playerXLevel.textContent = "⭐ Seviye " + gameData.playerX.level;
+    playerXCoins.textContent = "🪙 " + gameData.playerX.coins;
+    playerXWins.textContent = "🏆 " + gameData.playerX.wins + " Galibiyet";
+
+}
+
+if(gameData.playerO){
+
+    playerOAvatar.textContent = gameData.playerO.avatar;
+    playerOName.textContent = gameData.playerO.username;
+    playerOLevel.textContent = "⭐ Seviye " + gameData.playerO.level;
+    playerOCoins.textContent = "🪙 " + gameData.playerO.coins;
+    playerOWins.textContent = "🏆 " + gameData.playerO.wins + " Galibiyet";
+
+}
+    // Rakip ayrıldı mı?
+
+if (player === "X" && gameData.playerO && !gameData.playerOOnline) {
+
+    status.textContent = "❌ Rakip oyundan ayrıldı.";
+    gameFinished = true;
+    rematchBtn.style.display = "none";
+    return;
+
+}
+
+if (player === "O" && !gameData.playerXOnline) {
+
+    status.textContent = "❌ Rakip oyundan ayrıldı.";
+    gameFinished = true;
+    rematchBtn.style.display = "none";
+    return;
+
+}
     if(gameData.rematchX && gameData.rematchO){
 
     await updateDoc(roomRef,{
@@ -136,7 +202,9 @@ onSnapshot(roomRef, async (snapshot)=>{
 
     });
 console.log("Güncel tahta:", gameData.board);
-checkWinner();
+if(player === "X"){
+    checkWinner();
+}
 
 
 if(!gameFinished){
@@ -200,6 +268,7 @@ cells.forEach((cell,index)=>{
 
 
         newBoard[index] = player;
+        cells[index].textContent = player;
 
 
 
@@ -347,3 +416,20 @@ function giveReward(winner){
     );
 
 }
+window.addEventListener("beforeunload", () => {
+
+    if (player === "X") {
+
+        updateDoc(roomRef, {
+            playerXOnline: false
+        });
+
+    } else {
+
+        updateDoc(roomRef, {
+            playerOOnline: false
+        });
+
+    }
+
+});

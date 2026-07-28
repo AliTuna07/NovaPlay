@@ -326,3 +326,25 @@ button:hover{
     0 0 10px purple;
 
 }
+.back-button{
+    text-align:center;
+    margin-top:20px;
+}
+
+.back-button a{
+
+    display:inline-block;
+
+    background:#00c8ff;
+
+    color:white;
+
+    text-decoration:none;
+
+    padding:12px 24px;
+
+    border-radius:12px;
+
+    font-weight:bold;
+
+}
