@@ -1,0 +1,403 @@
+* {
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+
+body {
+
+    margin: 0;
+
+    min-height: 100vh;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    justify-content: center;
+
+    background:
+    radial-gradient(circle at top, #243b55, #141e30);
+
+    color: white;
+
+}
+
+
+
+h1 {
+
+    font-size: 42px;
+
+    margin-bottom: 15px;
+
+}
+
+
+
+.score-box {
+
+    background: rgba(255,255,255,0.15);
+
+    padding: 10px 25px;
+
+    border-radius: 12px;
+
+    font-size: 22px;
+
+    margin-bottom: 20px;
+
+}
+
+
+
+#board {
+
+    width: min(90vw, 420px);
+
+    height: min(90vw, 420px);
+
+    background: rgba(255,255,255,0.12);
+
+    border-radius: 15px;
+
+    padding: 10px;
+
+    display: grid;
+
+    grid-template-columns: repeat(4,1fr);
+
+    gap: 10px;
+
+}
+
+
+
+.tile {
+
+    aspect-ratio: 1;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    border-radius: 10px;
+
+    background: rgba(255,255,255,0.1);
+
+    font-size: clamp(20px,5vw,40px);
+
+    font-weight: bold;
+
+    transition: 0.15s;
+
+}
+
+
+
+.tile-2 {
+    background: #eee4da;
+    color: #333;
+}
+
+
+.tile-4 {
+    background: #ede0c8;
+    color: #333;
+}
+
+
+.tile-8 {
+    background: #f2b179;
+}
+
+
+.tile-16 {
+    background: #f59563;
+}
+
+
+.tile-32 {
+    background: #f67c5f;
+}
+
+
+.tile-64 {
+    background: #f65e3b;
+}
+
+
+.tile-128 {
+    background: #edcf72;
+}
+
+
+.tile-256 {
+    background: #edcc61;
+}
+
+
+.tile-512 {
+    background: #edc850;
+}
+
+
+.tile-1024 {
+    background: #edc53f;
+}
+
+
+.tile-2048 {
+    background: #edc22e;
+    box-shadow: 0 0 20px gold;
+}
+
+
+
+button {
+
+    margin-top: 15px;
+
+    padding: 12px 25px;
+
+    border: none;
+
+    border-radius: 10px;
+
+    cursor: pointer;
+
+    font-size: 18px;
+
+    background: white;
+
+    color: #222;
+
+}
+
+
+
+button:hover {
+
+    transform: scale(1.05);
+
+}
+
+
+
+@media(max-width:500px){
+
+    h1 {
+
+        font-size: 32px;
+
+    }
+
+
+    button {
+
+        font-size: 16px;
+
+    }
+
+}
+@keyframes tilePop {
+
+    0% {
+        transform: scale(0.5);
+    }
+
+
+    100% {
+        transform: scale(1);
+    }
+
+}
+
+
+
+@keyframes tileMerge {
+
+    0% {
+        transform: scale(1);
+    }
+
+
+    50% {
+        transform: scale(1.2);
+    }
+
+
+    100% {
+        transform: scale(1);
+    }
+
+}
+.confetti {
+
+    position: fixed;
+
+    width: 10px;
+
+    height: 10px;
+
+    background: white;
+
+    animation: fall linear forwards;
+
+    pointer-events: none;
+
+}
+
+
+
+@keyframes fall {
+
+
+    from {
+
+        transform:
+        translateY(0);
+
+    }
+
+
+    to {
+
+        transform:
+        translateY(100vh)
+        rotate(720deg);
+
+    }
+
+}
+#gameOverScreen {
+
+    position: fixed;
+
+    inset: 0;
+
+    background: rgba(0,0,0,0.7);
+
+    display: none;
+
+    align-items: center;
+
+    justify-content: center;
+
+    z-index: 10;
+
+}
+
+
+
+.game-over-box {
+
+    background: #222;
+
+    padding: 30px;
+
+    border-radius: 20px;
+
+    text-align: center;
+
+    box-shadow: 0 0 30px black;
+
+}
+
+
+
+.game-over-box h2 {
+
+    font-size: 32px;
+
+}
+
+
+
+.game-over-box p {
+
+    font-size: 22px;
+
+}
+.appear {
+
+    animation: appearTile 150ms ease;
+
+}
+
+
+
+.merge {
+
+    animation: mergeTile 200ms ease;
+
+}
+
+
+
+@keyframes appearTile {
+
+
+    from {
+
+        transform: scale(0);
+
+        opacity: 0;
+
+    }
+
+
+    to {
+
+        transform: scale(1);
+
+        opacity: 1;
+
+    }
+
+}
+
+
+
+@keyframes mergeTile {
+
+
+    0% {
+
+        transform: scale(1);
+
+    }
+
+
+    50% {
+
+        transform: scale(1.15);
+
+    }
+
+
+    100% {
+
+        transform: scale(1);
+
+    }
+
+}
+.tile {
+
+    transition:
+    transform 0.15s ease,
+    opacity 0.15s ease;
+
+}
+#board{
+    position:relative;
+}
+
+.tile{
+    position:relative;
+}

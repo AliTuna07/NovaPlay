@@ -867,3 +867,17 @@ button:hover {
     }
 
 }
+.about{
+    max-width:900px;
+    margin:60px auto;
+    padding:25px;
+    background:#15152e;
+    border-radius:18px;
+    color:white;
+    line-height:1.7;
+}
+
+.about h2{
+    color:#00d4ff;
+    margin-bottom:15px;
+}

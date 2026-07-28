@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>NovaPlay 2048</title>
+
+<link rel="stylesheet" href="style.css">
+
+</head>
+
+
+<body>
+
+
+<h1>🔢 2048</h1>
+
+
+<div class="score-box">
+    Skor:
+    <span id="score">0</span>
+</div>
+
+
+<div id="board"></div>
+<div id="gameOverScreen">
+
+    <div class="game-over-box">
+
+        <h2>🎮 Oyun Bitti!</h2>
+
+        <p>
+            Skor:
+            <span id="finalScore">0</span>
+        </p>
+
+        <p>
+            En Yüksek:
+            <span id="finalHighScore">0</span>
+        </p>
+
+
+        <button onclick="restartGame()">
+            🔄 Tekrar Oyna
+        </button>
+
+
+        <a href="../../index.html">
+
+            <button>
+                🏠 Ana Sayfa
+            </button>
+
+        </a>
+
+
+    </div>
+
+</div>
+
+
+<button onclick="restartGame()">
+🔄 Yeniden Başlat
+</button>
+
+
+<a href="../../index.html">
+
+<button>
+🏠 Ana Sayfa
+</button>
+
+</a>
+
+
+
+<script src="config.js"></script>
+<script src="board.js"></script>
+<script src="engine.js"></script>
+<script src="ui.js"></script>
+<script src="storage.js"></script>
+<script src="animation.js"></script>
+<script src="achievements.js"></script>
+<script src="leaderboard.js"></script>
+<script src="sound.js"></script>
+<script src="themes.js"></script>
+<script src="effects.js"></script>
+<script src="input.js"></script>
+<script src="script.js"></script>
+
+
+</body>
+
+</html>
