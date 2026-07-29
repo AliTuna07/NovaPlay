@@ -609,3 +609,44 @@ a{
     0 0 25px rgba(0,255,100,0.5);
 
 }
+.king{
+    position: relative;
+}
+
+.whiteKing::after{
+    content: "♚";
+    color: gold;
+    font-size: 20px;
+    position: absolute;
+}
+
+.blackKing::after{
+    content: "♔";
+    color: white;
+    font-size: 20px;
+    position: absolute;
+}
+.whiteKing{
+    box-shadow: 0 0 0 4px gold;
+}
+
+.blackKing{
+    box-shadow: 0 0 0 4px #00c8ff;
+}
+.captureEffect{
+    animation: capture .35s forwards;
+}
+
+@keyframes capture{
+
+    0%{
+        transform:scale(1);
+        opacity:1;
+    }
+
+    100%{
+        transform:scale(0);
+        opacity:0;
+    }
+
+}

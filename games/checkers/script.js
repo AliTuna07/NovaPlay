@@ -227,11 +227,13 @@ square.dataset.col = c;
                 p.classList.add(piece);
 
 
-                if(piece.includes("King")){
+               if (piece === "whiteKing") {
+    p.classList.add("king", "whiteKing");
+}
 
-                    p.classList.add("king");
-
-                }
+if (piece === "blackKing") {
+    p.classList.add("king", "blackKing");
+}
 
 
 
@@ -310,159 +312,92 @@ setTimeout(()=>{
 }
 
 
-let fromSquare =
-document.querySelector(
-`.square[data-row="${selected.row}"][data-col="${selected.col}"]`
-);
+
 // Hamle yap
 
-function makeMove(move){
+function makeMove(move) {
 
+    let piece = game[selected.row][selected.col];
 
-    let piece =
-    game[selected.row][selected.col];
+    // Taşı taşı
+    game[move.row][move.col] = piece;
+    game[selected.row][selected.col] = null;
 
-
-    game[move.row][move.col]=piece;
-    let movedPiece =
-game[move.row][move.col];
-
-setTimeout(()=>{
-
-    if(movedPiece){
-
-        movedPiece.classList.add("moving");
-
+    // Şah olma
+    if (game[move.row][move.col] === "white" && move.row === 0) {
+        game[move.row][move.col] = "whiteKing";
     }
 
-},10);
+    if (game[move.row][move.col] === "black" && move.row === 7) {
+        game[move.row][move.col] = "blackKing";
+    }
 
+    // Taş yeme
+   if (move.capture) {
 
-    game[selected.row][selected.col]=null;
-
-
-
-    if(move.capture){
-
-    let capturedSquare =
-    document.querySelector(
-    `.square[data-row="${move.capturedRow}"][data-col="${move.capturedCol}"]`
+    const capturedSquare = document.querySelector(
+        `.square[data-row="${move.capturedRow}"][data-col="${move.capturedCol}"]`
     );
 
+    const capturedPiece = capturedSquare?.querySelector(".piece");
 
-    if(capturedSquare){
+    if (capturedPiece) {
 
-        let capturedPiece =
-        capturedSquare.querySelector(".piece");
+        capturedPiece.classList.add("captureEffect");
 
+        setTimeout(() => {
 
-        if(capturedPiece){
+            game[move.capturedRow][move.capturedCol] = null;
 
-            capturedPiece.classList.add("captureEffect");
+            selected = {
+                row: move.row,
+                col: move.col
+            };
 
+            getMoves(move.row, move.col);
 
-            setTimeout(()=>{
+            const captureMoves = moves.filter(m => m.capture);
 
-                game[move.capturedRow][move.capturedCol]=null;
-
+            if (captureMoves.length > 0) {
+                moves = captureMoves;
                 drawBoard();
+                return;
+            }
 
-            },350);
+            finishTurn();
 
+        },350);
 
-            return;
-
-        }
-
+        return;
     }
-
-
-    game[move.capturedRow][move.capturedCol]=null;
-
+game[move.capturedRow][move.capturedCol] = null;
+finishTurn();
+return;
 }
 
+    // Sıra değiştir
+   
+    finishTurn();
+}
+function finishTurn(){
 
-    // şah yapma
-
-    if(
-        game[move.row][move.col]==="white" &&
-        move.row===0
-    ){
-
-        game[move.row][move.col]="whiteKing";
-
-    }
-
-
-
-    if(
-        game[move.row][move.col]==="black" &&
-        move.row===7
-    ){
-
-        game[move.row][move.col]="blackKing";
-
-    }
-
-
-
-    // tekrar yeme kontrolü
-
-    if(move.capture){
-
-
-        selected={
-            row:move.row,
-            col:move.col
-        };
-
-
-        getMoves(move.row,move.col);
-
-
-        moves=moves.filter(m=>m.capture);
-
-
-
-        if(moves.length>0){
-
-            drawBoard();
-            return;
-
-        }
-
-
-    }
-
-
-
-    selected=null;
-    moves=[];
-
-
+    selected = null;
+    moves = [];
 
     currentPlayer =
-    currentPlayer==="white"
-    ? "black"
-    : "white";
-
+        currentPlayer === "white"
+        ? "black"
+        : "white";
 
     document.getElementById("status").textContent =
-    currentPlayer==="white"
-    ? "⚪ Sıra: Beyaz"
-    : "⚫ Sıra: Siyah";
-
-
+        currentPlayer === "white"
+        ? "⚪ Sıra: Beyaz"
+        : "⚫ Sıra: Siyah";
 
     checkGameOver();
-
     drawBoard();
 
-
 }
-
-
-
 
 function checkGameOver(){
 
