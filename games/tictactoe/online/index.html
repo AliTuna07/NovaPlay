@@ -6,7 +6,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>NovaPlay | Online XOX</title>
+<title>NovaPlay Online XOX</title>
 
 <link rel="stylesheet" href="style.css">
 
@@ -15,46 +15,63 @@
 
 <body>
 
+
+<div class="container">
+
+
 <h1>🌐 Online XOX</h1>
 
+<p>Rakibinle çevrimiçi oyna</p>
 
-<div class="menu">
-<button id="randomMatch">
+
+
+<div class="profile-box">
+
+<input id="username" placeholder="Kullanıcı adı">
+
+</div>
+
+
+
+<div class="buttons">
+    <button id="randomMatch">
 🎲 Rastgele Eşleş
 </button>
+
+
 <button id="createRoom">
 🏠 Oda Oluştur
 </button>
 
 
-<h3>veya</h3>
-
-
-<input 
-id="roomCode"
-placeholder="Oda kodu gir"
-maxlength="6"
-autocomplete="off"
->
 
 <button id="joinRoom">
 🚪 Odaya Katıl
 </button>
 
 
-<p id="status">
-Bağlanıyor...
-</p>
+</div>
 
+
+
+<div class="join-box">
+
+<input id="roomCode" placeholder="Oda kodu">
 
 </div>
 
 
-<a href="../../index.html">
-⬅️ Ana Menü
-</a>
-<div class="menu">
 
+<p id="status"></p>
+
+
+
+<button onclick="location.href='../index.html'">
+⬅ Geri
+</button>
+
+
+</div>
 
 
 
