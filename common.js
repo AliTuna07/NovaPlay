@@ -2,6 +2,7 @@
 // NOVAPLAY ORTAK SİSTEM
 // XP + COIN + CONFETTI
 // ==========================
+alert("Yeni common.js çalışıyor");
 let xp = 0;
 let level = 1;
 let coins = 0;
