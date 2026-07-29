@@ -11,7 +11,7 @@ updateDoc
 
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-
+let rewardGiven = false;
 
 const roomCode =
 localStorage.getItem("roomCode");
@@ -86,16 +86,26 @@ onSnapshot(roomRef,(snap)=>{
 
 if(gameData.finished){
 
+
     if(gameData.winner==="draw"){
 
         status.textContent =
         "🤝 Berabere!";
 
+
+        giveDrawReward();
+
+
     }else{
+
 
         status.textContent =
         "🏆 Kazanan: "
         + gameData.winner;
+
+
+        giveWinReward(gameData.winner);
+
 
     }
 
@@ -135,6 +145,11 @@ cell.onclick=async()=>{
     if(!gameData) return;
 
 
+    // Oyun bittiyse hamle yapma
+    if(gameData.finished) return;
+
+
+    // Sıra sende değilse
     if(gameData.turn!==side) return;
 
 
@@ -143,6 +158,7 @@ cell.onclick=async()=>{
 
 
 
+    // Dolu kareye basma
     if(gameData.board[index] !== "") return;
 
 
@@ -238,5 +254,98 @@ async function checkWinner(board){
 
 
     }
+
+}
+function giveWinReward(winner){
+
+
+    if(rewardGiven) return;
+
+
+    if(side !== winner) return;
+
+
+    rewardGiven = true;
+
+
+
+    let xp =
+    Number(localStorage.getItem("novaXP")) || 0;
+
+
+    let coins =
+    Number(localStorage.getItem("novaCoins")) || 0;
+
+
+    let wins =
+    Number(localStorage.getItem("novaWins")) || 0;
+
+
+
+    xp += 50;
+
+    coins += 25;
+
+    wins++;
+
+
+
+    localStorage.setItem(
+        "novaXP",
+        xp
+    );
+
+
+    localStorage.setItem(
+        "novaCoins",
+        coins
+    );
+
+
+    localStorage.setItem(
+        "novaWins",
+        wins
+    );
+
+
+
+    alert(
+`🏆 Kazandın!
+
+⭐ +50 XP
+🪙 +25 NovaCoin
+🏅 +1 Galibiyet`
+    );
+
+}
+
+
+
+
+function giveDrawReward(){
+
+
+    if(rewardGiven) return;
+
+
+    rewardGiven=true;
+
+
+
+    let xp =
+    Number(localStorage.getItem("novaXP")) || 0;
+
+
+
+    xp += 10;
+
+
+
+    localStorage.setItem(
+        "novaXP",
+        xp
+    );
+
+
 
 }
