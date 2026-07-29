@@ -2,13 +2,18 @@
 // NOVAPLAY ORTAK SİSTEM
 // XP + COIN + CONFETTI
 // ==========================
+let xp = 0;
+let level = 1;
+let coins = 0;
+function loadNovaData(){
 
-// XP
-let xp = Number(localStorage.getItem("novaXP")) || 0;
-let level = Number(localStorage.getItem("novaLevel")) || 1;
+    xp = Number(localStorage.getItem("novaXP")) || 0;
 
-// Coin
-let coins = Number(localStorage.getItem("novaCoins")) || 0;
+    level = Number(localStorage.getItem("novaLevel")) || 1;
+
+    coins = Number(localStorage.getItem("novaCoins")) || 0;
+
+}
 
 // Gerekli XP
 function getRequiredXP(level){
@@ -201,16 +206,20 @@ function launchConfetti(){
 
 // Sayfa açılınca
 window.addEventListener("load",()=>{
-const avatarBox = document.getElementById("avatar");
 
-const selectedAvatar =
-localStorage.getItem("selectedAvatar");
+    loadNovaData();
 
-if(avatarBox && selectedAvatar){
+    const avatarBox = document.getElementById("avatar");
 
-    avatarBox.textContent = selectedAvatar;
+    const selectedAvatar =
+    localStorage.getItem("selectedAvatar");
 
-}
+    if(avatarBox && selectedAvatar){
+
+        avatarBox.textContent = selectedAvatar;
+
+    }
+
     updateProfile();
     updateCoins();
 
