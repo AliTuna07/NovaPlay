@@ -76,7 +76,7 @@ category:"xp",
 icon:"🌟",
 name:"+250 XP",
 rarity:"Nadir",
-price:500,
+price:600,
 xp:250
 },
 
@@ -98,7 +98,7 @@ category:"frame",
 icon:"⚪",
 name:"Gümüş Çerçeve",
 rarity:"Yaygın",
-price:300
+price:750
 },
 
 {
@@ -107,7 +107,7 @@ category:"frame",
 icon:"🟡",
 name:"Altın Çerçeve",
 rarity:"Nadir",
-price:600
+price:1500
 },
 
 {
@@ -116,7 +116,7 @@ category:"frame",
 icon:"💎",
 name:"Elmas Çerçeve",
 rarity:"Efsane",
-price:1000
+price:3000
 },
 // =====================
 // ARABALAR
