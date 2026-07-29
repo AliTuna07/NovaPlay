@@ -1,11 +1,3 @@
-
-
-
-window.addEventListener("load", updateProfile);
-
-
-
-
 // Oyun kartları
 const cards = document.querySelectorAll(".game-card");
 
@@ -116,7 +108,7 @@ function saveAvatar() {
 
     avatarBox.textContent = selectedAvatar;
 
-    localStorage.setItem("avatar", selectedAvatar);
+    localStorage.setItem("selectedAvatar", avatar);
 }
 function loadAvatarInventory(){
 
@@ -182,7 +174,7 @@ function loadAvatarInventory(){
 
 }
 
-const oldAvatar = localStorage.getItem("avatar");
+const oldAvatar = localStorage.getItem("selectedAvatar");
 
 if (oldAvatar) {
     document.getElementById("avatar").textContent = oldAvatar;
