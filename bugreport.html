@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>NovaPlay | Hata Bildir</title>
+
+    <meta name="description" content="NovaPlay hata bildirim sistemi">
+    <meta name="author" content="NovaPlay">
+
+    <link rel="icon" type="image/png" href="logo.png">
+
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="bugreport.css">
+
+</head>
+
+<body>
+
+    <div class="bg"></div>
+
+    <!-- Üst Menü -->
+   <div class="topBar">
+
+    <a href="index.html">
+        <button class="menuButton">
+            🏠 Ana Menü
+        </button>
+    </a>
+
+</div>
+
+   
+
+    <!-- Logo -->
+    <header>
+
+        <img src="logo.png" class="logo" alt="NovaPlay Logo">
+
+        <h1>🐞 Hata Bildir</h1>
+
+        <p>NovaPlay'i birlikte geliştirelim.</p>
+
+    </header>
+
+    <main class="container">
+
+        <!-- Sol Panel -->
+        <section class="report-panel">
+
+            <div id="loginWarning" class="warning">
+
+                Hata bildirimi gönderebilmek için giriş yapmalısın.
+
+            </div>
+
+            <div class="select-group">
+
+                <label>🎮 Oyun</label>
+
+                <select id="bugGame">
+
+                    <option value="Ana Menü">Ana Menü</option>
+                    <option value="Bomberman">Bomberman</option>
+                    <option value="2048">2048</option>
+                    <option value="Snake">Snake</option>
+                    <option value="Breakout">Breakout</option>
+                    <option value="Flappy Bird">Flappy Bird</option>
+                    <option value="XOX">XOX</option>
+                    <option value="Dama">Dama</option>
+                    <option value="Ping Pong">Ping Pong</option>
+                    <option value="Neon Yarış">Neon Yarış</option>
+
+                </select>
+
+            </div>
+
+            <div class="select-group">
+
+                <label>📂 Tür</label>
+
+                <select id="bugType">
+
+                    <option value="Bug">🐞 Hata</option>
+                    <option value="Suggestion">💡 Özellik Önerisi</option>
+                    <option value="Performance">⚡ Performans</option>
+                    <option value="Graphic">🎨 Grafik</option>
+
+                </select>
+
+            </div>
+
+            <input
+                id="bugTitle"
+                maxlength="80"
+                placeholder="Hata Başlığı">
+
+            <textarea
+                id="bugDescription"
+                maxlength="1200"
+                placeholder="Hatayı ayrıntılı şekilde açıkla..."></textarea>
+
+            <button
+                id="sendBug"
+                class="send-btn">
+
+                Gönder
+
+            </button>
+
+        </section>
+                <!-- Sağ Panel -->
+        <section class="reports-panel">
+
+            <div class="reports-header">
+
+                <h2>🐞 Son Bildirimler</h2>
+
+                <input
+                    id="searchBug"
+                    type="text"
+                    placeholder="🔍 Hata ara...">
+
+            </div>
+
+            <div id="bugList"></div>
+
+        </section>
+
+    </main>
+
+    <!-- Bildirim -->
+    <div id="notification" class="notification">
+        <span id="notificationText"></span>
+    </div>
+
+    <!-- Konfeti -->
+    <canvas id="confettiCanvas"></canvas>
+
+    <!-- Scriptler -->
+    <script src="common.js"></script>
+    <script src="bugreport.js"></script>
+
+</body>
+
+</html>
