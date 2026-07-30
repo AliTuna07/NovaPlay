@@ -162,11 +162,12 @@ function loadAvatarInventory(){
 
         btn.textContent=a.icon;
 
-        btn.onclick=()=>{
+btn.onclick=()=>{
 
-            selectedAvatar=a.icon;
+    selectedAvatar = a.icon;
+    saveAvatar();
 
-        };
+};
 
         inventory.appendChild(btn);
 
@@ -183,6 +184,9 @@ if (oldAvatar) {
 
 
 window.addEventListener("load", () => {
+
     updateProfile();
     updateCoins();
+    loadAvatarInventory();
+
 });

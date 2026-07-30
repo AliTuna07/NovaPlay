@@ -300,7 +300,13 @@ shop.appendChild(row);
 
 
 function buy(item){
+if(localStorage.getItem(item.id) === "true"){
 
+        alert("Bu ürüne zaten sahipsin!");
+
+        return;
+
+    }
 
 let coins=getCoins();
 
