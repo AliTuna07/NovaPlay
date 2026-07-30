@@ -1,4 +1,5 @@
 import { db } from "./firebase.js";
+import "../common.js";
 
 
 import {
@@ -281,8 +282,7 @@ function giveWinReward(winner){
     Number(localStorage.getItem("novaWins")) || 0;
 
 
-
-    xp += 50;
+addXP(50);
 
     coins += 25;
 
@@ -332,19 +332,7 @@ function giveDrawReward(){
 
 
 
-    let xp =
-    Number(localStorage.getItem("novaXP")) || 0;
-
-
-
-    xp += 10;
-
-
-
-    localStorage.setItem(
-        "novaXP",
-        xp
-    );
+    addXP(10);
 
 
 

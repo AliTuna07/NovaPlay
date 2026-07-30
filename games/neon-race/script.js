@@ -472,17 +472,7 @@ function endGame(){
 
     // XP ekle
 
-    let totalXP =
-    Number(localStorage.getItem("xp")) || 0;
-
-
-    totalXP += xp;
-
-
-    localStorage.setItem(
-        "xp",
-        totalXP
-    );
+    addXP(xp);
 
 
 

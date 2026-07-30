@@ -40,6 +40,9 @@ function updateProfile(){
 // XP Ekle
 function addXP(amount){
 
+    xp = Number(localStorage.getItem("novaXP")) || 0;
+    level = Number(localStorage.getItem("novaLevel")) || 1;
+
     xp += amount;
 
     while(xp >= getRequiredXP(level)){
@@ -50,12 +53,11 @@ function addXP(amount){
         launchConfetti();
     }
 
-    localStorage.setItem("novaXP",xp);
-    localStorage.setItem("novaLevel",level);
+    localStorage.setItem("novaXP", xp);
+    localStorage.setItem("novaLevel", level);
 
     updateProfile();
 }
-
 // Coin Ekle
 function addCoins(amount){
 
@@ -216,16 +218,31 @@ window.addEventListener("load",()=>{
     localStorage.getItem("selectedAvatar");
 
     if(avatarBox && selectedAvatar){
-
         avatarBox.textContent = selectedAvatar;
+    }
+
+
+    if(localStorage.getItem("frameDiamond") === "true"){
+
+        const profile =
+        document.querySelector(".profile-box");
+
+        if(profile){
+            profile.classList.add("diamond-profile");
+        }
 
     }
+
 
     updateProfile();
     updateCoins();
 
 });
 function setAvatar(avatar){
+
+    if(typeof avatar !== "string"){
+        return;
+    }
 
     localStorage.setItem("selectedAvatar", avatar);
 
@@ -236,3 +253,6 @@ function setAvatar(avatar){
     }
 
 }
+window.addXP = addXP;
+window.addCoins = addCoins;
+window.updateProfile = updateProfile;

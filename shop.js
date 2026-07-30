@@ -355,6 +355,13 @@ localStorage.setItem(
 item.id,
 "true"
 );
+if(localStorage.getItem("frameDiamond") === "true"){
+
+    const profileBox = document.querySelector(".profile-box");
+
+    if(profileBox){
+        profileBox.classList.add("diamond-profile");
+    }
 
 }
 if(item.category==="car" && item.price===0){
@@ -382,7 +389,7 @@ alert("🎉 "+item.name+" satın alındı!");
 
 }
 
-
+}
 
 function updateCoins(){
 

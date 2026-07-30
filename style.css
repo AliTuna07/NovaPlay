@@ -301,9 +301,12 @@ button:hover {
     z-index: 999;
 }
 
-.profile-box:hover{
-    transform: translateY(-4px);
-    box-shadow: 0 0 30px #00ff88;
+.diamond-profile:hover{
+
+    box-shadow:
+    0 0 25px #00eaff,
+    0 0 60px #8a2be2 !important;
+
 }
 
 #avatar{
@@ -880,4 +883,134 @@ button:hover {
 .about h2{
     color:#00d4ff;
     margin-bottom:15px;
+}
+.profile-box h1,
+.profile-box h2,
+.profile-box h3{
+    font-size:16px;
+    color:white;
+    margin:0;
+}
+
+.profile-box p{
+    font-size:14px;
+    margin:0;
+}
+
+.profile-box span{
+    color:white;
+}
+.diamond-frame {
+    border: 3px solid #00eaff;
+    box-shadow:
+        0 0 10px #00eaff,
+        0 0 25px #00eaff,
+        0 0 45px #8a2be2;
+
+    animation: diamondGlow 2s infinite alternate;
+}
+
+
+@keyframes diamondGlow {
+
+    from {
+        filter: brightness(1);
+        transform: scale(1);
+    }
+
+    to {
+        filter: brightness(1.4);
+        transform: scale(1.05);
+    }
+
+}
+.diamond-frame {
+    position: relative;
+    overflow: hidden;
+}
+
+
+.diamond-frame::after {
+
+    content:"";
+
+    position:absolute;
+
+    width:100%;
+    height:100%;
+
+    background:
+    linear-gradient(
+        120deg,
+        transparent,
+        rgba(255,255,255,.8),
+        transparent
+    );
+
+    transform:translateX(-100%);
+
+    animation:diamondShine 3s infinite;
+
+}
+
+
+@keyframes diamondShine {
+
+    100% {
+        transform:translateX(100%);
+    }
+
+}
+.diamond-sparkle{
+
+    position:absolute;
+
+    color:#00eaff;
+
+    animation:sparkleMove 1s forwards;
+
+}
+
+
+@keyframes sparkleMove{
+
+    from{
+        opacity:1;
+        transform:translateY(0) scale(1);
+    }
+
+    to{
+        opacity:0;
+        transform:translateY(-40px) scale(2);
+    }
+
+}
+.diamond-profile{
+
+    border:2px solid #00eaff !important;
+
+    box-shadow:
+    0 0 10px #00eaff,
+    0 0 25px #8a2be2,
+    0 0 45px #00eaff;
+
+    animation: diamondProfileGlow 2s infinite alternate;
+
+}
+
+
+@keyframes diamondProfileGlow{
+
+    from{
+        box-shadow:
+        0 0 10px #00eaff,
+        0 0 25px #8a2be2;
+    }
+
+    to{
+        box-shadow:
+        0 0 25px #00eaff,
+        0 0 60px #8a2be2;
+    }
+
 }

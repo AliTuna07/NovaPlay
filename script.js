@@ -57,11 +57,13 @@ function saveProfile() {
             nameInput.value
         );
         localStorage.setItem(
-    "avatar",
+    "selectedAvatar",
     selectedAvatar
 );
 
 document.getElementById("avatar").textContent = selectedAvatar;
+
+
 
         profileModal.style.display = "none";
     }
@@ -108,7 +110,7 @@ function saveAvatar() {
 
     avatarBox.textContent = selectedAvatar;
 
-    localStorage.setItem("selectedAvatar", avatar);
+    localStorage.setItem("selectedAvatar", selectedAvatar);
 }
 function loadAvatarInventory(){
 
@@ -177,7 +179,7 @@ btn.onclick=()=>{
 
 const oldAvatar = localStorage.getItem("selectedAvatar");
 
-if (oldAvatar) {
+if(oldAvatar && oldAvatar.length < 10){
     document.getElementById("avatar").textContent = oldAvatar;
 }
 
@@ -190,3 +192,23 @@ window.addEventListener("load", () => {
     loadAvatarInventory();
 
 });
+function diamondEffect(){
+
+    const avatar=document.getElementById("avatar");
+
+    if(!avatar) return;
+
+    const sparkle=document.createElement("span");
+
+    sparkle.textContent="✦";
+
+    sparkle.className="diamond-sparkle";
+
+    avatar.appendChild(sparkle);
+
+
+    setTimeout(()=>{
+        sparkle.remove();
+    },1000);
+
+}
