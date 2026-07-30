@@ -189,35 +189,40 @@ function breakBox(x, y) {
         y >= ROWS
     ) return;
 
+
     if (world[y][x] === BOX) {
 
         world[y][x] = EMPTY;
-        if(Math.random()<0.35){
-if (
-    x === exitDoor.x &&
-    y === exitDoor.y
-) {
-    exitDoor.revealed = true;
-}
-    powerUps.push({
 
-        x,
-        y,
-        type:POWER_TYPES[
-            Math.floor(Math.random()*POWER_TYPES.length)
-        ]
-        
 
-    });
+        // Kapı kontrolü
+        if (
+            x === exitDoor.x &&
+            y === exitDoor.y
+        ) {
+            exitDoor.revealed = true;
+        }
 
-}
 
-       
+        // Power-up şansı ayrı çalışır
+        if(Math.random() < 0.35){
+
+            powerUps.push({
+
+                x,
+                y,
+
+                type: POWER_TYPES[
+                    Math.floor(Math.random()*POWER_TYPES.length)
+                ]
+
+            });
+
+        }
 
     }
 
 }
-
 function tileAtPixel(px, py) {
 
     return {

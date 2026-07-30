@@ -240,11 +240,11 @@ function damagePlayer(){
 
     if(player.lives<=0){
 
-        game.running=false;
+    game.running = false;
 
-        alert("Oyun Bitti!");
+    showGameOver("💀 Canların Bitti!");
 
-    }
+}
 
 }
 
