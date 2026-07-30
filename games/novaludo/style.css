@@ -1,0 +1,167 @@
+/* =========================
+   NovaPlay - NovaLudo
+   style.css
+========================= */
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    user-select:none;
+}
+
+body{
+
+    font-family:Arial, Helvetica, sans-serif;
+
+    background:
+    radial-gradient(circle at top,#3b82f6,#0f172a 70%);
+
+    color:white;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    min-height:100vh;
+}
+
+#gameContainer{
+
+    width:95%;
+    max-width:950px;
+
+    display:flex;
+    flex-direction:column;
+    gap:20px;
+}
+
+header{
+
+    background:rgba(255,255,255,.08);
+
+    border:2px solid rgba(255,255,255,.15);
+
+    border-radius:18px;
+
+    padding:18px;
+
+    backdrop-filter:blur(12px);
+
+    box-shadow:
+    0 0 25px rgba(0,0,0,.35);
+}
+
+header h1{
+
+    text-align:center;
+
+    margin-bottom:18px;
+
+    font-size:34px;
+
+    color:#ffd54a;
+
+    text-shadow:
+    0 0 12px rgba(255,213,74,.6);
+}
+
+#hud{
+
+    display:flex;
+
+    flex-wrap:wrap;
+
+    justify-content:center;
+
+    align-items:center;
+
+    gap:15px;
+}
+
+#turnBox,
+#diceBox{
+
+    background:#1e293b;
+
+    padding:12px 18px;
+
+    border-radius:12px;
+
+    font-size:18px;
+
+    min-width:170px;
+
+    text-align:center;
+
+    border:2px solid #334155;
+}
+
+button{
+
+    cursor:pointer;
+
+    border:none;
+
+    border-radius:12px;
+
+    padding:12px 22px;
+
+    font-size:17px;
+
+    font-weight:bold;
+
+    color:white;
+
+    background:#2563eb;
+
+    transition:.25s;
+}
+
+button:hover{
+
+    transform:translateY(-2px);
+
+    background:#3b82f6;
+
+    box-shadow:0 0 18px rgba(59,130,246,.5);
+}
+
+button:active{
+
+    transform:scale(.96);
+}
+
+#gameCanvas{
+
+    width:100%;
+
+    max-width:720px;
+
+    aspect-ratio:1;
+
+    margin:auto;
+
+    background:#fafafa;
+
+    border-radius:20px;
+
+    border:5px solid white;
+
+    box-shadow:
+    0 0 35px rgba(0,0,0,.45);
+}
+
+@media(max-width:700px){
+
+    #hud{
+
+        flex-direction:column;
+    }
+
+    button{
+
+        width:100%;
+    }
+
+}

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NovaLudo | NovaPlay</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <div id="gameContainer">
+
+        <header>
+            <h1>🎲 NovaLudo</h1>
+
+            <div id="hud">
+
+                <div id="turnBox">
+                    Sıra:
+                    <span id="currentPlayer">
+                        Kırmızı
+                    </span>
+                </div>
+
+                <div id="diceBox">
+                    🎲
+                    <span id="diceValue">-</span>
+                </div>
+
+                <button id="rollDiceBtn">
+                    Zar At
+                </button>
+
+                <button id="restartBtn">
+                    Yeniden Başlat
+                </button>
+
+            </div>
+
+        </header>
+
+        <canvas id="gameCanvas" width="720" height="720"></canvas>
+
+    </div>
+
+    <script src="board.js"></script>
+    <script src="players.js"></script>
+    <script src="dice.js"></script>
+    <script src="ai.js"></script>
+    <script src="ui.js"></script>
+    <script src="main.js"></script>
+
+</body>
+
+</html>

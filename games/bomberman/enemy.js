@@ -204,13 +204,11 @@ checkLevelComplete();
 function checkLevelComplete() {
 
     for (const enemy of enemies) {
-
         if (!enemy.dead) {
             return;
         }
-
     }
 
-    exitDoor.revealed = true;
-
+    // Artık burada kapıyı görünür yapmıyoruz.
+    // Kapı sadece kendi kutusu patlayınca görünür.
 }
