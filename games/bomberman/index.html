@@ -45,7 +45,26 @@
     </header>
 
     <canvas id="gameCanvas" width="832" height="576"></canvas>
+<div id="gameOverScreen" class="hidden">
 
+    <div class="game-over-box">
+
+        <h1 id="gameOverTitle">⏰ Süre Doldu!</h1>
+
+        <p>🪙 NovaCoin: <span id="gameOverCoins">0</span></p>
+        <p>⭐ XP: <span id="gameOverXP">0</span></p>
+
+        <button onclick="location.reload()">
+            🔄 Tekrar Oyna
+        </button>
+
+        <button onclick="location.href='../../index.html'">
+            🏠 Ana Menü
+        </button>
+
+    </div>
+
+</div>
 </div>
 
 <script src="config.js"></script>

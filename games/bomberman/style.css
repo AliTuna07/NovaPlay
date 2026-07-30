@@ -60,3 +60,73 @@ box-shadow:0 0 25px #00bfff66;
 image-rendering:pixelated;
 
 }
+.hidden{
+    display:none;
+}
+
+#gameOverScreen{
+    position:fixed;
+    inset:0;
+
+    background:rgba(0,0,0,.75);
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    z-index:9999;
+}
+
+#gameOverScreen.hidden{
+    display:none;
+}
+
+.game-over-box{
+    width:420px;
+    max-width:90%;
+
+    background:#13253d;
+
+    border:3px solid #00bfff;
+    border-radius:16px;
+
+    padding:30px;
+
+    text-align:center;
+
+    box-shadow:0 0 35px #00bfff66;
+}
+
+.game-over-box h1{
+    font-size:34px;
+    margin-bottom:20px;
+}
+
+.game-over-box p{
+    font-size:22px;
+    margin:12px 0;
+}
+
+.game-over-box button{
+    width:100%;
+    margin-top:15px;
+    padding:14px;
+
+    font-size:18px;
+    font-weight:bold;
+
+    border:none;
+    border-radius:10px;
+
+    cursor:pointer;
+
+    background:#00bfff;
+    color:white;
+
+    transition:.2s;
+}
+
+.game-over-box button:hover{
+    transform:scale(1.05);
+    background:#29c8ff;
+}

@@ -37,10 +37,12 @@ function update() {
 
         if (game.time > 0) {
             game.time--;
+            
             updateHUD();
         } else {
-            game.running = false;
-        }
+    game.running = false;
+    showGameOver();
+}
     }
 updateBombs(keys);
 updateEnemies();
@@ -174,3 +176,22 @@ function saveRewards() {
 window.addEventListener("beforeunload", () => {
     stopMusic();
 });
+function showGameOver() {
+
+    stopMusic();
+    playSound("lose", 1);
+
+    const screen = document.getElementById("gameOverScreen");
+    const title = document.getElementById("gameOverTitle");
+    const coins = document.getElementById("gameOverCoins");
+    const xp = document.getElementById("gameOverXP");
+
+    if (title) title.textContent = "⏰ Süre Doldu!";
+    if (coins) coins.textContent = player.coins;
+    if (xp) xp.textContent = player.xp;
+
+    if (screen) {
+        screen.classList.remove("hidden");
+        screen.style.display = "flex";
+    }
+}
