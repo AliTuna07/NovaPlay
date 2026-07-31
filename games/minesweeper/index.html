@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NovaMines | NovaPlay</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <!-- Arkaplan -->
+    <div class="background"></div>
+
+    <!-- Oyun -->
+    <div class="game-container">
+
+        <!-- Üst Bilgi -->
+        <header class="top-bar">
+
+            <button id="backBtn" class="menu-btn">
+                ← Ana Menü
+            </button>
+
+            <h1>💣 NovaMines</h1>
+
+        </header>
+
+        <!-- Bilgi Kutuları -->
+        <section class="info-panel">
+
+            <div class="info-box">
+                <span class="label">💣 Mayın</span>
+                <span id="mineCount">10</span>
+            </div>
+
+            <div class="info-box">
+                <span class="label">🚩 Bayrak</span>
+                <span id="flagCount">0</span>
+            </div>
+
+            <div class="info-box">
+                <span class="label">⏱ Süre</span>
+                <span id="timer">0</span>
+            </div>
+
+        </section>
+
+        <!-- Oyun Alanı -->
+        <section id="board" class="board"></section>
+
+        <!-- Alt Butonlar -->
+        <section class="controls">
+
+            <button id="restartBtn" class="control-btn">
+                🔄 Yeniden Başlat
+            </button>
+
+        </section>
+
+        <!-- Sonuç -->
+        <div id="resultPanel" class="result-panel hidden">
+
+            <h2 id="resultTitle"></h2>
+
+            <p id="resultText"></p>
+
+            <button id="playAgainBtn" class="control-btn">
+                Tekrar Oyna
+            </button>
+
+        </div>
+
+    </div>
+
+    <!-- Scriptler -->
+    <script src="../../common.js"></script>
+    <script src="storage.js"></script>
+    <script src="sound.js"></script>
+    <script src="board.js"></script>
+    <script src="ui.js"></script>
+    <script src="script.js"></script>
+
+</body>
+
+</html>
