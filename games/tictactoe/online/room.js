@@ -1,5 +1,5 @@
 import { db } from "./firebase.js";
-import "../common.js";
+
 
 
 import {
@@ -74,6 +74,44 @@ onSnapshot(roomRef,(snap)=>{
 
 
     gameData=snap.data();
+    
+   const playerX = gameData.players?.X;
+const playerO = gameData.players?.O;
+
+updatePlayerCard("X", playerX);
+updatePlayerCard("O", playerO);
+
+if(playerX){
+
+    document.getElementById("playerXName").textContent =
+        playerX.name;
+
+    document.getElementById("playerXLevel").textContent =
+        "⭐ " + playerX.level;
+
+    document.getElementById("playerXCoins").textContent =
+        "🪙 " + playerX.coins;
+
+    document.getElementById("playerXAvatar").textContent =
+        playerX.avatar;
+
+}
+
+if(playerO){
+
+    document.getElementById("playerOName").textContent =
+        playerO.name;
+
+    document.getElementById("playerOLevel").textContent =
+        "⭐ " + playerO.level;
+
+    document.getElementById("playerOCoins").textContent =
+        "🪙 " + playerO.coins;
+
+    document.getElementById("playerOAvatar").textContent =
+        playerO.avatar;
+
+}
 
 
 
@@ -335,5 +373,67 @@ function giveDrawReward(){
     addXP(10);
 
 
+
+}
+function updatePlayerCard(side, player) {
+
+    if (!player) return;
+
+    document.getElementById(`player${side}Name`).textContent =
+        player.name || "Misafir";
+
+    document.getElementById(`player${side}Avatar`).textContent =
+        player.avatar || "👾";
+
+    document.getElementById(`player${side}Rank`).textContent =
+        player.rank || "Nova Oyuncusu";
+
+    document.getElementById(`player${side}Level`).textContent =
+        "⭐ Seviye " + (player.level || 1);
+
+    document.getElementById(`player${side}Coins`).textContent =
+        "🪙 " + (player.coins || 0);
+
+    document.getElementById(`player${side}Wins`).textContent =
+        "🏆 " + (player.wins || 0);
+
+    // XP Çubuğu
+    const requiredXP = (player.level || 1) * 100;
+    const percent = Math.min(
+        ((player.xp || 0) / requiredXP) * 100,
+        100
+    );
+
+    document.getElementById(`player${side}XP`).style.width =
+        percent + "%";
+
+    // Profil Çerçevesi
+    const avatarFrame =
+        document.getElementById(`player${side}AvatarFrame`);
+
+    avatarFrame.className = "avatar";
+
+    switch (player.frame) {
+
+        case "bronze":
+            avatarFrame.classList.add("frame-bronze");
+            break;
+
+        case "silver":
+            avatarFrame.classList.add("frame-silver");
+            break;
+
+        case "gold":
+            avatarFrame.classList.add("frame-gold");
+            break;
+
+        case "diamond":
+            avatarFrame.classList.add("frame-diamond");
+            break;
+
+        default:
+            avatarFrame.classList.add("frame-none");
+            break;
+    }
 
 }

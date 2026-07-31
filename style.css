@@ -1125,3 +1125,31 @@ button:hover {
     }
 
 }
+.disabled-btn{
+    width:100%;
+    padding:12px;
+    border:none;
+    border-radius:12px;
+    background:#555;
+    color:white;
+    font-size:16px;
+    cursor:not-allowed;
+    opacity:.85;
+}
+
+.coming-soon{
+    position:relative;
+}
+
+.coming-badge{
+    position:absolute;
+    top:12px;
+    right:12px;
+    background:#ff9800;
+    color:#fff;
+    padding:5px 10px;
+    border-radius:20px;
+    font-size:12px;
+    font-weight:bold;
+    box-shadow:0 0 10px rgba(255,152,0,.5);
+}

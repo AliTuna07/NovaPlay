@@ -13,7 +13,18 @@ import {
     onSnapshot
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-
+function getProfile() {
+    return {
+        name: username.value.trim() || "Misafir",
+        avatar: localStorage.getItem("selectedAvatar") || "👾",
+        frame: localStorage.getItem("selectedFrame") || "none",
+        rank: localStorage.getItem("novaRank") || "Nova Oyuncusu",
+        level: Number(localStorage.getItem("novaLevel")) || 1,
+        xp: Number(localStorage.getItem("novaXP")) || 0,
+        coins: Number(localStorage.getItem("novaCoins")) || 0,
+        wins: Number(localStorage.getItem("novaWins")) || 0
+    };
+}
 const randomMatch =
 document.getElementById("randomMatch");
 
@@ -41,17 +52,10 @@ await getDocs(waitingRef);
 if(waiting.empty){
 
 
-const me =
-await addDoc(waitingRef,{
-
-    id:playerId,
-
-    name:
-    username.value || "Misafir",
-
-    createdAt:
-    Date.now()
-
+const me = await addDoc(waitingRef,{
+    id: playerId,
+    profile: getProfile(),
+    createdAt: Date.now()
 });
 
 
@@ -102,10 +106,17 @@ return;
 // Bekleyen oyuncu varsa
 
 
-const opponent =
-waiting.docs[0];
+const opponent = waiting.docs.find(
+    d => d.data().id !== playerId
+);
 
+if (!opponent) {
 
+    status.textContent = "🔍 Rakip bekleniyor...";
+
+    return;
+
+}
 const roomCode =
 createCode();
 
@@ -122,27 +133,14 @@ players:{
 
 
 X:{
-
-id:
-opponent.data().id,
-
-
-name:
-opponent.data().name
-
+    id: opponent.data().id,
+    ...opponent.data().profile
 },
 
-
-
 O:{
-
-id:playerId,
-
-
-name:
-username.value || "Misafir"
-
-}
+    id: playerId,
+    ...getProfile()
+},
 
 
 },
@@ -166,8 +164,6 @@ turn:"X",
 
 
 finished:false,
-
-
 winner:""
 
 }
@@ -273,13 +269,9 @@ createRoom.onclick = async()=>{
             players:{
 
                 X:{
-
-                    id:playerId,
-
-                    name:
-                    username.value || "Misafir"
-
-                },
+    id: playerId,
+    ...getProfile()
+},
 
                 O:null
 
@@ -415,13 +407,9 @@ joinRoom.onclick = async()=>{
     await updateDoc(roomRef,{
 
         "players.O":{
-
-            id:playerId,
-
-            name:
-            username.value || "Misafir"
-
-        }
+    id: playerId,
+    ...getProfile()
+}
 
     });
 
