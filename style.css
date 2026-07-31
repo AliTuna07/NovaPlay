@@ -73,12 +73,19 @@ header h1 {
 }
 
 
-.games {
-    display: grid;
-    grid-template-columns: repeat(3, 280px);
-    gap: 30px;
-    justify-content: center;
-    padding: 40px;
+.games{
+
+    display:grid;
+
+    grid-template-columns:
+        repeat(auto-fit,minmax(280px,1fr));
+
+    gap:30px;
+
+    justify-content:center;
+
+    padding:40px;
+
 }
 
 
@@ -1011,6 +1018,110 @@ button:hover {
         box-shadow:
         0 0 25px #00eaff,
         0 0 60px #8a2be2;
+    }
+
+}
+/* ==========================================
+   NovaPlay Mobil Düzen
+========================================== */
+
+@media (max-width: 768px){
+
+    header{
+
+        padding:120px 15px 25px;
+
+    }
+
+    header h1{
+
+        font-size:38px;
+
+    }
+
+    .logo{
+
+        width:90px;
+        height:90px;
+
+    }
+
+    .games{
+
+        grid-template-columns:1fr;
+
+        gap:20px;
+
+        padding:20px;
+
+    }
+
+    .game-card{
+
+        width:100%;
+
+        max-width:340px;
+
+        height:auto;
+
+        margin:auto;
+
+    }
+
+    .search-box{
+
+        padding:0 15px;
+
+    }
+
+    .search-box input{
+
+        width:100%;
+
+        max-width:100%;
+
+    }
+
+    .profile-box{
+
+        position:relative;
+
+        left:auto;
+        top:auto;
+
+        width:calc(100% - 30px);
+
+        max-width:400px;
+
+        margin:20px auto;
+
+    }
+
+    .topBar{
+
+        position:relative;
+
+        top:auto;
+        right:auto;
+
+        justify-content:center;
+
+        flex-wrap:wrap;
+
+        margin-bottom:20px;
+
+    }
+
+    .coinBox{
+
+        font-size:18px;
+
+    }
+
+    button{
+
+        width:100%;
+
     }
 
 }
