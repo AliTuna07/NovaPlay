@@ -3,7 +3,14 @@
    Part 1
 =========================================== */
 
-const STORAGE_KEY = "novaBugReports";
+import {
+    db,
+    ref,
+    push,
+    set,
+    update,
+    onValue
+} from "./firebase.js";
 
 const bugList = document.getElementById("bugList");
 const bugTitle = document.getElementById("bugTitle");
@@ -40,38 +47,8 @@ if (currentUser === "Misafir") {
 
 }
 
-/* ===========================================
-   Storage
-=========================================== */
 
-function loadReports() {
-
-    const data = localStorage.getItem(STORAGE_KEY);
-
-    if (!data) return [];
-
-    try {
-
-        return JSON.parse(data);
-
-    } catch {
-
-        return [];
-
-    }
-
-}
-
-function saveReports(reports) {
-
-    localStorage.setItem(
-        STORAGE_KEY,
-        JSON.stringify(reports)
-    );
-
-}
-
-let reports = loadReports();
+let reports = [];
 
 /* ===========================================
    Tarih
@@ -87,7 +64,7 @@ function formatDate(date) {
    Yeni Hata
 =========================================== */
 
-function addReport() {
+async function addReport() {
 
     const title = bugTitle.value.trim();
     const description = bugDescription.value.trim();
@@ -95,46 +72,52 @@ function addReport() {
     if (!title || !description) {
 
         alert("Lütfen bütün alanları doldur.");
-
         return;
 
     }
 
-    const report = {
+    const reportsRef = ref(db, "reports");
 
-    id: Date.now(),
+const newReport = push(reportsRef);
 
-    user: currentUser,
+try {
 
-    game: bugGame.value,
+    await set(newReport, {
 
-    type: bugType.value,
+        id: newReport.key,
 
-    title,
+        user: currentUser,
 
-    description,
+        game: bugGame.value,
 
-    solved:false,
+        type: bugType.value,
 
-    likes:[],
+        title,
 
-    comments:[],
+        description,
 
-    created:new Date().toISOString()
+        solved: false,
 
-};
+        likes: {},
 
-    reports.unshift(report);
+        comments: {},
 
-    saveReports(reports);
+        created: Date.now()
+
+    });
+
+    console.log("✅ Firebase'e başarıyla kaydedildi");
 
     bugTitle.value = "";
     bugDescription.value = "";
 
-    renderReports();
+} catch (err) {
+
+    console.error("❌ Firebase Hatası:", err);
 
 }
 
+}
 /* ===========================================
    Kart Oluştur
 =========================================== */
@@ -200,7 +183,7 @@ function createCard(report) {
                 class="action-btn like-btn"
                 data-id="${report.id}">
 
-                👍 ${report.likes.length}
+                👍 ${report.likes ? Object.keys(report.likes).length : 0}
 
             </button>
 
@@ -208,7 +191,7 @@ function createCard(report) {
                 class="action-btn comment-btn"
                 data-id="${report.id}">
 
-                💬 ${report.comments.length}
+                💬 ${report.comments ? Object.keys(report.comments).length : 0}
 
             </button>
 
@@ -283,9 +266,9 @@ function escapeHTML(text) {
    Rapor Bul
 =========================================== */
 
-function findReport(id) {
+function findReport(id){
 
-    return reports.find(report => report.id == id);
+    return reports.find(r => r.id === id);
 
 }
 
@@ -299,24 +282,26 @@ function toggleLike(id) {
 
     if (!report) return;
 
-    const index = report.likes.indexOf(currentUser);
+    const likes = report.likes || {};
 
-    if (index === -1) {
+    if (likes[currentUser]) {
 
-        report.likes.push(currentUser);
+        delete likes[currentUser];
 
     } else {
 
-        report.likes.splice(index, 1);
+        likes[currentUser] = true;
 
     }
 
-    saveReports(reports);
-
-    renderReports(searchBug.value);
+    update(
+        ref(db, "reports/" + id),
+        {
+            likes
+        }
+    );
 
 }
-
 /* ===========================================
    Çözüldü
 =========================================== */
@@ -327,24 +312,23 @@ function toggleSolved(id) {
 
     if (!report) return;
 
-    report.solved = !report.solved;
-
-    saveReports(reports);
-
-    renderReports(searchBug.value);
+    update(
+        ref(db, "reports/" + id),
+        {
+            solved: !report.solved
+        }
+    );
 
 }
-
 /* ===========================================
    Yorum Ekle
 =========================================== */
 
-function addComment(id) {
+async function addComment(id) {
 
     if (currentUser === "Misafir") {
 
         alert("Yorum yapabilmek için giriş yapmalısın.");
-
         return;
 
     }
@@ -357,23 +341,19 @@ function addComment(id) {
 
     if (!comment) return;
 
-    const report = findReport(id);
+    const commentRef = push(
+        ref(db, "reports/" + id + "/comments")
+    );
 
-    if (!report) return;
-
-    report.comments.push({
+    await set(commentRef, {
 
         user: currentUser,
 
         text: comment,
 
-        date: new Date().toISOString()
+        date: Date.now()
 
     });
-
-    saveReports(reports);
-
-    renderReports(searchBug.value);
 
 }
 
@@ -393,8 +373,7 @@ function renderComments() {
 
         area.innerHTML = "";
 
-        report.comments.forEach(comment => {
-
+        Object.values(report.comments || {}).forEach(comment=>{
             const div = document.createElement("div");
 
             div.className = "comment";
@@ -455,10 +434,9 @@ searchBug.addEventListener("input", () => {
 
 bugList.addEventListener("click", (e) => {
 
-    const id = Number(e.target.dataset.id);
+  const id = e.target.dataset.id;
 
-    if (!id) return;
-
+if (!id) return;
     if (e.target.classList.contains("like-btn")) {
 
         toggleLike(id);
@@ -502,13 +480,23 @@ bugTitle.addEventListener("keydown", (e) => {
    Başlat
 =========================================== */
 
-function initBugReport() {
+const reportsRef = ref(db, "reports");
 
-    renderReports();
+onValue(reportsRef, (snapshot)=>{
 
-}
+    reports = [];
 
-initBugReport();
+    snapshot.forEach(child=>{
+
+        reports.unshift(child.val());
+
+    });
+
+    renderReports(searchBug.value);
+
+    setTimeout(renderComments,0);
+
+});
 function getTypeIcon(type){
 
     switch(type){
