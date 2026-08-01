@@ -9,9 +9,13 @@ import {
     push,
     set,
     update,
-    onValue
+    onValue,
+    remove
 } from "./firebase.js";
-
+const ADMINS = [
+    "NovaPlayer"
+];
+const isAdmin = ADMINS.includes(currentUser);
 const bugList = document.getElementById("bugList");
 const bugTitle = document.getElementById("bugTitle");
 const bugDescription = document.getElementById("bugDescription");
@@ -195,13 +199,20 @@ function createCard(report) {
 
             </button>
 
-            <button
-                class="action-btn solved-btn"
-                data-id="${report.id}">
-
-                ${report.solved ? "↩ Aç" : "✔ Çözüldü"}
-
-            </button>
+           ${isAdmin ? `
+<button
+    class="action-btn solved-btn"
+    data-id="${report.id}">
+    ${report.solved ? "↩ Aç" : "✔ Çözüldü"}
+</button>
+` : ""}
+${isAdmin ? `
+<button
+    class="action-btn delete-btn"
+    data-id="${report.id}">
+    🗑 Sil
+</button>
+` : ""}
 
         </div>
 
@@ -435,7 +446,12 @@ searchBug.addEventListener("input", () => {
 bugList.addEventListener("click", (e) => {
 
   const id = e.target.dataset.id;
+if (e.target.classList.contains("delete-btn")) {
 
+    deleteReport(id);
+    return;
+
+}
 if (!id) return;
     if (e.target.classList.contains("like-btn")) {
 
@@ -540,5 +556,15 @@ function getTypeName(type){
             return type;
 
     }
+
+}
+async function deleteReport(id){
+
+    if(!isAdmin) return;
+
+    if(!confirm("Bu bildirimi silmek istiyor musun?"))
+        return;
+
+    await remove(ref(db,"reports/"+id));
 
 }
