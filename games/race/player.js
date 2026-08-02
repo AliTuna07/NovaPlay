@@ -1,14 +1,121 @@
 import * as THREE from "https://unpkg.com/three@0.179.1/build/three.module.js";
+export function getCarType(){
 
+    return (
+        localStorage.getItem("selectedCar")
+        ||
+        "basic"
+    );
+
+}
+export function getCarStats(){
+
+    const selectedCar =
+    localStorage.getItem("selectedCar") || "basic";
+
+    if(selectedCar === "gt"){
+
+        return {
+            name:"Nova GT",
+            maxSpeed:1.6,
+            acceleration:0.018,
+            topSpeed:190
+            
+        };
+
+    }
+
+    if(selectedCar === "racer"){
+
+        return {
+            name:"Nova Racer",
+            maxSpeed:1.9,
+            acceleration:0.022,
+            topSpeed:230
+        };
+
+    }
+
+    return {
+        name:"Nova Basic",
+        maxSpeed:1.4,
+        acceleration:0.015,
+        topSpeed:140
+    };
+
+}
+const selectedCar = getCarType();
 export function createPlayer() {
 
+    const selectedCar =
+localStorage.getItem("selectedCar") || "basic";
     const car = new THREE.Group();
 
+let bodyColor;
+let cabinColor;
+let bodySize;
+
+if(selectedCar === "gt"){
+
+    bodyColor = 0xff2222;
+    cabinColor = 0xff7777;
+    bodySize = [1.1,0.4,2.2];
+
+}
+else if(selectedCar === "racer"){
+
+    bodyColor = 0x0066ff;
+    cabinColor = 0x66bbff;
+    bodySize = [0.95,0.35,2.4];
+
+}
+else{
+
+    color:
+
+selectedCar === "gt"
+?
+0xff2222
+
+:
+
+selectedCar === "racer"
+?
+0x0066ff
+
+:
+
+0x00ff55
+   color:
+
+selectedCar === "gt"
+?
+0xff7777
+
+:
+
+selectedCar === "racer"
+?
+0x66bbff
+
+:
+
+0x22ff77
+    bodySize = [1.0,0.45,2.0];
+
+}
     // Ana gövde
     const body = new THREE.Mesh(
         new THREE.BoxGeometry(1.0, 0.45, 2.0),
         new THREE.MeshStandardMaterial({
-            color: 0x00ff55,
+            color:
+selectedCar === "red"
+? 0xff2222
+:
+selectedCar === "blue"
+? 0x2288ff
+:
+0x00ff55,
             metalness: 0.35,
             roughness: 0.45
         })
@@ -21,7 +128,14 @@ export function createPlayer() {
     const cabin = new THREE.Mesh(
         new THREE.BoxGeometry(0.72, 0.35, 1.0),
         new THREE.MeshStandardMaterial({
-            color: 0x22ff77,
+           color:
+selectedCar === "red"
+? 0xff5555
+:
+selectedCar === "blue"
+? 0x55aaff
+:
+0x22ff77,
             metalness: 0.35,
             roughness: 0.4
         })

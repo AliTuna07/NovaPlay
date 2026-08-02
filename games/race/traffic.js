@@ -11,11 +11,25 @@ export class Traffic {
         this.cars = [];
 
         this.spawnTimer = 0;
-        this.spawnDelay = 90;
+        this.spawnDelay = 50;
 
     }
 
     createCar(color = 0xff3030) {
+
+        const lane = Math.floor(Math.random() * 4);
+
+        // Aynı şeritte çok yakın araç varsa yeni araç oluşturma
+        const occupied = this.cars.some(car => {
+
+            return car.lane === lane &&
+                   car.mesh.position.z < -95;
+
+        });
+
+        if (occupied) {
+            return;
+        }
 
         const car = new THREE.Group();
 
@@ -54,18 +68,198 @@ export class Traffic {
         return car;
 
     }
+createTruck(){
+
+    const truck = new THREE.Group();
+
+
+    const cabin = new THREE.Mesh(
+
+        new THREE.BoxGeometry(
+            1.2,
+            0.9,
+            1
+        ),
+
+        new THREE.MeshStandardMaterial({
+
+            color:0xffffff
+
+        })
+
+    );
+
+
+   ccabin.position.y = 0.55;
+cabin.position.z = -0.9;
+    truck.add(cabin);
+
+
+
+    const trailer = new THREE.Mesh(
+
+        new THREE.BoxGeometry(
+            1.4,
+            1.1,
+            2.8
+        ),
+
+        new THREE.MeshStandardMaterial({
+
+            color:0xcc2222
+
+        })
+
+    );
+
+
+   trailer.position.y = 0.65;
+trailer.position.z = 1;
+    truck.add(trailer);
+
+
+// Tekerlekler
+
+const wheelGeometry =
+new THREE.CylinderGeometry(
+    0.25,
+    0.25,
+    0.18,
+    24
+);
+
+
+const wheelMaterial =
+new THREE.MeshStandardMaterial({
+
+    color:0x111111
+
+});
+
+
+function addWheel(x,z){
+
+    const wheel =
+    new THREE.Mesh(
+        wheelGeometry,
+        wheelMaterial
+    );
+
+
+    wheel.rotation.z =
+    Math.PI / 2;
+
+
+    wheel.position.set(
+        x,
+        0.25,
+        z
+    );
+
+
+    truck.add(wheel);
+
+}
+
+
+// Ön tekerler
+
+addWheel(-0.65,0.9);
+addWheel(0.65,0.9);
+
+
+// Arka çift teker
+
+addWheel(-0.65,-1.5);
+addWheel(0.65,-1.5);
+
+addWheel(-0.65,-2);
+addWheel(0.65,-2);
+
+
+
+// Arka lambalar
+
+const tailLightMaterial =
+new THREE.MeshBasicMaterial({
+
+    color:0xff0000
+
+});
+
+
+const leftTail =
+new THREE.Mesh(
+
+    new THREE.BoxGeometry(
+        0.15,
+        0.12,
+        0.05
+    ),
+
+    tailLightMaterial
+
+);
+
+
+leftTail.position.set(
+-0.45,
+0.45,
+-2.65
+);
+
+
+truck.add(leftTail);
+
+
+
+const rightTail =
+leftTail.clone();
+
+rightTail.position.x = 0.45;
+
+truck.add(rightTail);
+
+
+
+
+
+
+return truck;
+}
 
     spawn() {
 
         const lane = Math.floor(Math.random()*4);
 
-        const blue = Math.random()<0.25;
+const type =
+Math.random() < 0.15
+?
+"truck"
+:
+"car";
 
-        const mesh = this.createCar(
 
-            blue ? 0x3399ff : 0xff3030
+const blue = Math.random()<0.25;
 
-        );
+
+let mesh;
+
+
+if(type === "truck"){
+
+    mesh = this.createTruck();
+
+}
+else{
+
+    mesh = this.createCar(
+
+        blue ? 0x3399ff : 0xff3030
+
+    );
+
+}
 
         mesh.position.set(
 
@@ -79,20 +273,28 @@ export class Traffic {
 
         this.scene.add(mesh);
 
-        this.cars.push({
+       this.cars.push({
 
-            mesh,
+    mesh,
 
-            lane,
+    lane,
 
-            targetLane:lane,
+    targetLane:lane,
 
-            blue,
+    blue,
 
-            timer:0
+    type,
 
-        });
+    trafficSpeed:
+    type === "truck"
+    ?
+    0.5
+    :
+    0.7,
 
+    timer:0
+
+});
     }
 
     update(speed=0.35){
@@ -111,8 +313,7 @@ export class Traffic {
 
             const car=this.cars[i];
 
-            car.mesh.position.z+=speed;
-
+            car.mesh.position.z += speed - car.trafficSpeed;
             if(car.blue){
 
                 car.timer++;

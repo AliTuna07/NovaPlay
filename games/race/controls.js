@@ -5,6 +5,7 @@ const keys = {
 
 };
 window.accelerating = false;
+window.braking = false;
 
 window.addEventListener("keydown", e => {
 
@@ -58,6 +59,11 @@ window.addEventListener("keydown", (e) => {
         }
 
     }
+    if (e.key === "s" || e.key === "S" || e.key === "ArrowDown") {
+
+    window.braking = true;
+
+}
 
 });
 
@@ -74,5 +80,9 @@ window.addEventListener("keyup", (e) => {
         keys.right = false;
 
     }
+if (e.key === "s" || e.key === "S" || e.key === "ArrowDown") {
 
+    window.braking = false;
+
+}
 });

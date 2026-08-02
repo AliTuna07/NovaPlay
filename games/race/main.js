@@ -7,7 +7,7 @@ import * as THREE from "https://unpkg.com/three@0.160.0/build/three.module.js";
 import { Traffic } from "./traffic.js";
 import "./controls.js";
 import { createRoad } from "./road.js";
-import { createPlayer } from "./player.js";
+import { createPlayer, getCarStats } from "./player.js";
 
 document.getElementById("loading").remove();
 
@@ -89,10 +89,20 @@ document.addEventListener("keydown", () => {
 });
 
 // Oyun döngüsü
-const roadSpeed = 0.35;
+const carStats = getCarStats();
+
 let speed = 0.35;
-const maxSpeed = 1.4;
+
+let carKmh = 20; // <-- bunu buraya ekle
+
+const maxSpeed = carStats.maxSpeed;
+
+const acceleration = carStats.acceleration;
+
 const minSpeed = 0.35;
+
+
+
 let score = 0;
 let raceRewardGiven = false;
 let novaRaceBest = Number(localStorage.getItem("novaRaceBest")) || 0;
@@ -131,14 +141,29 @@ camera.lookAt(0, 0, -15);
     if(gameEnded){
         return;
     }
-
     if(window.accelerating){
-        speed += 0.015;
-    }else{
-        speed -= 0.01;
-    }
 
+    speed += acceleration;
+
+}
+else if(window.braking){
+
+    speed -= 0.04;
+
+}
+else{
+
+    speed -= 0.01;
+
+}
+
+  
     speed = Math.max(minSpeed, Math.min(maxSpeed, speed));
+    const power =
+(speed - minSpeed) / (maxSpeed - minSpeed);
+
+carKmh =
+20 + power * (carStats.topSpeed - 20);
 
     score += speed;
     distance += speed * 0.02;
@@ -195,10 +220,8 @@ function updateSpeedometer(){
 
     if(speedValue){
 
-        const kmh =
-        20 + ((speed - minSpeed) / (maxSpeed - minSpeed)) * 120;
-
-        speedValue.innerHTML = Math.floor(kmh);
+        speedValue.innerHTML =
+        Math.floor(carKmh);
 
     }
 
