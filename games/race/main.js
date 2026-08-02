@@ -263,3 +263,15 @@ function gameOver(){
     .style.display="flex";
 
 }
+const menuButton = document.getElementById("menuButton");
+
+if (menuButton) {
+    menuButton.addEventListener("click", () => {
+        window.location.href = "../index.html";
+    });
+}
+function goMainMenu() {
+    window.location.href = "../../index.html";
+}
+
+window.goMainMenu = goMainMenu;
