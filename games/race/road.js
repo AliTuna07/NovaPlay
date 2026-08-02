@@ -5,12 +5,14 @@ export function createRoad() {
     const road = new THREE.Group();
 
     // Asfalt
-    const asphalt = new THREE.Mesh(
-        new THREE.PlaneGeometry(8, 240),
-        new THREE.MeshStandardMaterial({
-            color: 0x2a2a2a
-        })
-    );
+    const roadMaterial = new THREE.MeshStandardMaterial({
+    color: 0x2a2a2a
+});
+
+const asphalt = new THREE.Mesh(
+    new THREE.PlaneGeometry(8, 240),
+    roadMaterial
+);
 
     asphalt.rotation.x = -Math.PI / 2;
     asphalt.position.z = -110;
@@ -61,11 +63,10 @@ export function createRoad() {
 
     }
 
-    return {
-
-        group: road,
-        dashes
-
-    };
+   return {
+    group: road,
+    dashes,
+    roadMaterial
+};
 
 }

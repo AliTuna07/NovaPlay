@@ -127,5 +127,33 @@ export function createPlayer() {
     wheel( 0.48,-0.65);
 
     return car;
+const leftLight = new THREE.Mesh(
 
+new THREE.BoxGeometry(
+0.12,
+0.08,
+0.03
+),
+
+new THREE.MeshBasicMaterial({
+
+color:0xff0000
+
+})
+
+);
+
+leftLight.position.set(
+-0.28,
+0.18,
+0.62
+);
+
+car.add(leftLight);
+const rightLight =
+leftLight.clone();
+
+rightLight.position.x = 0.28;
+
+car.add(rightLight);
 }

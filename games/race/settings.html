@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Nova Race Ayarlar</title>
+
+    <link rel="stylesheet" href="settings.css">
+
+</head>
+
+<body>
+
+<div class="backgroundGlow"></div>
+
+<div class="panel">
+
+    <h1>⚙ NOVA RACE</h1>
+
+    <p class="subtitle">
+        Ayarlar
+    </p>
+
+    <!-- GARAJ -->
+
+    <div class="card">
+
+        <h2>🚗 Garaj</h2>
+
+        <div class="garageViewer">
+
+    <div id="carPreview">
+        🚗
+    </div>
+
+</div>
+
+<div class="carInfo">
+
+    <h3 id="carName">
+        Sport
+    </h3>
+
+    <div class="stats">
+
+        <label>Hız</label>
+
+        <div class="bar">
+            <div class="fill speed"></div>
+        </div>
+
+        <label>Yol Tutuş</label>
+
+        <div class="bar">
+            <div class="fill grip"></div>
+        </div>
+
+        <label>İvme</label>
+
+        <div class="bar">
+            <div class="fill accel"></div>
+        </div>
+
+    </div>
+
+</div>
+
+<div class="garageButtons">
+
+    <button id="prevCar">
+        ◀
+    </button>
+
+    <button id="buyButton">
+        🪙 Satın Al
+    </button>
+
+    <button id="nextCar">
+        ▶
+    </button>
+
+</div>
+
+        <div class="garageButtons">
+
+            <button id="prevCar">◀</button>
+
+            <span id="carName">
+                Sport
+            </span>
+
+            <button id="nextCar">▶</button>
+
+        </div>
+
+    </div>
+
+    <!-- HAVA -->
+
+    <div class="card">
+
+        <h2>🌦 Hava Durumu</h2>
+
+        <div class="weatherGrid">
+
+           <button
+class="weatherButton"
+data-weather="sun">
+
+☀<br>Güneş
+
+</button>
+
+            <button class="weatherButton" data-weather="rain">
+🌧<br>Yağmur
+</button>
+
+            <button class="weatherButton" data-weather="fog">
+🌫<br>Sis
+</button>
+
+            <button class="weatherButton" data-weather="night">
+🌙<br>Gece
+</button>
+
+            <button class="weatherButton" data-weather="auto">
+🔄<br>Otomatik
+</button>
+
+        </div>
+
+    </div>
+
+    <!-- SES -->
+
+    <div class="card">
+
+        <h2>🔊 Ses</h2>
+
+        <label>Motor</label>
+
+        <input type="range" min="0" max="100" value="80">
+
+        <label>Efekt</label>
+
+        <input type="range" min="0" max="100" value="100">
+
+    </div>
+
+    <button class="saveButton">
+
+        💾 Kaydet
+
+    </button>
+
+    <button class="backButton"
+        onclick="location.href='index.html'">
+
+        ⬅ Ana Menü
+
+    </button>
+
+</div>
+
+<script src="settings.js"></script>
+
+</body>
+
+</html>

@@ -256,3 +256,5 @@ function setAvatar(avatar){
 window.addXP = addXP;
 window.addCoins = addCoins;
 window.updateProfile = updateProfile;
+window.rewardPlayer = rewardPlayer;
+window.showNotification = showNotification;

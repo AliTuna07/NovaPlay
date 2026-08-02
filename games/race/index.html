@@ -1,31 +1,73 @@
 <!DOCTYPE html>
 <html lang="tr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nova Race</title>
 
-    <link rel="stylesheet" href="style.css">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Nova Race</title>
+
+<link rel="stylesheet" href="style.css">
+
 </head>
+
 
 <body>
 
-    <div id="loading">Nova Race Yükleniyor...</div>
-    <div id="speedometer">
+
+<div id="loading">
+Nova Race Yükleniyor...
+</div>
+
+
+<div id="speedometer">
+
     <span id="speedValue">20</span>
+
     <small>KM/H</small>
-    <div id="gameOver">
+
+</div>
+
+
+
+<button onclick="location.href='settings.html'">
+⚙️ Ayarlar
+</button>
+<button id="settingsButton">
+⚙
+</button>
+<div id="gameOver">
 
     <h1>🏁 OYUN BİTTİ</h1>
 
+    <h2 id="finalScore">
+        Skor: 0
+    </h2>
+
     <button onclick="location.reload()">
-        Tekrar Oyna
+        🔄 Tekrar Oyna
+    </button>
+
+    <button onclick="goMainMenu()">
+        🏠 Ana Menü
     </button>
 
 </div>
-</div>
 
-    <script type="module" src="main.js"></script>
+
+
+<!-- NovaPlay ortak sistem -->
+<script src="../../common.js"></script>
+
+
+<!-- Nova Race -->
+<script type="module" src="main.js"></script>
+
 
 </body>
+<div id="distanceMeter">
+    📏 <span id="distanceValue">0.00</span> KM
+</div>
+
 </html>

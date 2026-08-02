@@ -1,5 +1,7 @@
 import * as THREE from "https://unpkg.com/three@0.179.1/build/three.module.js";
 
+export const clock = new THREE.Clock();
+
 export const scene = new THREE.Scene();
 scene.background = new THREE.Color(0x101018);
 
@@ -10,13 +12,9 @@ export const camera = new THREE.PerspectiveCamera(
     1000
 );
 
-camera.position.set(0, 6, 8);
-camera.lookAt(0, 0, -15);
-
 export const renderer = new THREE.WebGLRenderer({
     antialias: true
 });
-
 renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.setPixelRatio(window.devicePixelRatio);
 
