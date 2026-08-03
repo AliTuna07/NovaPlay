@@ -61,10 +61,38 @@ Nova Race Yükleniyor...
 <script src="../../common.js"></script>
 
 
-<!-- Nova Race -->
+
 <script type="module" src="main.js"></script>
+<script type="module" src="radio.js"></script>
+<div id="radio">
 
+    <div id="radioTitle">
+        📻 NOVA RADIO
+    </div>
 
+    <div id="stationName">
+        Chill FM
+    </div>
+
+    <div class="radioButtons">
+
+        <button id="prevStation">◀</button>
+
+        <button id="playStation">⏸</button>
+
+        <button id="nextStation">▶</button>
+
+    </div>
+
+    <input
+        id="radioVolume"
+        type="range"
+        min="0"
+        max="100"
+        value="60"
+    >
+
+</div>
 </body>
 <div id="distanceMeter">
     📏 <span id="distanceValue">0.00</span> KM

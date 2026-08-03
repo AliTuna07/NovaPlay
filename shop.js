@@ -131,14 +131,7 @@ rarity:"Yaygın",
 price:0
 },
 
-{
-id:"carSpeed",
-category:"car",
-icon:"🏎️",
-name:"Nova Speed",
-rarity:"Nadir",
-price:500
-},
+,
 
 {
 id:"carGT",
@@ -146,9 +139,16 @@ category:"car",
 icon:"🚘",
 name:"Nova GT",
 rarity:"Epik",
+price:500
+},
+{
+id:"carSpeed",
+category:"car",
+icon:"🏎️",
+name:"Nova Speed",
+rarity:"Nadir",
 price:1000
 }
-
 ];
 
 

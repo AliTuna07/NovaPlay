@@ -90,7 +90,7 @@ createTruck(){
     );
 
 
-   ccabin.position.y = 0.55;
+   cabin.position.y = 0.55;
 cabin.position.z = -0.9;
     truck.add(cabin);
 
@@ -258,6 +258,9 @@ else{
         blue ? 0x3399ff : 0xff3030
 
     );
+    if (!mesh) {
+    return;
+}
 
 }
 
