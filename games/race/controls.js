@@ -85,4 +85,40 @@ if (e.key === "s" || e.key === "S" || e.key === "ArrowDown") {
     window.braking = false;
 
 }
+const map = [
+
+["leftBtn","left"],
+["rightBtn","right"],
+["gasBtn","up"],
+["brakeBtn","down"]
+
+];
+
+map.forEach(([id,key])=>{
+
+    const btn=document.getElementById(id);
+
+    btn.addEventListener("touchstart",e=>{
+
+        e.preventDefault();
+
+        keys[key]=true;
+
+    });
+
+    btn.addEventListener("touchend",e=>{
+
+        e.preventDefault();
+
+        keys[key]=false;
+
+    });
+
+    btn.addEventListener("touchcancel",()=>{
+
+        keys[key]=false;
+
+    });
+
+});
 });

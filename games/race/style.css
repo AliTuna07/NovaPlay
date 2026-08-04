@@ -238,3 +238,90 @@ transform:scale(1.08);
 width:100%;
 
 }
+#mobileControls{
+
+    display:none;
+
+}
+
+@media (pointer:coarse){
+
+#mobileControls{
+
+    display:block;
+
+}
+
+#leftBtn,
+#rightBtn,
+#gasBtn,
+#brakeBtn{
+
+    position:fixed;
+
+    width:72px;
+
+    height:72px;
+
+    border:none;
+
+    border-radius:18px;
+
+    background:rgba(0,0,0,.55);
+
+    backdrop-filter:blur(10px);
+
+    color:white;
+
+    font-size:32px;
+
+    border:2px solid #44d8ff;
+
+    z-index:9999;
+
+    user-select:none;
+
+    touch-action:none;
+
+}
+
+#leftBtn{
+
+    left:20px;
+    bottom:20px;
+
+}
+
+#rightBtn{
+
+    left:105px;
+    bottom:20px;
+
+}
+
+#brakeBtn{
+
+    right:20px;
+    bottom:20px;
+
+}
+
+#gasBtn{
+
+    right:20px;
+    bottom:105px;
+
+}
+
+#leftBtn:active,
+#rightBtn:active,
+#gasBtn:active,
+#brakeBtn:active{
+
+    transform:scale(.94);
+
+    background:#32bfff;
+
+}
+
+}

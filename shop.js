@@ -131,7 +131,7 @@ rarity:"Yaygın",
 price:0
 },
 
-,
+
 
 {
 id:"carGT",
@@ -364,17 +364,17 @@ if(localStorage.getItem("frameDiamond") === "true"){
     }
 
 }
-if(item.category==="car" && item.price===0){
+if(item.category==="car"){
 
-localStorage.setItem(
-item.id,
-"true"
-);
+    localStorage.setItem(
+        item.id,
+        "true"
+    );
 
-localStorage.setItem(
-"selectedCar",
-item.id
-);
+    localStorage.setItem(
+        "selectedCar",
+        item.id
+    );
 
 }
 
