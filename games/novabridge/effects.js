@@ -1,5 +1,5 @@
-function breakEffect(glass){
+export function breakEffect(glass){
 
-    glass.classList.add("shake");
+    glass.userData.breaking = true;
 
 }

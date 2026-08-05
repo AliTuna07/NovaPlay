@@ -248,80 +248,72 @@ width:100%;
 
 #mobileControls{
 
+    display:none;
+
+}
+
+@media (pointer:coarse){
+
+#mobileControls{
+
     display:block;
 
 }
 
-#leftBtn,
-#rightBtn,
-#gasBtn,
-#brakeBtn{
+#mobileControls button{
 
     position:fixed;
 
     width:72px;
-
     height:72px;
 
     border:none;
+    border-radius:50%;
 
-    border-radius:18px;
-
-    background:rgba(0,0,0,.55);
-
+    background:rgba(255,255,255,.15);
     backdrop-filter:blur(10px);
 
     color:white;
-
-    font-size:32px;
-
-    border:2px solid #44d8ff;
+    font-size:34px;
 
     z-index:9999;
 
     user-select:none;
-
-    touch-action:none;
+    -webkit-user-select:none;
 
 }
 
+/* SOL */
 #leftBtn{
 
-    left:20px;
-    bottom:20px;
+    left:25px;
+    bottom:40px;
 
 }
 
+/* SAĞ */
 #rightBtn{
 
-    left:105px;
-    bottom:20px;
+    left:110px;
+    bottom:40px;
 
 }
 
-#brakeBtn{
-
-    right:20px;
-    bottom:20px;
-
-}
-
+/* GAZ */
 #gasBtn{
 
-    right:20px;
-    bottom:105px;
+    right:25px;
+    bottom:125px;
 
 }
 
-#leftBtn:active,
-#rightBtn:active,
-#gasBtn:active,
-#brakeBtn:active{
+/* FREN */
+#brakeBtn{
 
-    transform:scale(.94);
-
-    background:#32bfff;
+    right:25px;
+    bottom:40px;
 
 }
 
+}
 }

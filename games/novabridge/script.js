@@ -1,10 +1,14 @@
+
+import {
+    createBridge,
+    updateBridge
+} from "./bridge.js";
 import { getPlayer } from "./player.js";
 import { updateCamera } from "./camera.js";
 import {
     createPlayer,
     updatePlayer
 } from "./player.js";
-import { createBridge } from "./bridge.js";
 import * as THREE from "https://unpkg.com/three@0.160.0/build/three.module.js";
 
 const scene = new THREE.Scene();
@@ -112,6 +116,7 @@ function animate(){
     requestAnimationFrame(animate);
 
     updatePlayer();
+    updateBridge();
 
     updateCamera(camera, getPlayer());
 
@@ -132,4 +137,5 @@ renderer
 };
 createBridge(scene);
 createPlayer(scene);
+updateBridge();
 animate();

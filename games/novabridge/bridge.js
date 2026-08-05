@@ -98,3 +98,62 @@ export function isSafe(row, side){
     return safePath[row] === side;
 
 }
+export function breakGlass(row, side){
+
+    console.log("Cam kırılıyor:", row, side);
+
+    const tile = bridgeTiles[row][side];
+
+    if(!tile) return;
+
+    tile.userData.breaking = true;
+
+}
+export function updateBridge(){
+
+    for(const row of bridgeTiles){
+
+        if(!row) continue;
+        if(row >= 15){
+
+    winGame();
+
+}
+
+        for(const tile of row){
+
+            if(!tile) continue;
+
+            if(tile.userData.breaking){
+
+                tile.rotation.x += 0.08;
+                tile.position.y -= 0.06;
+
+            }
+
+        }
+
+    }
+
+}
+function winGame(){
+
+    const currentXP =
+        Number(localStorage.getItem("novaXP")) || 0;
+
+    const currentCoins =
+        Number(localStorage.getItem("novaCoins")) || 0;
+
+    localStorage.setItem(
+        "novaXP",
+        currentXP + 2000
+    );
+
+    localStorage.setItem(
+        "novaCoins",
+        currentCoins + 1000
+    );
+
+    alert("🏆 Kazandın!\n⭐ +2000 XP\n🪙 +1000 NovaCoin");
+
+}
