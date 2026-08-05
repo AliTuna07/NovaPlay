@@ -1,7 +1,12 @@
 /* ==========================================
    NovaPlay Firebase
 ========================================== */
-
+import {
+    getStorage,
+    ref as storageRef,
+    uploadBytes,
+    getDownloadURL
+} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-storage.js";
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
 
 import {
@@ -43,16 +48,23 @@ const app = initializeApp(firebaseConfig);
 
 const db = getDatabase(app);
 
+const storage = getStorage(app);
 /* ==========================================
    Export
 ========================================== */
 
 export {
     db,
+    storage,
+
     ref,
     push,
     set,
     update,
     onValue,
-    remove
+    remove,
+
+    storageRef,
+    uploadBytes,
+    getDownloadURL
 };

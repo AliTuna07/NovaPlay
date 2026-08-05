@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>NovaShare</title>
+
+    <link rel="stylesheet" href="novashare.css">
+
+</head>
+
+<body>
+
+<header>
+
+    <h1>🌍 NovaShare</h1>
+
+    <p>HTML5 oyununu paylaş.</p>
+
+</header>
+
+<div class="uploadCard">
+
+    <h2>🎮 Oyun Paylaş</h2>
+
+    <label>🎮 Oyun Adı</label>
+    <input
+        type="text"
+        id="gameName"
+        placeholder="Oyun adı">
+
+    <label>📝 Açıklama</label>
+    <textarea
+        id="gameDescription"
+        placeholder="Oyunun hakkında kısa bilgi..."></textarea>
+
+    <label>🌐 Oyun Linki</label>
+    <input
+        type="url"
+        id="gameUrl"
+        placeholder="https://...">
+
+    <label>📂 Kategori</label>
+    <select id="category">
+        <option>Platform</option>
+        <option>Yarış</option>
+        <option>Bulmaca</option>
+        <option>Arcade</option>
+        <option>Aksiyon</option>
+        <option>Diğer</option>
+    </select>
+
+    <button id="uploadBtn">
+        🚀 Oyunu Paylaş
+    </button>
+
+</div>
+
+<h2 class="title">🔥 Topluluk Oyunları</h2>
+
+<div id="gameList"></div>
+
+<script type="module" src="novashare.js"></script>
+
+</body>
+</html>
