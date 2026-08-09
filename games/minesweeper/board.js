@@ -366,6 +366,8 @@ function checkWin() {
     const safeCells = BOARD_SIZE * BOARD_SIZE - MINE_COUNT;
 
     if (openedCells !== safeCells) return;
+    addXP(200);
+    addCoins(300);
 
     endGame(true);
 

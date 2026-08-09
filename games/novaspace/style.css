@@ -1,0 +1,41 @@
+* {
+margin: 0;
+padding: 0;
+box-sizing: border-box;
+}
+
+body {
+overflow: hidden;
+background: #87ceeb;
+font-family: Arial, sans-serif;
+}
+
+canvas {
+display: block;
+}
+
+#crosshair {
+position: fixed;
+left: 50%;
+top: 50%;
+transform: translate(-50%, -50%);
+color: white;
+font-size: 28px;
+font-weight: bold;
+z-index: 10;
+pointer-events: none;
+text-shadow: 0 0 4px black;
+}
+
+#hud {
+position: fixed;
+top: 15px;
+left: 15px;
+color: white;
+background: rgba(0, 0, 0, 0.45);
+padding: 10px 14px;
+border-radius: 8px;
+z-index: 10;
+pointer-events: none;
+line-height: 1.6;
+}
