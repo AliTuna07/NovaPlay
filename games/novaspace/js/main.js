@@ -1,24 +1,57 @@
+import {
+    startBackgroundMusic
+} from "./sound.js";
+import {
+    inventory,
+    updateHotbar
+} from "./inventory.js";
+
+import {
+    initInteraction,
+    updateInteraction
+} from "./interaction.js";
+
+import { createHand } from "./hand.js";
+
 import * as THREE from "https://unpkg.com/three@0.179.1/build/three.module.js";
 
-import { createWorld } from "./world.js";
+import {
+    createWorld,
+    updateWorld
+} from "./world.js";
 import {
     createPlayer,
     updatePlayer,
     player
 } from "./player.js";
 
+import { updateCamera } from "./camera.js";
+
+
+// =====================================
+// SAHNE
+// =====================================
+
 const scene = new THREE.Scene();
 
-scene.background = new THREE.Color(0x87ceeb);
+scene.background =
+    new THREE.Color(0x87ceeb);
 
 
-// Kamera
-const camera = new THREE.PerspectiveCamera(
-    75,
-    window.innerWidth / window.innerHeight,
-    0.1,
-    1000
-);
+// =====================================
+// KAMERA
+// =====================================
+
+const camera =
+    new THREE.PerspectiveCamera(
+        75,
+        window.innerWidth /
+        window.innerHeight,
+        0.1,
+        1000
+    );
+
+scene.add(camera);
 
 camera.position.set(
     0,
@@ -27,36 +60,51 @@ camera.position.set(
 );
 
 
-// Renderer
-const renderer = new THREE.WebGLRenderer({
-    antialias: true
-});
+// =====================================
+// RENDERER
+// =====================================
+
+const renderer =
+    new THREE.WebGLRenderer({
+        antialias: false
+    });
 
 renderer.setSize(
     window.innerWidth,
     window.innerHeight
 );
 
+renderer.setPixelRatio(
+    Math.min(window.devicePixelRatio, 1.5)
+);
+
 renderer.shadowMap.enabled = true;
 
+renderer.shadowMap.type =
+    THREE.PCFShadowMap;
 document.body.appendChild(
     renderer.domElement
 );
 
 
-// Işık
-const ambientLight = new THREE.AmbientLight(
-    0xffffff,
-    0.7
-);
+// =====================================
+// IŞIK
+// =====================================
+
+const ambientLight =
+    new THREE.AmbientLight(
+        0xffffff,
+        0.7
+    );
 
 scene.add(ambientLight);
 
 
-const sun = new THREE.DirectionalLight(
-    0xffffff,
-    1.5
-);
+const sun =
+    new THREE.DirectionalLight(
+        0xffffff,
+        1.5
+    );
 
 sun.position.set(
     10,
@@ -69,64 +117,148 @@ sun.castShadow = true;
 scene.add(sun);
 
 
-// Dünya
+// =====================================
+// DÜNYA
+// =====================================
+
 createWorld(scene);
 
 
-// Oyuncu
+// =====================================
+// OYUNCU
+// =====================================
+
 createPlayer(scene);
 
 
-// Saat
-const clock = new THREE.Clock();
+// Güvenli başlangıç noktası
+player.object.position.set(
+    0,
+    12,
+    0
+);
 
 
-// Oyun döngüsü
+// =====================================
+// EL
+// =====================================
+
+createHand(camera);
+
+
+// =====================================
+// ETKİLEŞİM
+// =====================================
+
+initInteraction(
+    camera,
+    scene
+);
+
+
+// =====================================
+// ENVANTER
+// =====================================
+
+updateHotbar();
+
+
+// =====================================
+// SAAT
+// =====================================
+
+const clock =
+    new THREE.Clock();
+
+
+// =====================================
+// OYUN DÖNGÜSÜ
+// =====================================
+
 function animate() {
 
-    requestAnimationFrame(animate);
-
-    const delta = Math.min(
-        clock.getDelta(),
-        0.05
+    requestAnimationFrame(
+        animate
     );
 
-    updatePlayer(delta);
 
-
-    // Kamera oyuncuyu takip ediyor
-    if (player.object) {
-
-        const target = player.object.position;
-
-        camera.position.x =
-            target.x;
-
-        camera.position.y =
-            target.y + 4;
-
-        camera.position.z =
-            target.z + 8;
-
-        camera.lookAt(
-            target.x,
-            target.y + 1,
-            target.z
+    const delta =
+        Math.min(
+            clock.getDelta(),
+            0.05
         );
 
-    }
+
+    // Oyuncu
+    updatePlayer(delta);
+    updateWorld(
+    player.object.position.x,
+    player.object.position.z
+);
 
 
+    // Kamera
+    updateCamera(
+        camera,
+        player
+    );
+
+
+    // Hedeflenen blok
+    updateInteraction(delta);
+
+
+    // Çiz
     renderer.render(
         scene,
         camera
     );
+
 }
 
+// =====================================
+// 🎵 İLK ETKİLEŞİMDE MÜZİĞİ BAŞLAT
+// =====================================
+
+let musicStarted = false;
+
+function startMusicOnce() {
+
+    if (musicStarted) {
+        return;
+    }
+
+    musicStarted = true;
+
+    startBackgroundMusic();
+
+    window.removeEventListener(
+        "keydown",
+        startMusicOnce
+    );
+
+    window.removeEventListener(
+        "mousedown",
+        startMusicOnce
+    );
+}
+
+window.addEventListener(
+    "keydown",
+    startMusicOnce
+);
+
+window.addEventListener(
+    "mousedown",
+    startMusicOnce
+);
 animate();
 
 
-// Ekran boyutu
+// =====================================
+// EKRAN BOYUTU
+// =====================================
+
 window.addEventListener(
     "resize",
     () => {

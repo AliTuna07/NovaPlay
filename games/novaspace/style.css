@@ -39,3 +39,240 @@ z-index: 10;
 pointer-events: none;
 line-height: 1.6;
 }
+#hotbar {
+    position: fixed;
+
+    bottom: 20px;
+    left: 50%;
+
+    transform: translateX(-50%);
+
+    display: flex;
+    gap: 4px;
+
+    padding: 5px;
+
+    background: rgba(0, 0, 0, 0.45);
+
+    border-radius: 6px;
+
+    z-index: 20;
+
+    pointer-events: none;
+}
+
+.slot {
+    width: 52px;
+    height: 52px;
+
+    position: relative;
+
+    background: rgba(70, 70, 70, 0.75);
+
+    border: 2px solid rgba(255, 255, 255, 0.35);
+
+    box-sizing: border-box;
+}
+
+.slot.selected {
+    border: 3px solid white;
+
+    box-shadow:
+        0 0 8px rgba(255, 255, 255, 0.8);
+}
+
+.slot span {
+    position: absolute;
+
+    right: 3px;
+    bottom: 1px;
+
+    color: white;
+
+    font-size: 13px;
+    font-weight: bold;
+
+    text-shadow:
+        1px 1px 2px black;
+}
+
+
+/* Blok ikonları */
+
+.block-icon {
+    position: absolute;
+
+    width: 28px;
+    height: 28px;
+
+    left: 10px;
+    top: 10px;
+
+    border: 2px solid rgba(0, 0, 0, 0.3);
+
+    box-shadow:
+        inset 0 -5px rgba(0, 0, 0, 0.12);
+}
+
+.block-icon.grass {
+    background:
+        linear-gradient(
+            to bottom,
+            #55c94f 0%,
+            #55c94f 28%,
+            #8b5a2b 28%,
+            #8b5a2b 100%
+        );
+}
+
+.block-icon.dirt {
+    background: #8b5a2b;
+}
+
+.block-icon.stone {
+    background: #777;
+}
+
+
+.grass {
+    background:
+        linear-gradient(
+            to bottom,
+            #55c94f 0%,
+            #55c94f 25%,
+            #8b5a2b 25%,
+            #8b5a2b 100%
+        );
+}
+
+
+.dirt {
+    background: #8b5a2b;
+}
+
+
+.stone {
+    background: #777;
+}
+#inventory {
+    position: fixed;
+
+    left: 50%;
+    top: 30%;
+
+    transform: translate(-50%, -50%);
+
+    width: 470px;
+
+    padding: 20px;
+
+    background: rgba(35, 35, 35, 0.96);
+
+    border: 3px solid #777;
+
+    border-radius: 8px;
+
+    z-index: 100;
+
+    display: none;
+}
+
+#inventory-title {
+    color: white;
+
+    font-size: 22px;
+    font-weight: bold;
+
+    margin-bottom: 15px;
+
+    text-align: center;
+}
+
+#inventory-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(9, 46px);
+
+    gap: 5px;
+
+    justify-content: center;
+}
+
+.inventory-slot {
+    width: 46px;
+    height: 46px;
+
+    background: #555;
+
+    border: 2px solid #888;
+
+    box-shadow:
+        inset 0 0 0 2px #333;
+}
+
+#inventory-hint {
+    color: #ccc;
+
+    text-align: center;
+
+    margin-top: 15px;
+
+    font-size: 14px;
+}
+/* =====================================
+   BLOK ENVANTER İKONLARI
+===================================== */
+
+.block-icon {
+
+    width: 100%;
+
+    height: 100%;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    font-size: 30px;
+
+    pointer-events: none;
+
+    user-select: none;
+
+}
+
+
+/* Adet */
+
+.item-count {
+
+    position: absolute;
+
+    right: 4px;
+
+    bottom: 2px;
+
+    font-size: 14px;
+
+    font-weight: bold;
+
+    color: white;
+
+    text-shadow:
+        2px 2px 2px black;
+
+    pointer-events: none;
+
+}
+
+
+/* Slot */
+
+.slot {
+
+    position: relative;
+
+}
