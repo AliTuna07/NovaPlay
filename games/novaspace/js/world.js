@@ -1,5 +1,8 @@
 import * as THREE from "https://unpkg.com/three@0.179.1/build/three.module.js";
-
+import {
+    spawnCowsInChunk,
+    removeCowsFromChunk
+} from "./animals.js";
 
 // =====================================
 // BLOKLAR
@@ -118,6 +121,91 @@ export const sandMaterial =
         color: 0xd9c27a,
         roughness: 1
     });
+    // =====================================
+// 🌊 SU MATERYALİ
+// =====================================
+
+export const waterMaterial =
+    new THREE.MeshStandardMaterial({
+        color: 0x2389da,
+        transparent: true,
+        opacity: 0.65,
+        roughness: 0.1,
+        metalness: 0
+    });
+
+
+// =====================================
+// 🌊 OKYANUS AYARLARI
+// =====================================
+
+const WATER_LEVEL = 2;
+
+// Okyanusların büyüklüğü
+const OCEAN_SCALE = 0.035;
+
+// Dünya tohumu
+const OCEAN_SEED = 73421;
+
+
+// =====================================
+// 🌊 BASİT DETERMINISTIC NOISE
+// =====================================
+
+function oceanNoise(x, z) {
+
+    const value =
+        Math.sin(
+            x * OCEAN_SCALE +
+            OCEAN_SEED
+        ) *
+        Math.cos(
+            z * OCEAN_SCALE -
+            OCEAN_SEED
+        );
+
+    return value;
+}
+
+
+// =====================================
+// 🌊 OKYANUS MU?
+// =====================================
+
+function isOcean(x, z) {
+
+    const noise =
+        oceanNoise(x, z);
+
+    return noise > 0.58;
+}
+
+
+// =====================================
+// 🏖️ OKYANUSA YAKIN MI?
+// =====================================
+
+function isNearOcean(x, z) {
+
+    for (let dx = -2; dx <= 2; dx++) {
+
+        for (let dz = -2; dz <= 2; dz++) {
+
+            if (
+                isOcean(
+                    x + dx,
+                    z + dz
+                )
+            ) {
+                return true;
+            }
+
+        }
+
+    }
+
+    return false;
+}
 // =====================================
 // YÜKSEKLİK
 // =====================================
@@ -325,7 +413,7 @@ function createTree(
 
 
 // =====================================
-// CHUNK OLUŞTUR
+// 🌍 CHUNK OLUŞTUR
 // =====================================
 
 function loadChunk(
@@ -376,80 +464,249 @@ function loadChunk(
             z++
         ) {
 
+            // =====================================
+            // 🌍 ARAZİ BİLGİSİ
+            // =====================================
+
             const height =
                 getHeight(x, z);
 
+            const ocean =
+                isOcean(x, z);
 
-            // Taş
-            for (
-                let y = -3;
-                y < height - 2;
-                y++
-            ) {
+            const nearOcean =
+                isNearOcean(x, z);
 
-                const block =
+
+            // =====================================
+            // 🌊 OKYANUS
+            // =====================================
+
+            if (ocean) {
+
+                const oceanFloor = -1;
+
+
+                // Taş
+                for (
+                    let y = -3;
+                    y < oceanFloor - 2;
+                    y++
+                ) {
+
+                    const block =
+                        createBlock(
+                            worldScene,
+                            x,
+                            y,
+                            z,
+                            stoneMaterial
+                        );
+
+                    chunkBlocks.push(block);
+
+                }
+
+
+                // Toprak
+                for (
+                    let y = oceanFloor - 2;
+                    y < oceanFloor;
+                    y++
+                ) {
+
+                    const block =
+                        createBlock(
+                            worldScene,
+                            x,
+                            y,
+                            z,
+                            dirtMaterial
+                        );
+
+                    chunkBlocks.push(block);
+
+                }
+
+
+                // 🏖️ Kum deniz tabanı
+                const sand =
                     createBlock(
                         worldScene,
                         x,
-                        y,
+                        oceanFloor,
                         z,
-                        stoneMaterial
+                        sandMaterial
                     );
 
-                chunkBlocks.push(block);
+                chunkBlocks.push(sand);
+
+
+                // 🌊 Su
+                for (
+                    let y = oceanFloor + 1;
+                    y <= WATER_LEVEL;
+                    y++
+                ) {
+
+                    const water =
+                        createBlock(
+                            worldScene,
+                            x,
+                            y,
+                            z,
+                            waterMaterial
+                        );
+                        water.userData.isWater = true;
+
+                    chunkBlocks.push(water);
+
+                }
 
             }
 
 
-            // Toprak
-            for (
-                let y = height - 2;
-                y < height;
-                y++
-            ) {
+            // =====================================
+            // 🏖️ OKYANUS KIYISI
+            // =====================================
 
-                const block =
+            else if (nearOcean) {
+
+                // Taş
+                for (
+                    let y = -3;
+                    y < height - 2;
+                    y++
+                ) {
+
+                    const block =
+                        createBlock(
+                            worldScene,
+                            x,
+                            y,
+                            z,
+                            stoneMaterial
+                        );
+
+                    chunkBlocks.push(block);
+
+                }
+
+
+                // Toprak
+                for (
+                    let y = height - 2;
+                    y < height;
+                    y++
+                ) {
+
+                    const block =
+                        createBlock(
+                            worldScene,
+                            x,
+                            y,
+                            z,
+                            dirtMaterial
+                        );
+
+                    chunkBlocks.push(block);
+
+                }
+
+
+                // 🏖️ Kum yüzeyi
+                const sand =
                     createBlock(
                         worldScene,
                         x,
-                        y,
+                        height,
                         z,
-                        dirtMaterial
+                        sandMaterial
                     );
 
-                chunkBlocks.push(block);
+                chunkBlocks.push(sand);
 
             }
 
 
-            // Çim
-            const grass =
-                createBlock(
-                    worldScene,
-                    x,
-                    height,
-                    z,
-                    grassMaterial
-                );
+            // =====================================
+            // 🌱 NORMAL ARAZİ
+            // =====================================
 
-            chunkBlocks.push(grass);
+            else {
+
+                // Taş
+                for (
+                    let y = -3;
+                    y < height - 2;
+                    y++
+                ) {
+
+                    const block =
+                        createBlock(
+                            worldScene,
+                            x,
+                            y,
+                            z,
+                            stoneMaterial
+                        );
+
+                    chunkBlocks.push(block);
+
+                }
 
 
-            // Ağaç
-            if (
-                x % 11 === 0 &&
-                z % 13 === 0 &&
-                Math.abs(x) > 4 &&
-                Math.abs(z) > 4
-            ) {
+                // Toprak
+                for (
+                    let y = height - 2;
+                    y < height;
+                    y++
+                ) {
 
-                createTree(
-                    worldScene,
-                    x,
-                    height + 1,
-                    z,
-                    chunkBlocks
-                );
+                    const block =
+                        createBlock(
+                            worldScene,
+                            x,
+                            y,
+                            z,
+                            dirtMaterial
+                        );
+
+                    chunkBlocks.push(block);
+
+                }
+
+
+                // Çim
+                const grass =
+                    createBlock(
+                        worldScene,
+                        x,
+                        height,
+                        z,
+                        grassMaterial
+                    );
+
+                chunkBlocks.push(grass);
+
+
+                // 🌳 Ağaç
+                if (
+                    x % 11 === 0 &&
+                    z % 13 === 0 &&
+                    Math.abs(x) > 4 &&
+                    Math.abs(z) > 4
+                ) {
+
+                    createTree(
+                        worldScene,
+                        x,
+                        height + 1,
+                        z,
+                        chunkBlocks
+                    );
+
+                }
 
             }
 
@@ -458,14 +715,26 @@ function loadChunk(
     }
 
 
+    // =====================================
+    // 💾 CHUNK KAYDET
+    // =====================================
+
     loadedChunks.set(
         key,
         chunkBlocks
     );
+// =====================================
+// 🐄 CHUNK HAYVANLARI
+// =====================================
+
+spawnCowsInChunk(
+    worldScene,
+    chunkX,
+    chunkZ
+);
+
 
 }
-
-
 // =====================================
 // CHUNK SİL
 // =====================================
@@ -504,7 +773,15 @@ function unloadChunk(
 
     }
 
+// =====================================
+// 🐄 CHUNK HAYVANLARINI SİL
+// =====================================
 
+removeCowsFromChunk(
+    chunkX,
+    chunkZ,
+    CHUNK_SIZE
+);
     loadedChunks.delete(key);
 
 }

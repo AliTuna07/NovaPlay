@@ -276,3 +276,161 @@ line-height: 1.6;
     position: relative;
 
 }
+
+/* =====================================
+   ❤️🍗 CAN + AÇLIK
+===================================== */
+
+#status-bars {
+
+    position: fixed;
+
+    bottom: 105px;
+    left: 50%;
+
+    transform:
+        translateX(-50%);
+
+    width: 420px;
+
+    display: flex;
+
+    justify-content:
+        space-between;
+
+    align-items: center;
+
+    gap: 25px;
+
+    z-index: 1000;
+
+    pointer-events: none;
+}
+
+
+/* =====================================
+   GRUP
+===================================== */
+
+.status-group {
+
+    width: 195px;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 7px;
+
+}
+
+
+/* =====================================
+   İKON
+===================================== */
+
+.status-title {
+
+    width: 28px;
+
+    font-size: 21px;
+
+    text-align: center;
+
+}
+
+
+/* =====================================
+   BAR
+===================================== */
+
+.status-bar {
+
+    width: 160px;
+
+    height: 18px;
+
+    background:
+        #202020;
+
+    border:
+        2px solid #111;
+
+    border-radius: 5px;
+
+    overflow: hidden;
+
+    box-shadow:
+        0 2px 4px
+        rgba(0,0,0,0.5);
+
+}
+
+
+/* =====================================
+   DOLULUK
+===================================== */
+
+.status-fill {
+
+    width: 100%;
+
+    height: 100%;
+
+    transition:
+        width 0.2s ease;
+
+}
+
+
+/* ❤️ CAN */
+
+.health-bar .status-fill {
+
+    background:
+        #e53935;
+
+}
+
+
+/* 🍗 AÇLIK */
+
+.hunger-bar .status-fill {
+
+    background:
+        #d98b32;
+
+}
+
+
+/* =====================================
+   📱 KÜÇÜK EKRAN
+===================================== */
+
+@media (
+    max-width: 700px
+) {
+
+    #status-bars {
+
+        width: 320px;
+
+        gap: 10px;
+
+    }
+
+
+    .status-group {
+
+        width: 150px;
+
+    }
+
+
+    .status-bar {
+
+        width: 120px;
+
+    }
+
+}

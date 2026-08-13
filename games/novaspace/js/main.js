@@ -1,3 +1,45 @@
+//========================
+//GEÇİCİ KILIÇ VERME KODU
+
+import {
+    addItem
+} from "./inventory.js";
+
+addItem(
+    "sword",
+    1
+);
+//========================
+//========================
+//GEÇİCİ KAZMA VERME KODU
+addItem(
+    "pickaxe",
+    1
+);
+//========================
+//========================
+//GEÇİCİ BALTA VERME KODU
+addItem(
+    "axe",
+    1
+);
+//========================
+import {
+    getSelectedBlock
+} from "./inventory.js";
+import {
+    createHand,
+    updateHandAnimation,
+    updateHandItem,
+    attackSword
+} from "./hand.js";
+import {
+    updateHunger,
+    updateHungerBar
+} from "./hunger.js";
+import {
+    updateAnimalDrops
+} from "./animals.js";
 import {
     startBackgroundMusic
 } from "./sound.js";
@@ -11,7 +53,7 @@ import {
     updateInteraction
 } from "./interaction.js";
 
-import { createHand } from "./hand.js";
+
 
 import * as THREE from "https://unpkg.com/three@0.179.1/build/three.module.js";
 
@@ -24,7 +66,10 @@ import {
     updatePlayer,
     player
 } from "./player.js";
-
+import {
+    createCow,
+    updateAnimals
+} from "./animals.js";
 import { updateCamera } from "./camera.js";
 
 
@@ -134,7 +179,7 @@ createPlayer(scene);
 // Güvenli başlangıç noktası
 player.object.position.set(
     0,
-    12,
+    6.5,
     0
 );
 
@@ -162,6 +207,7 @@ initInteraction(
 
 updateHotbar();
 
+updateHungerBar();
 
 // =====================================
 // SAAT
@@ -188,24 +234,35 @@ function animate() {
             0.05
         );
 
+const selected =
+    getSelectedBlock();
 
+updateHandItem(
+    selected
+);
     // Oyuncu
     updatePlayer(delta);
     updateWorld(
     player.object.position.x,
     player.object.position.z
 );
+// 🐄 Hayvanlar
+updateAnimals(delta);
 
+// 🥩 Hayvanlardan düşen eşyalar
+updateAnimalDrops(delta);
 
-    // Kamera
-    updateCamera(
-        camera,
-        player
-    );
-
-
+updateHandAnimation(delta);
+// Kamera
+updateCamera(
+    camera,
+    player
+);
+// 🍗 Açlık
+updateHunger(delta);
     // Hedeflenen blok
     updateInteraction(delta);
+    
 
 
     // Çiz
@@ -251,6 +308,18 @@ window.addEventListener(
 window.addEventListener(
     "mousedown",
     startMusicOnce
+);
+window.addEventListener(
+    "mousedown",
+    (event) => {
+
+        if (event.button !== 0) {
+            return;
+        }
+
+        attackSword();
+
+    }
 );
 animate();
 

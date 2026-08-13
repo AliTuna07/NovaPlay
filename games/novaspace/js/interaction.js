@@ -1,5 +1,10 @@
 import * as THREE from "https://unpkg.com/three@0.179.1/build/three.module.js";
 import {
+    attackSword
+} from "./hand.js";
+import {playDamageSound
+} from "./sound.js";
+import {
     playBlockPlaceSound
 } from "./sound.js";
 import {
@@ -17,6 +22,10 @@ import {
 import {
     player
 } from "./player.js";
+import {
+    animals,
+    hitAnimal
+} from "./animals.js";
 
 import {
     addBlock,
@@ -24,6 +33,9 @@ import {
     getSelectedBlock
 } from "./inventory.js";
 
+import {
+    eatRawMeat
+} from "./hunger.js";
 // =====================================
 // MOUSE LOCK
 // =====================================
@@ -706,7 +718,104 @@ function getTarget() {
     return hit;
 
 }
+// =====================================
+// 🐄 HEDEF HAYVANI BUL
+// =====================================
 
+function getTargetAnimal() {
+
+    if (!activeCamera) {
+        return null;
+    }
+
+    raycaster.setFromCamera(
+        new THREE.Vector2(0, 0),
+        activeCamera
+    );
+
+
+    const animalObjects = [];
+
+
+    for (const animal of animals) {
+
+        animal.traverse(
+            (child) => {
+
+                if (child.isMesh) {
+
+                    animalObjects.push(
+                        child
+                    );
+
+                }
+
+            }
+        );
+
+    }
+
+
+    if (
+        animalObjects.length === 0
+    ) {
+        return null;
+    }
+
+
+    const hits =
+        raycaster.intersectObjects(
+            animalObjects,
+            false
+        );
+
+
+    if (
+        hits.length === 0
+    ) {
+        return null;
+    }
+
+
+    for (const hit of hits) {
+
+        if (
+            hit.distance >
+            MAX_DISTANCE
+        ) {
+            continue;
+        }
+
+
+        let animal =
+            hit.object;
+
+
+        while (
+            animal.parent &&
+            !animal.userData?.type
+        ) {
+
+            animal =
+                animal.parent;
+
+        }
+
+
+        if (
+            animal.userData?.type ===
+            "cow"
+        ) {
+
+            return animal;
+
+        }
+
+    }
+
+
+    return null;
+}
 
 // =====================================
 // BLOK TÜRÜ
@@ -1291,24 +1400,89 @@ function removeCrackAnimation() {
 window.addEventListener(
     "mousedown",
     (event) => {
+    // =================================
+    // ⚔️ KILIÇ SALDIRISI
+    // =================================
 
+    const selected =
+        getSelectedBlock();
+
+if (
+    selected &&
+    selected.type === "sword"
+) {
+
+    attackSword();
+
+    const animal =
+        getTargetAnimal();
+
+    if (animal) {
+
+        hitAnimal(
+            animal,
+            3
+        );
+
+    }
+
+    return;
+}
         if (
             event.button !== 0
         ) {
-
             return;
-
         }
 
+
+        // =================================
+        // 🐄 ÖNCE HAYVAN KONTROLÜ
+        // =================================
+
+        const animal =
+    getTargetAnimal();
+
+if (animal) {
+
+    const selected =
+        getSelectedBlock();
+
+    // ⚔️ Kılıç seçiliyse güçlü saldırı
+    if (
+        selected &&
+        selected.type === "sword"
+    ) {
+
+        hitAnimal(
+            animal,
+            3
+        );
+
+    }
+
+    // ✋ El ile saldırı
+    else {
+
+        hitAnimal(
+            animal,
+            1
+        );
+
+    }
+
+    return;
+}
+
+        // =================================
+        // 🧱 NORMAL BLOK KIRMA
+        // =================================
 
         const hit =
             getTarget();
 
 
         if (!hit) {
-
             return;
-
         }
 
 
@@ -1329,8 +1503,6 @@ window.addEventListener(
 
     }
 );
-
-
 // =====================================
 // SOL TIK BIRAK
 // =====================================
@@ -1385,6 +1557,20 @@ window.addEventListener(
 );
 
 
+// =====================================
+// 🥩 SAĞ TIK BASILI TUTMA
+// =====================================
+
+let eating = false;
+let eatingTimer = 0;
+
+const EAT_TIME = 1.2;
+
+
+// =====================================
+// SAĞ TIK BASILDI
+// =====================================
+
 window.addEventListener(
     "mousedown",
     (event) => {
@@ -1398,6 +1584,25 @@ window.addEventListener(
         }
 
 
+        const selected =
+            getSelectedBlock();
+
+
+        // 🥩 ET SEÇİLİYSE YEME
+        if (
+            selected &&
+            selected.type === "raw_meat"
+        ) {
+
+            eating = true;
+            eatingTimer = 0;
+
+            return;
+
+        }
+
+
+        // 🧱 Diğer eşyalar blok koysun
         placeBlock();
 
     }
@@ -1405,7 +1610,34 @@ window.addEventListener(
 
 
 // =====================================
+// SAĞ TIK BIRAKILDI
+// =====================================
+
+window.addEventListener(
+    "mouseup",
+    (event) => {
+
+        if (
+            event.button !== 2
+        ) {
+
+            return;
+
+        }
+
+
+        eating = false;
+        eatingTimer = 0;
+
+    }
+);
+
+// =====================================
 // BLOK KOY
+// =====================================
+
+// =====================================
+// 🧱 BLOK KOY
 // =====================================
 
 function placeBlock() {
@@ -1444,6 +1676,42 @@ function placeBlock() {
     }
 
 
+    // =================================
+    // 🚫 BLOK OLMAYAN EŞYALAR
+    // =================================
+
+    const placeableBlocks = [
+
+        "grass",
+        "dirt",
+        "stone",
+        "wood",
+        "leaves",
+        "sand"
+
+    ];
+
+
+    if (
+        !placeableBlocks.includes(
+            selected.type
+        )
+    ) {
+
+        console.log(
+            "🚫 Bu eşya blok olarak yerleştirilemez:",
+            selected.type
+        );
+
+        return;
+
+    }
+
+
+    // =================================
+    // 📍 YERLEŞTİRME KONUMU
+    // =================================
+
     const normal =
         hit.face.normal;
 
@@ -1452,12 +1720,19 @@ function placeBlock() {
         hit.object.position.clone();
 
 
-    position.x += normal.x;
+    position.x +=
+        normal.x;
 
-    position.y += normal.y;
+    position.y +=
+        normal.y;
 
-    position.z += normal.z;
+    position.z +=
+        normal.z;
 
+
+    // =================================
+    // 🧱 BLOK VAR MI?
+    // =================================
 
     if (
         hasBlockAt(position)
@@ -1468,6 +1743,10 @@ function placeBlock() {
     }
 
 
+    // =================================
+    // 🧍 OYUNCUNUN İÇİNE KOYMA
+    // =================================
+
     if (
         isInsidePlayer(position)
     ) {
@@ -1477,11 +1756,23 @@ function placeBlock() {
     }
 
 
-    let material =
-        grassMaterial;
+    // =================================
+    // 🎨 MATERYAL
+    // =================================
+
+    let material;
 
 
     if (
+        selected.type === "grass"
+    ) {
+
+        material =
+            grassMaterial;
+
+    }
+
+    else if (
         selected.type === "dirt"
     ) {
 
@@ -1527,6 +1818,10 @@ function placeBlock() {
     }
 
 
+    // =================================
+    // 🧱 BLOĞU OLUŞTUR
+    // =================================
+
     createBlock(
         activeScene,
         position.x,
@@ -1536,11 +1831,22 @@ function placeBlock() {
     );
 
 
+    // =================================
+    // 🎒 ENVANTERDEN ÇIKAR
+    // =================================
+
     removeInventoryBlock(
         selected.type,
         1
     );
-playBlockPlaceSound();
+
+
+    // =================================
+    // 🔊 SES
+    // =================================
+
+    playBlockPlaceSound();
+
 }
 
 
@@ -1687,7 +1993,74 @@ function isInsidePlayer(
 
 }
 
+// =====================================
+// 🥩 ET YEME GÜNCELLE
+// =====================================
 
+function updateEating(delta) {
+
+    if (!eating) {
+        return;
+    }
+
+
+    const selected =
+        getSelectedBlock();
+
+
+    // Et artık seçili değilse dur
+    if (
+        !selected ||
+        selected.type !== "raw_meat"
+    ) {
+
+        eating = false;
+        eatingTimer = 0;
+
+        return;
+
+    }
+
+
+    eatingTimer += delta;
+
+
+    // 1.2 saniye boyunca basılı tutuldu
+    if (
+        eatingTimer >= EAT_TIME
+    ) {
+
+        eatingTimer = 0;
+
+
+        // Açlığı artır
+        eatRawMeat();
+
+
+        // Envanterden 1 et çıkar
+        removeInventoryBlock(
+            "raw_meat",
+            1
+        );
+
+
+        // Et bittiyse dur
+        const remaining =
+            getSelectedBlock();
+
+
+        if (
+            !remaining ||
+            remaining.type !== "raw_meat"
+        ) {
+
+            eating = false;
+
+        }
+
+    }
+
+}
 // =====================================
 // ETKİLEŞİM GÜNCELLE
 // =====================================
@@ -1733,6 +2106,9 @@ export function updateInteraction(
     // Kırma
 
     updateBreaking(
+        delta
+    );
+    updateEating(
         delta
     );
     updateDroppedBlocks(
@@ -1789,12 +2165,47 @@ function updateBreaking(
 
 
     const hardness =
-        blockHardness[type] ||
-        0.5;
+    blockHardness[type] ||
+    0.5;
 
+const selected =
+    getSelectedBlock();
 
-    breakTimer +=
-        delta;
+let toolSpeed = 1;
+
+// ⛏️ Kazma
+
+if (
+    selected &&
+    selected.type === "pickaxe"
+) {
+
+    if (type === "stone") {
+
+        toolSpeed = 3;
+
+    }
+}
+
+// 🪓 Balta
+
+if (
+    selected &&
+    selected.type === "axe"
+) {
+
+    if (
+        type === "wood" ||
+        type === "leaves"
+    ) {
+
+        toolSpeed = 3;
+
+    }
+}
+
+breakTimer +=
+    delta * toolSpeed;
 
 
     const progress =

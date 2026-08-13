@@ -26,6 +26,7 @@ export const player = {
     height: 2,
 
     grounded: false,
+    inWater: false,
 
     // ❤️ CAN SİSTEMİ
     maxHealth: 10,
@@ -100,7 +101,7 @@ export function createPlayer(scene) {
 
     
 
-updateHealthHUD();
+
 
 return group;
 }
@@ -161,7 +162,34 @@ function getBlockBox(block) {
     );
 
 }
+// =====================================
+// 🌊 SU KONTROLÜ
+// =====================================
 
+function isPlayerInWater(position) {
+
+    const playerBox =
+        getPlayerBox(position);
+
+    for (const block of blocks) {
+
+        if (!block.userData.isWater) {
+            continue;
+        }
+
+        const waterBox =
+            getBlockBox(block);
+
+        if (
+            playerBox.intersectsBox(waterBox)
+        ) {
+            return true;
+        }
+
+    }
+
+    return false;
+}
 
 // =====================================
 // ÇARPIŞMA
@@ -175,22 +203,25 @@ function collides(position) {
 
     for (const block of blocks) {
 
-        const blockBox =
-            getBlockBox(block);
+    // 🌊 SUYUN İÇİNDEN GEÇİLEBİLİR
+    if (block.userData.isWater) {
+        continue;
+    }
 
+    const blockBox =
+        getBlockBox(block);
 
-        if (
-            playerBox.intersectsBox(
-                blockBox
-            )
-        ) {
+    if (
+        playerBox.intersectsBox(
+            blockBox
+        )
+    ) {
 
-            return true;
-
-        }
+        return true;
 
     }
 
+}
 
     return false;
 
@@ -443,8 +474,43 @@ if (
         current.y;
 
 }
-player.velocityY -=
-    20 * delta;
+// =================================
+// 🌊 YÜZME / YERÇEKİMİ
+// =================================
+
+player.inWater =
+    isPlayerInWater(current);
+
+if (player.inWater) {
+
+    // 🌊 Suyun içinde normal yerçekimi yok
+    player.velocityY -=
+        3 * delta;
+
+    // 🏊 SPACE = yukarı yüz
+    if (keys["Space"]) {
+
+        player.velocityY +=
+            12 * delta;
+
+    }
+
+    // Hızı sınırla
+    player.velocityY =
+        THREE.MathUtils.clamp(
+            player.velocityY,
+            -3,
+            5
+        );
+
+}
+else {
+
+    // 🧱 Normal yerçekimi
+    player.velocityY -=
+        20 * delta;
+
+}
     // =================================
     // DİKEY HAREKET
     // =================================
@@ -544,7 +610,8 @@ player.velocityY -=
 
     if (
     keys["Space"] &&
-    player.grounded
+    player.grounded &&
+    !player.inWater
 ) {
 
     player.velocityY =
@@ -594,7 +661,7 @@ export function damagePlayer(amount) {
         player.health = 0;
     }
 
-    updateHealthHUD();
+    updateHealthBar();
 
     // Öldü
     if (player.health <= 0) {
@@ -619,7 +686,7 @@ export function healPlayer(amount) {
             player.maxHealth;
     }
 
-    updateHealthHUD();
+    updateHealthBar();
 }
 // =====================================
 // 🔄 YENİDEN DOĞ
@@ -629,7 +696,7 @@ function respawnPlayer() {
 
     player.object.position.set(
         0,
-        12,
+        6.5,
         0
     );
 
@@ -640,41 +707,32 @@ function respawnPlayer() {
 
     player.grounded = false;
 
-    updateHealthHUD();
+    updateHealthBar();
 }
 // =====================================
-// ❤️ CAN HUD
+// ❤️ CAN BARINI GÜNCELLE
 // =====================================
 
-function updateHealthHUD() {
+function updateHealthBar() {
 
-    let hud =
+    const bar =
         document.getElementById(
-            "health"
+            "health-fill"
         );
 
-    if (!hud) {
+    if (!bar) {
         return;
     }
 
-    hud.innerHTML = "";
 
-    for (
-        let i = 0;
-        i < player.maxHealth;
-        i++
-    ) {
+    const percent =
+        (
+            player.health /
+            player.maxHealth
+        ) * 100;
 
-        const heart =
-            document.createElement("span");
 
-        heart.textContent =
-            i < player.health
-                ? "❤️"
-                : "🖤";
+    bar.style.width =
+        percent + "%";
 
-        hud.appendChild(
-            heart
-        );
-    }
 }

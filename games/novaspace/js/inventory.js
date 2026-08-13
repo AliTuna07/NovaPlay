@@ -26,7 +26,26 @@ export const inventory = {
 // =====================================
 // BLOK İKONLARI
 // =====================================
+// =====================================
+// ⚔️ EŞYA TÜRLERİ
+// =====================================
 
+export const itemTypes = {
+    sword: {
+        name: "Kılıç",
+        maxStack: 1
+    },
+
+    pickaxe: {
+        name: "Kazma",
+        maxStack: 1
+    },
+
+    axe: {
+        name: "Balta",
+        maxStack: 1
+    }
+};
 
 
 
@@ -115,7 +134,90 @@ export function addBlock(
     return false;
 
 }
+// =====================================
+// 🥩 GENEL EŞYA EKLE
+// =====================================
 
+export function addItem(
+    type,
+    amount = 1
+) {
+const itemInfo =
+    itemTypes[type];
+
+const maxStack =
+    itemInfo?.maxStack ?? 64;
+    // Önce aynı türü bul
+    for (
+        const slot of inventory.slots
+    ) {
+
+        if (
+            slot &&
+            slot.type === type &&
+            slot.amount < maxStack
+        ) {
+
+            const space =
+                maxStack - slot.amount;
+
+            const addAmount =
+                Math.min(
+                    amount,
+                    space
+                );
+
+            slot.amount +=
+                addAmount;
+
+            amount -=
+                addAmount;
+
+            if (amount <= 0) {
+
+                updateHotbar();
+
+                return true;
+
+            }
+
+        }
+
+    }
+
+
+    // Boş slot bul
+    for (
+        let i = 0;
+        i < inventory.slots.length;
+        i++
+    ) {
+
+        if (
+            !inventory.slots[i]
+        ) {
+
+            inventory.slots[i] = {
+
+                type: type,
+
+                amount: amount
+
+            };
+
+            updateHotbar();
+
+            return true;
+
+        }
+
+    }
+
+
+    updateHotbar();
+
+    return false;
+}
 
 // =====================================
 // BLOK ÇIKAR
