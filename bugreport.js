@@ -12,6 +12,9 @@ import {
     onValue,
     remove
 } from "./firebase.js";
+const ADMINS = [
+    "NovaPlayer"
+];
 
 const bugList = document.getElementById("bugList");
 const bugTitle = document.getElementById("bugTitle");
@@ -33,7 +36,7 @@ function getUsername() {
 }
 
 const currentUser = getUsername();
-
+const isAdmin = ADMINS.includes(currentUser);
 /* ===========================================
    Giriş Kontrolü
 =========================================== */
