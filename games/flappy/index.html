@@ -2,31 +2,117 @@
 <html lang="tr">
 
 <head>
+
     <meta charset="UTF-8">
-    <title>NovaPlay - Flappy</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- SEO -->
+    <title>Flappy Bird Oyunu | Ücretsiz Online Flappy | NovaPlay</title>
+
+    <meta
+        name="description"
+        content="Flappy oyununu ücretsiz ve online oyna! Engellerin arasından geç, en yüksek skoru yap ve reflekslerini test et. NovaPlay'de hemen oyna."
+    >
+
+    <meta name="author" content="NovaPlay">
+
+    <!-- Canonical -->
+    <link
+        rel="canonical"
+        href="https://alituna07.github.io/NovaPlay/games/flappy/"
+    >
+
+    <!-- Favicon -->
+    <link
+        rel="icon"
+        type="image/png"
+        href="../../logo.png"
+    >
+
+    <!-- Open Graph -->
+    <meta
+        property="og:title"
+        content="Flappy Oyunu | NovaPlay"
+    >
+
+    <meta
+        property="og:description"
+        content="Ücretsiz online Flappy oyunu. Engellerden kaç ve en yüksek skoru yap!"
+    >
+
+    <meta
+        property="og:image"
+        content="https://alituna07.github.io/NovaPlay/logo.png"
+    >
+
+    <meta
+        property="og:url"
+        content="https://alituna07.github.io/NovaPlay/games/flappy/"
+    >
+
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="NovaPlay">
+
+    <!-- Structured Data -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "VideoGame",
+        "name": "NovaPlay Flappy",
+        "description": "Ücretsiz online Flappy oyunu. Engellerin arasından geç ve en yüksek skoru yap.",
+        "url": "https://alituna07.github.io/NovaPlay/games/flappy/",
+        "image": "https://alituna07.github.io/NovaPlay/logo.png",
+        "genre": "Arcade",
+        "gamePlatform": [
+            "Web Browser"
+        ],
+        "applicationCategory": "Game",
+        "operatingSystem": "Any"
+    }
+    </script>
 
     <link rel="stylesheet" href="style.css">
+
 </head>
 
 <body>
 
-<h1>🐦 Flappy</h1>
+    <h1>🐦 Ücretsiz Online Flappy Oyunu</h1>
 
-<canvas id="game" width="400" height="600"></canvas>
+    <p>
+        Flappy oyununu ücretsiz online oyna!
+        Engellerin arasından geç, kuşunu kontrol et
+        ve en yüksek skoru yap.
+    </p>
 
-<h2>Skor: <span id="score">0</span></h2>
+    <canvas
+        id="game"
+        width="400"
+        height="600"
+        aria-label="Flappy oyun alanı">
+    </canvas>
 
-<div class="game-controls">
-    <button onclick="restartGame()">🔄 Yeniden Başlat</button>
+    <h2>
+        Skor:
+        <span id="score">0</span>
+    </h2>
 
-    <a href="../../index.html">
-        <button>⬅ NovaPlay'e Dön</button>
-    </a>
-</div>
+    <div class="game-controls">
 
-<script src="../../common.js"></script>
-<script src="script.js"></script
+        <button onclick="restartGame()">
+            🔄 Yeniden Başlat
+        </button>
 
+        <a href="../../index.html">
+            <button>
+                ⬅ NovaPlay'e Dön
+            </button>
+        </a>
+
+    </div>
+
+    <script src="../../common.js"></script>
+    <script src="script.js"></script>
 
 </body>
 

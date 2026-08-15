@@ -3,53 +3,123 @@
 
 <head>
 
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>NovaPlay | Dama</title>
+    <!-- SEO -->
+    <title>Dama Oyunu | Ücretsiz Online Dama | NovaPlay</title>
 
-<link rel="stylesheet" href="style.css">
+    <meta
+        name="description"
+        content="Dama oyununu ücretsiz ve online oyna! Taşlarını stratejik kullan, rakibinin taşlarını al ve oyunu kazan. NovaPlay'de hemen dama oyna."
+    >
+
+    <meta name="author" content="NovaPlay">
+
+    <!-- Canonical -->
+    <link
+        rel="canonical"
+        href="https://alituna07.github.io/NovaPlay/games/checkers/"
+    >
+
+    <!-- Favicon -->
+    <link
+        rel="icon"
+        type="image/png"
+        href="../../logo.png"
+    >
+
+    <!-- Open Graph -->
+    <meta
+        property="og:title"
+        content="Dama Oyunu | NovaPlay"
+    >
+
+    <meta
+        property="og:description"
+        content="Ücretsiz online dama oyununu oyna. Stratejini kur ve rakibini yen!"
+    >
+
+    <meta
+        property="og:image"
+        content="https://alituna07.github.io/NovaPlay/logo.png"
+    >
+
+    <meta
+        property="og:url"
+        content="https://alituna07.github.io/NovaPlay/games/checkers/"
+    >
+
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="NovaPlay">
+
+    <!-- Structured Data -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "VideoGame",
+        "name": "NovaPlay Dama",
+        "description": "Ücretsiz dama oyunu. Taşlarını stratejik kullan ve rakibini yen.",
+        "url": "https://alituna07.github.io/NovaPlay/games/checkers/",
+        "image": "https://alituna07.github.io/NovaPlay/logo.png",
+        "genre": "Board Game",
+        "gamePlatform": [
+            "Web Browser"
+        ],
+        "applicationCategory": "Game",
+        "operatingSystem": "Any"
+    }
+    </script>
+
+    <link rel="stylesheet" href="style.css">
 
 </head>
 
 <body>
+
     <div id="gameOverScreen">
 
-    <div class="gameOverBox">
+        <div class="gameOverBox">
 
-        <h2 id="gameOverTitle"></h2>
+            <h2 id="gameOverTitle"></h2>
 
-        <button id="playAgainBtn">
-            🔄 Tekrar Oyna
-        </button>
+            <button id="playAgainBtn">
+                🔄 Tekrar Oyna
+            </button>
 
-        <button onclick="location.href='../../index.html'">
-            🏠 Ana Sayfa
-        </button>
+            <button onclick="location.href='../../index.html'">
+                🏠 Ana Sayfa
+            </button>
+
+        </div>
 
     </div>
 
-</div>
+    <h1>♟️ Ücretsiz Dama Oyunu</h1>
 
-<h1>♟️ Dama</h1>
+    <p>
+        Dama oyununu ücretsiz online oyna!
+        Taşlarını stratejik kullan, rakibinin taşlarını al
+        ve oyunu kazan.
+    </p>
 
-<p id="status">
-⚪ Sıra: Beyaz
-</p>
+    <p id="status">
+        ⚪ Sıra: Beyaz
+    </p>
 
-<div id="board"></div>
+    <div id="board"></div>
 
-<button id="restartBtn">
-🔄 Tekrar Oyna
-</button>
+    <button id="restartBtn">
+        🔄 Tekrar Oyna
+    </button>
 
-<br><br>
+    <br><br>
 
-<a href="../../index.html">
-🏠 NovaPlay Ana Sayfa
-</a>
+    <a href="../../index.html">
+        🏠 NovaPlay Ana Sayfa
+    </a>
 
-<script src="script.js"></script>
+    <script src="script.js"></script>
 
 </body>
 

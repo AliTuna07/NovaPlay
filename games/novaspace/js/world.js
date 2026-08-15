@@ -103,7 +103,33 @@ export const woodMaterial = [
     woodSideMaterial,
     woodSideMaterial
 ];
+export const craftingTableMaterial = [
 
+    new THREE.MeshStandardMaterial({
+        color: 0x8a5a32
+    }),
+
+    new THREE.MeshStandardMaterial({
+        color: 0x8a5a32
+    }),
+
+    new THREE.MeshStandardMaterial({
+        color: 0xc48a4a
+    }),
+
+    new THREE.MeshStandardMaterial({
+        color: 0x8a5a32
+    }),
+
+    new THREE.MeshStandardMaterial({
+        color: 0x9c6a3a
+    }),
+
+    new THREE.MeshStandardMaterial({
+        color: 0x9c6a3a
+    })
+
+];
 
 // YAPRAK
 export const leavesMaterial =
@@ -242,9 +268,11 @@ export function createBlock(
     x,
     y,
     z,
-    material = grassMaterial
+    material = grassMaterial,
+    type = null
 ) {
 
+    
     const block =
         new THREE.Mesh(
             blockGeometry,
@@ -256,20 +284,15 @@ export function createBlock(
         y,
         z
     );
+block.userData.type = null;
+    block.userData.type = type;
 
-    block.castShadow = false;
+    scene.add(block);
 
-    block.receiveShadow = true;
-
-    scene.add(
-        block
-    );
-
-    blocks.push(
-        block
-    );
+    blocks.push(block);
 
     return block;
+
 }
 // =====================================
 // BLOK SİL

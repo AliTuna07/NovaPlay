@@ -314,16 +314,16 @@ function createAxe() {
     // Eldeki konumu
 
     group.position.set(
-        0.55,
-        -0.35,
-        -0.15
-    );
+    0.42,
+    -0.30,
+    -0.92
+);
 
-    group.rotation.set(
-        0.3,
-        0.4,
-        -0.8
-    );
+group.rotation.set(
+    -0.9,
+    0.35,
+    0.25
+);
 
     group.scale.set(
         0.8,
@@ -381,7 +381,17 @@ function createPickaxe() {
     head.position.y = 0.4;
 
     group.add(head);
+group.position.set(
+    0.42,
+    -0.30,
+    -0.92
+);
 
+group.rotation.set(
+    -0.9,
+    0.35,
+    0.25
+);
     return group;
 
 }

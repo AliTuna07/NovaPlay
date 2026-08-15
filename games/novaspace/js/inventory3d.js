@@ -6,9 +6,9 @@ import {
     stoneMaterial,
     woodMaterial,
     leavesMaterial,
-    sandMaterial
+    sandMaterial,
+    craftingTableMaterial
 } from "./world.js";
-
 
 // =====================================
 // TEK RENDERER
@@ -56,9 +56,12 @@ function getMaterial(type) {
         return sandMaterial;
     }
 
+    if (type === "crafting_table") {
+        return craftingTableMaterial;
+    }
+
     return stoneMaterial;
 }
-
 
 // =====================================
 // TEK RENDERER OLUŞTUR

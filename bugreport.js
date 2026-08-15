@@ -12,10 +12,7 @@ import {
     onValue,
     remove
 } from "./firebase.js";
-const ADMINS = [
-    "NovaPlayer"
-];
-const isAdmin = ADMINS.includes(currentUser);
+
 const bugList = document.getElementById("bugList");
 const bugTitle = document.getElementById("bugTitle");
 const bugDescription = document.getElementById("bugDescription");

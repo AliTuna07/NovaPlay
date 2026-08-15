@@ -2,80 +2,180 @@
 <html lang="tr">
 
 <head>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NovaPlay | Bomberman</title>
+
+    <!-- SEO -->
+    <title>Bomberman Oyunu | Ücretsiz Online Bomberman | NovaPlay</title>
+
+    <meta
+        name="description"
+        content="Bomberman oyununu ücretsiz ve online oyna! Bombaları stratejik kullan, engelleri yok et, güçlendirmeleri topla ve seviyeleri tamamla."
+    >
+
+    <meta name="author" content="NovaPlay">
+
+    <!-- Canonical -->
+    <link
+        rel="canonical"
+        href="https://alituna07.github.io/NovaPlay/games/bomberman/"
+    >
+
+    <!-- Favicon -->
+    <link
+        rel="icon"
+        type="image/png"
+        href="../../logo.png"
+    >
+
+    <!-- Open Graph -->
+    <meta
+        property="og:title"
+        content="Bomberman Oyunu | NovaPlay"
+    >
+
+    <meta
+        property="og:description"
+        content="Ücretsiz online Bomberman oyunu. Bombaları kullan, güçlendirmeleri topla ve seviyeleri tamamla!"
+    >
+
+    <meta
+        property="og:image"
+        content="https://alituna07.github.io/NovaPlay/logo.png"
+    >
+
+    <meta
+        property="og:url"
+        content="https://alituna07.github.io/NovaPlay/games/bomberman/"
+    >
+
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="NovaPlay">
+
+    <!-- Structured Data -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "VideoGame",
+        "name": "NovaPlay Bomberman",
+        "description": "Ücretsiz online Bomberman oyunu. Bombaları stratejik kullan, engelleri yok et, güçlendirmeleri topla ve seviyeleri tamamla.",
+        "url": "https://alituna07.github.io/NovaPlay/games/bomberman/",
+        "image": "https://alituna07.github.io/NovaPlay/logo.png",
+        "genre": [
+            "Arcade",
+            "Action",
+            "Strategy"
+        ],
+        "gamePlatform": [
+            "Web Browser"
+        ],
+        "applicationCategory": "Game",
+        "operatingSystem": "Any"
+    }
+    </script>
 
     <link rel="stylesheet" href="style.css">
+
 </head>
 
 <body>
 
-<div id="gameContainer">
+    <div id="gameContainer">
 
-    <header id="hud">
+        <header id="hud">
 
-        <div class="hud-item">
-            ❤️ <span id="lives">3</span>
+            <div class="hud-item">
+                ❤️ <span id="lives">3</span>
+            </div>
+
+            <div class="hud-item">
+                🪙 <span id="coins">0</span>
+            </div>
+
+            <div class="hud-item">
+                ⭐ <span id="xp">0</span>
+            </div>
+
+            <div class="hud-item">
+                💣 <span id="bombs">1</span>
+            </div>
+
+            <div class="hud-item">
+                🔥 <span id="power">1</span>
+            </div>
+
+            <div class="hud-item">
+                ⏱ <span id="timer">180</span>
+            </div>
+
+            <div class="hud-item">
+                🏁 <span id="level">1</span>
+            </div>
+
+        </header>
+
+        <main>
+
+            <h1>💣 Ücretsiz Online Bomberman Oyunu</h1>
+
+            <p>
+                Bombaları stratejik kullan, engelleri yok et,
+                güçlendirmeleri topla ve seviyeleri tamamla!
+            </p>
+
+            <canvas
+                id="gameCanvas"
+                width="832"
+                height="576"
+                aria-label="Bomberman oyun alanı">
+            </canvas>
+
+        </main>
+
+        <div id="gameOverScreen" class="hidden">
+
+            <div class="game-over-box">
+
+                <h2 id="gameOverTitle">
+                    ⏰ Süre Doldu!
+                </h2>
+
+                <p>
+                    🪙 NovaCoin:
+                    <span id="gameOverCoins">0</span>
+                </p>
+
+                <p>
+                    ⭐ XP:
+                    <span id="gameOverXP">0</span>
+                </p>
+
+                <button onclick="location.reload()">
+                    🔄 Tekrar Oyna
+                </button>
+
+                <button onclick="location.href='../../index.html'">
+                    🏠 Ana Menü
+                </button>
+
+            </div>
+
         </div>
-
-        <div class="hud-item">
-            🪙 <span id="coins">0</span>
-        </div>
-
-        <div class="hud-item">
-            ⭐ <span id="xp">0</span>
-        </div>
-
-        <div class="hud-item">
-            💣 <span id="bombs">1</span>
-        </div>
-
-        <div class="hud-item">
-            🔥 <span id="power">1</span>
-        </div>
-
-        <div class="hud-item">
-            ⏱ <span id="timer">180</span>
-        </div>
-        <div class="hud-item">
-🏁 <span id="level">1</span>
-</div>
-
-    </header>
-
-    <canvas id="gameCanvas" width="832" height="576"></canvas>
-<div id="gameOverScreen" class="hidden">
-
-    <div class="game-over-box">
-
-        <h1 id="gameOverTitle">⏰ Süre Doldu!</h1>
-
-        <p>🪙 NovaCoin: <span id="gameOverCoins">0</span></p>
-        <p>⭐ XP: <span id="gameOverXP">0</span></p>
-
-        <button onclick="location.reload()">
-            🔄 Tekrar Oyna
-        </button>
-
-        <button onclick="location.href='../../index.html'">
-            🏠 Ana Menü
-        </button>
 
     </div>
 
-</div>
-</div>
+    <script src="config.js"></script>
+    <script src="storage.js"></script>
+    <script src="sound.js"></script>
+    <script src="player.js"></script>
+    <script src="world.js"></script>
+    <script src="bombs.js"></script>
+    <script src="levels.js"></script>
+    <script src="enemy.js"></script>
+    <script src="ui.js"></script>
+    <script src="script.js"></script>
 
-<script src="config.js"></script>
-<script src="storage.js"></script>
-<script src="sound.js"></script>
-<script src="player.js"></script>
-<script src="world.js"></script>
-<script src="bombs.js"></script>
-<script src="levels.js"></script>
-<script src="enemy.js"></script>
-<script src="ui.js"></script>
-<script src="script.js"></script>
 </body>
+
 </html>

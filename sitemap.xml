@@ -2,24 +2,64 @@
 
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
-<url>
-    <loc>https://alituna07.github.io/NovaPlay/</loc>
-</url>
+    <!-- Ana Sayfa -->
+    <url>
+        <loc>https://alituna07.github.io/NovaPlay/</loc>
+    </url>
 
-<url>
-    <loc>https://alituna07.github.io/NovaPlay/games/snake/</loc>
-</url>
+    <!-- Snake -->
+    <url>
+        <loc>https://alituna07.github.io/NovaPlay/games/snake/</loc>
+    </url>
 
-<url>
-    <loc>https://alituna07.github.io/NovaPlay/games/tictactoe/</loc>
-</url>
+    <!-- XOX -->
+    <url>
+        <loc>https://alituna07.github.io/NovaPlay/games/tictactoe/</loc>
+    </url>
 
-<url>
-    <loc>https://alituna07.github.io/NovaPlay/games/breakout/</loc>
-</url>
+    <!-- Breakout -->
+    <url>
+        <loc>https://alituna07.github.io/NovaPlay/games/breakout/</loc>
+    </url>
 
-<url>
-    <loc>https://alituna07.github.io/NovaPlay/games/flappy/</loc>
-</url>
+    <!-- 2048 -->
+    <url>
+        <loc>https://alituna07.github.io/NovaPlay/games/2048/</loc>
+    </url>
+
+    <!-- Dama -->
+    <url>
+        <loc>https://alituna07.github.io/NovaPlay/games/checkers/</loc>
+    </url>
+
+    <!-- Flappy -->
+    <url>
+        <loc>https://alituna07.github.io/NovaPlay/games/flappy/</loc>
+    </url>
+
+    <!-- Ping Pong -->
+    <url>
+        <loc>https://alituna07.github.io/NovaPlay/games/pingpong/</loc>
+    </url>
+
+    <!-- Nova Race -->
+    <url>
+        <loc>https://alituna07.github.io/NovaPlay/games/race/</loc>
+    </url>
+
+    <!-- Bomberman -->
+    <url>
+        <loc>https://alituna07.github.io/NovaPlay/games/bomberman/</loc>
+    </url>
+
+    <!-- NovaMines -->
+    <url>
+        <loc>https://alituna07.github.io/NovaPlay/games/minesweeper/</loc>
+    </url>
+
+    <!-- NovaBridge -->
+    <url>
+        <loc>https://alituna07.github.io/NovaPlay/games/novabridge/</loc>
+    </url>
 
 </urlset>

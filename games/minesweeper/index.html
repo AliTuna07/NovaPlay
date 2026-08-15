@@ -2,11 +2,80 @@
 <html lang="tr">
 
 <head>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NovaMines | NovaPlay</title>
+
+    <!-- SEO -->
+    <title>Mayın Tarlası Oyunu | Ücretsiz Online Mayın Tarlası | NovaPlay</title>
+
+    <meta
+        name="description"
+        content="Mayın Tarlası oyununu ücretsiz ve online oyna! Mayınlara basmadan güvenli kareleri aç, bayrakları kullan ve en iyi süreni yap."
+    >
+
+    <meta name="author" content="NovaPlay">
+
+    <!-- Canonical -->
+    <link
+        rel="canonical"
+        href="https://alituna07.github.io/NovaPlay/games/minesweeper/"
+    >
+
+    <!-- Favicon -->
+    <link
+        rel="icon"
+        type="image/png"
+        href="../../logo.png"
+    >
+
+    <!-- Open Graph -->
+    <meta
+        property="og:title"
+        content="Mayın Tarlası Oyunu | NovaPlay"
+    >
+
+    <meta
+        property="og:description"
+        content="Ücretsiz online Mayın Tarlası oyunu. Mayınlardan kaç, güvenli kareleri aç ve en iyi süreni yap!"
+    >
+
+    <meta
+        property="og:image"
+        content="https://alituna07.github.io/NovaPlay/logo.png"
+    >
+
+    <meta
+        property="og:url"
+        content="https://alituna07.github.io/NovaPlay/games/minesweeper/"
+    >
+
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="NovaPlay">
+
+    <!-- Structured Data -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "VideoGame",
+        "name": "NovaMines",
+        "description": "Ücretsiz online Mayın Tarlası oyunu. Mayınlara basmadan güvenli kareleri aç ve oyunu tamamla.",
+        "url": "https://alituna07.github.io/NovaPlay/games/minesweeper/",
+        "image": "https://alituna07.github.io/NovaPlay/logo.png",
+        "genre": [
+            "Puzzle",
+            "Strategy"
+        ],
+        "gamePlatform": [
+            "Web Browser"
+        ],
+        "applicationCategory": "Game",
+        "operatingSystem": "Any"
+    }
+    </script>
 
     <link rel="stylesheet" href="style.css">
+
 </head>
 
 <body>
@@ -27,6 +96,13 @@
             <h1>💣 NovaMines</h1>
 
         </header>
+
+        <!-- Oyun Açıklaması -->
+        <p>
+            Mayın Tarlası oyununu ücretsiz online oyna!
+            Mayınlara basmadan güvenli kareleri aç,
+            bayrakları kullan ve en iyi süreni yap.
+        </p>
 
         <!-- Bilgi Kutuları -->
         <section class="info-panel">
@@ -49,25 +125,35 @@
         </section>
 
         <!-- Oyun Alanı -->
-        <section id="board" class="board"></section>
+        <section
+            id="board"
+            class="board"
+            aria-label="Mayın Tarlası oyun alanı">
+        </section>
 
         <!-- Alt Butonlar -->
         <section class="controls">
 
-            <button id="restartBtn" class="control-btn">
+            <button
+                id="restartBtn"
+                class="control-btn">
                 🔄 Yeniden Başlat
             </button>
 
         </section>
 
         <!-- Sonuç -->
-        <div id="resultPanel" class="result-panel hidden">
+        <div
+            id="resultPanel"
+            class="result-panel hidden">
 
             <h2 id="resultTitle"></h2>
 
             <p id="resultText"></p>
 
-            <button id="playAgainBtn" class="control-btn">
+            <button
+                id="playAgainBtn"
+                class="control-btn">
                 Tekrar Oyna
             </button>
 

@@ -4,7 +4,67 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NovaPlay Snake</title>
+
+    <!-- SEO -->
+    <title>Snake Oyunu | Ücretsiz Online Yılan Oyunu | NovaPlay</title>
+
+    <meta
+        name="description"
+        content="Snake oyununu ücretsiz ve online oyna! Yılanını büyüt, elmaları topla ve en yüksek skoru yap. İndirme gerektirmez."
+    >
+
+    <meta name="author" content="NovaPlay">
+
+    <!-- Canonical -->
+    <link
+        rel="canonical"
+        href="https://alituna07.github.io/NovaPlay/games/snake/"
+    >
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="../../logo.png">
+
+    <!-- Open Graph -->
+    <meta
+        property="og:title"
+        content="Snake Oyunu | NovaPlay"
+    >
+
+    <meta
+        property="og:description"
+        content="Ücretsiz online Snake oyunu. Yılanını büyüt ve en yüksek skoru yap!"
+    >
+
+    <meta
+        property="og:image"
+        content="https://alituna07.github.io/NovaPlay/logo.png"
+    >
+
+    <meta
+        property="og:url"
+        content="https://alituna07.github.io/NovaPlay/games/snake/"
+    >
+
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="NovaPlay">
+
+    <!-- Structured Data -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "VideoGame",
+        "name": "NovaPlay Snake",
+        "description": "Ücretsiz online Snake yılan oyunu. Yılanını büyüt, elmaları topla ve yüksek skor yap.",
+        "url": "https://alituna07.github.io/NovaPlay/games/snake/",
+        "image": "https://alituna07.github.io/NovaPlay/logo.png",
+        "genre": "Arcade",
+        "gamePlatform": [
+            "Web Browser"
+        ],
+        "applicationCategory": "Game",
+        "operatingSystem": "Any"
+    }
+    </script>
 
     <link rel="stylesheet" href="style.css">
 </head>
@@ -13,47 +73,55 @@
 
 <div class="container">
 
-    <h1>🐍 NovaPlay Snake</h1>
-<div class="game-status" id="gameStatus">
-    🟢 Hazır
-</div>
+    <h1>🐍 Ücretsiz Snake Oyunu</h1>
+
+    <p>
+        Klasik Snake oyununu ücretsiz online oyna.
+        Elmaları topla, yılanını büyüt ve en yüksek skorunu yap!
+    </p>
+
+    <div class="game-status" id="gameStatus">
+        🟢 Hazır
+    </div>
+
     <div class="topBar">
 
-        
+        <div class="stat">
+            <span>🍎 Skor</span>
+            <h2 id="score">0</h2>
+        </div>
 
-    <div class="stat">
-        <span>🍎 Skor</span>
-        <h2 id="score">0</h2>
+        <div class="stat">
+            <span>🏆 Rekor</span>
+            <h2 id="highscore">0</h2>
+        </div>
+
+        <div class="stat">
+            <span>⚡ Hız</span>
+            <h2 id="speed">1x</h2>
+        </div>
+
     </div>
-
-    <div class="stat">
-        <span>🏆 Rekor</span>
-        <h2 id="highscore">0</h2>
-    </div>
-
-    <div class="stat">
-        <span>⚡ Hız</span>
-        <h2 id="speed">1x</h2>
-    </div>
-
-</div>
 
     <canvas
         id="game"
         width="400"
-        height="400">
+        height="400"
+        aria-label="Snake oyun alanı">
     </canvas>
-<div class="game-info">
 
-    🐍 Uzunluk:
-    <span id="length">1</span>
+    <div class="game-info">
 
-    |
+        🐍 Uzunluk:
+        <span id="length">1</span>
 
-    🍎 Yenilen:
-    <span id="foods">0</span>
+        |
 
-</div>
+        🍎 Yenilen:
+        <span id="foods">0</span>
+
+    </div>
+
     <div class="buttons">
 
         <button id="restart">
@@ -62,7 +130,7 @@
 
     </div>
 
-       <div class="help">
+    <div class="help">
 
         ⌨️ Ok Tuşları / WASD
 
@@ -73,7 +141,6 @@
     </div>
 
 </div>
-
 
 <div id="gameOverScreen" class="game-over">
 

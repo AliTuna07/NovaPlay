@@ -3,110 +3,199 @@
 
 <head>
 
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Nova Race</title>
+    <!-- SEO -->
+    <title>Nova Race | Ücretsiz Online Yarış Oyunu | NovaPlay</title>
 
-<link rel="stylesheet" href="style.css">
+    <meta
+        name="description"
+        content="Nova Race ile neon yollarda ücretsiz online yarış! Aracını kontrol et, engellerden kaç, hızını artır ve en yüksek skoru yap."
+    >
+
+    <meta name="author" content="NovaPlay">
+
+    <!-- Canonical -->
+    <link
+        rel="canonical"
+        href="https://alituna07.github.io/NovaPlay/games/race/"
+    >
+
+    <!-- Favicon -->
+    <link
+        rel="icon"
+        type="image/png"
+        href="../../logo.png"
+    >
+
+    <!-- Open Graph -->
+    <meta
+        property="og:title"
+        content="Nova Race | NovaPlay"
+    >
+
+    <meta
+        property="og:description"
+        content="Ücretsiz online neon yarış oyunu. Hızını artır, engellerden kaç ve en iyi skorunu yap!"
+    >
+
+    <meta
+        property="og:image"
+        content="https://alituna07.github.io/NovaPlay/logo.png"
+    >
+
+    <meta
+        property="og:url"
+        content="https://alituna07.github.io/NovaPlay/games/race/"
+    >
+
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="NovaPlay">
+
+    <!-- Structured Data -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "VideoGame",
+        "name": "Nova Race",
+        "description": "Ücretsiz online neon yarış oyunu. Aracını kontrol et, engellerden kaç ve yüksek skor yap.",
+        "url": "https://alituna07.github.io/NovaPlay/games/race/",
+        "image": "https://alituna07.github.io/NovaPlay/logo.png",
+        "genre": [
+            "Racing",
+            "Arcade"
+        ],
+        "gamePlatform": [
+            "Web Browser"
+        ],
+        "applicationCategory": "Game",
+        "operatingSystem": "Any"
+    }
+    </script>
+
+    <link rel="stylesheet" href="style.css">
 
 </head>
 
-
 <body>
 
+    <div id="loading">
+        Nova Race Yükleniyor...
+    </div>
 
-<div id="loading">
-Nova Race Yükleniyor...
-</div>
+    <h1>🚗 Nova Race</h1>
 
+    <p>
+        Neon yollarda ücretsiz online yarış!
+        Aracını kontrol et, engellerden kaç ve en yüksek skorunu yap.
+    </p>
 
-<div id="speedometer">
+    <div id="speedometer">
 
-    <span id="speedValue">20</span>
+        <span id="speedValue">20</span>
 
-    <small>KM/H</small>
+        <small>KM/H</small>
 
-</div>
+    </div>
 
-
-
-<button onclick="location.href='settings.html'">
-⚙️ Ayarlar
-</button>
-<button id="settingsButton">
-⚙
-</button>
-<div id="gameOver">
-
-    <h1>🏁 OYUN BİTTİ</h1>
-
-    <h2 id="finalScore">
-        Skor: 0
-    </h2>
-
-    <button onclick="location.reload()">
-        🔄 Tekrar Oyna
+    <button onclick="location.href='settings.html'">
+        ⚙️ Ayarlar
     </button>
 
-    <button onclick="goMainMenu()">
-        🏠 Ana Menü
+    <button id="settingsButton">
+        ⚙
     </button>
 
-</div>
+    <div id="gameOver">
 
+        <h2>🏁 OYUN BİTTİ</h2>
 
+        <h2 id="finalScore">
+            Skor: 0
+        </h2>
 
-<!-- NovaPlay ortak sistem -->
-<script src="../../common.js"></script>
+        <button onclick="location.reload()">
+            🔄 Tekrar Oyna
+        </button>
 
-
-
-<script type="module" src="main.js"></script>
-<script type="module" src="radio.js"></script>
-<div id="radio">
-
-    <div id="radioTitle">
-        📻 NOVA RADIO
-    </div>
-
-    <div id="stationName">
-        Chill FM
-    </div>
-
-    <div class="radioButtons">
-
-        <button id="prevStation">◀</button>
-
-        <button id="playStation">⏸</button>
-
-        <button id="nextStation">▶</button>
+        <button onclick="goMainMenu()">
+            🏠 Ana Menü
+        </button>
 
     </div>
 
-    <input
-        id="radioVolume"
-        type="range"
-        min="0"
-        max="100"
-        value="60"
-    >
+    <div id="distanceMeter">
+        📏
+        <span id="distanceValue">0.00</span>
+        KM
+    </div>
 
-</div>
-<div id="mobileControls">
+    <!-- NovaPlay ortak sistem -->
+    <script src="../../common.js"></script>
 
-    <button id="leftBtn">◀</button>
+    <!-- Nova Race -->
+    <script type="module" src="main.js"></script>
+    <script type="module" src="radio.js"></script>
 
-    <button id="rightBtn">▶</button>
+    <!-- Nova Radio -->
+    <div id="radio">
 
-    <button id="brakeBtn">▼</button>
+        <div id="radioTitle">
+            📻 NOVA RADIO
+        </div>
 
-    <button id="gasBtn">▲</button>
+        <div id="stationName">
+            Chill FM
+        </div>
 
-</div>
+        <div class="radioButtons">
+
+            <button id="prevStation">
+                ◀
+            </button>
+
+            <button id="playStation">
+                ⏸
+            </button>
+
+            <button id="nextStation">
+                ▶
+            </button>
+
+        </div>
+
+        <input
+            id="radioVolume"
+            type="range"
+            min="0"
+            max="100"
+            value="60"
+        >
+
+    </div>
+
+    <!-- Mobil kontroller -->
+    <div id="mobileControls">
+
+        <button id="leftBtn">
+            ◀
+        </button>
+
+        <button id="rightBtn">
+            ▶
+        </button>
+
+        <button id="brakeBtn">
+            ▼
+        </button>
+
+        <button id="gasBtn">
+            ▲
+        </button>
+
+    </div>
+
 </body>
-<div id="distanceMeter">
-    📏 <span id="distanceValue">0.00</span> KM
-</div>
 
 </html>

@@ -3,94 +3,151 @@
 
 <head>
 
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>NovaPlay 2048</title>
+    <!-- SEO -->
+    <title>2048 Oyunu | Ücretsiz Online 2048 Oyunu | NovaPlay</title>
 
-<link rel="stylesheet" href="style.css">
+    <meta
+        name="description"
+        content="2048 oyununu ücretsiz ve online oyna! Aynı sayıları birleştir, 2048 taşına ulaş ve en yüksek skorunu yap. İndirme gerektirmez."
+    >
+
+    <meta name="author" content="NovaPlay">
+
+    <!-- Canonical -->
+    <link
+        rel="canonical"
+        href="https://alituna07.github.io/NovaPlay/games/2048/"
+    >
+
+    <!-- Favicon -->
+    <link
+        rel="icon"
+        type="image/png"
+        href="../../logo.png"
+    >
+
+    <!-- Open Graph -->
+    <meta
+        property="og:title"
+        content="2048 Oyunu | NovaPlay"
+    >
+
+    <meta
+        property="og:description"
+        content="Ücretsiz online 2048 oyununu oyna, sayıları birleştir ve 2048'e ulaş!"
+    >
+
+    <meta
+        property="og:image"
+        content="https://alituna07.github.io/NovaPlay/logo.png"
+    >
+
+    <meta
+        property="og:url"
+        content="https://alituna07.github.io/NovaPlay/games/2048/"
+    >
+
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="NovaPlay">
+
+    <!-- Structured Data -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "VideoGame",
+        "name": "NovaPlay 2048",
+        "description": "Ücretsiz online 2048 oyunu. Sayıları birleştirerek 2048 taşına ulaşmaya çalış.",
+        "url": "https://alituna07.github.io/NovaPlay/games/2048/",
+        "image": "https://alituna07.github.io/NovaPlay/logo.png",
+        "genre": "Puzzle",
+        "gamePlatform": [
+            "Web Browser"
+        ],
+        "applicationCategory": "Game",
+        "operatingSystem": "Any"
+    }
+    </script>
+
+    <link rel="stylesheet" href="style.css">
 
 </head>
 
-
 <body>
 
+    <h1>🔢 Ücretsiz 2048 Oyunu</h1>
 
-<h1>🔢 2048</h1>
+    <p>
+        2048 oyununu ücretsiz online oyna.
+        Aynı sayıları birleştir, taşları büyüt ve 2048'e ulaşmaya çalış!
+    </p>
 
+    <div class="score-box">
+        Skor:
+        <span id="score">0</span>
+    </div>
 
-<div class="score-box">
-    Skor:
-    <span id="score">0</span>
-</div>
+    <div id="board"></div>
 
+    <div id="gameOverScreen">
 
-<div id="board"></div>
-<div id="gameOverScreen">
+        <div class="game-over-box">
 
-    <div class="game-over-box">
+            <h2>🎮 Oyun Bitti!</h2>
 
-        <h2>🎮 Oyun Bitti!</h2>
+            <p>
+                Skor:
+                <span id="finalScore">0</span>
+            </p>
 
-        <p>
-            Skor:
-            <span id="finalScore">0</span>
-        </p>
+            <p>
+                En Yüksek:
+                <span id="finalHighScore">0</span>
+            </p>
 
-        <p>
-            En Yüksek:
-            <span id="finalHighScore">0</span>
-        </p>
-
-
-        <button onclick="restartGame()">
-            🔄 Tekrar Oyna
-        </button>
-
-
-        <a href="../../index.html">
-
-            <button>
-                🏠 Ana Sayfa
+            <button onclick="restartGame()">
+                🔄 Tekrar Oyna
             </button>
 
-        </a>
+            <a href="../../index.html">
 
+                <button>
+                    🏠 Ana Sayfa
+                </button>
+
+            </a>
+
+        </div>
 
     </div>
 
-</div>
+    <button onclick="restartGame()">
+        🔄 Yeniden Başlat
+    </button>
 
+    <a href="../../index.html">
 
-<button onclick="restartGame()">
-🔄 Yeniden Başlat
-</button>
+        <button>
+            🏠 Ana Sayfa
+        </button>
 
+    </a>
 
-<a href="../../index.html">
-
-<button>
-🏠 Ana Sayfa
-</button>
-
-</a>
-
-
-
-<script src="config.js"></script>
-<script src="board.js"></script>
-<script src="engine.js"></script>
-<script src="ui.js"></script>
-<script src="storage.js"></script>
-<script src="animation.js"></script>
-<script src="achievements.js"></script>
-<script src="leaderboard.js"></script>
-<script src="sound.js"></script>
-<script src="themes.js"></script>
-<script src="effects.js"></script>
-<script src="input.js"></script>
-<script src="script.js"></script>
-
+    <script src="config.js"></script>
+    <script src="board.js"></script>
+    <script src="engine.js"></script>
+    <script src="ui.js"></script>
+    <script src="storage.js"></script>
+    <script src="animation.js"></script>
+    <script src="achievements.js"></script>
+    <script src="leaderboard.js"></script>
+    <script src="sound.js"></script>
+    <script src="themes.js"></script>
+    <script src="effects.js"></script>
+    <script src="input.js"></script>
+    <script src="script.js"></script>
 
 </body>
 

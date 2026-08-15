@@ -44,9 +44,13 @@ export const itemTypes = {
     axe: {
         name: "Balta",
         maxStack: 1
+    },
+
+    crafting_table: {
+        name: "Çalışma Masası",
+        maxStack: 64
     }
 };
-
 
 
 // =====================================

@@ -25,6 +25,12 @@ addItem(
 );
 //========================
 import {
+    craftSword,
+    craftPickaxe,
+    craftAxe,
+    craftCraftingTable
+} from "./crafting.js";
+import {
     getSelectedBlock
 } from "./inventory.js";
 import {
@@ -71,7 +77,62 @@ import {
     updateAnimals
 } from "./animals.js";
 import { updateCamera } from "./camera.js";
+import {
+    closeCraftingTable
+} from "./crafting.js";
 
+document
+    .getElementById(
+        "closeCrafting"
+    )
+    .addEventListener(
+        "click",
+        closeCraftingTable
+    );
+window.addEventListener(
+    "keydown",
+    (event) => {
+
+        if (
+            event.code !== "KeyX"
+        ) {
+
+            return;
+        }
+
+        const menu =
+            document.getElementById(
+                "basicCraftMenu"
+            );
+
+        if (
+            menu.style.display ===
+            "block"
+        ) {
+
+            menu.style.display =
+                "none";
+
+        }
+
+        else {
+
+            menu.style.display =
+                "block";
+
+        }
+
+    }
+);
+
+document
+    .getElementById(
+        "craftTable"
+    )
+    .addEventListener(
+        "click",
+        craftCraftingTable
+    );
 
 // =====================================
 // SAHNE

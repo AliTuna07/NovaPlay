@@ -1,5 +1,8 @@
 import * as THREE from "https://unpkg.com/three@0.179.1/build/three.module.js";
 import {
+    openCraftingTable
+} from "./crafting.js";
+import {
     attackSword
 } from "./hand.js";
 import {playDamageSound
@@ -16,7 +19,8 @@ import {
     stoneMaterial,
     woodMaterial,
     leavesMaterial,
-    sandMaterial
+    sandMaterial,
+    craftingTableMaterial
 } from "./world.js";
 
 import {
@@ -36,9 +40,35 @@ import {
 import {
     eatRawMeat
 } from "./hunger.js";
+let selectedCraftingTable = null;
 // =====================================
 // MOUSE LOCK
 // =====================================
+window.addEventListener(
+    "keydown",
+    (event) => {
+
+        if (event.code !== "KeyX") {
+            return;
+        }
+
+        const hit = getTarget();
+
+        if (!hit) {
+            return;
+        }
+
+        if (
+            hit.object.userData.type ===
+            "crafting_table"
+        ) {
+
+            openCraftingTable();
+
+        }
+
+    }
+);
 
 function lockMouse() {
 
@@ -882,7 +912,14 @@ function getBlockType(block) {
 
     }
 
+if (
+    block.material ===
+    craftingTableMaterial
+) {
 
+    return "crafting_table";
+
+}
     return "grass";
 
 }
@@ -1687,7 +1724,8 @@ function placeBlock() {
         "stone",
         "wood",
         "leaves",
-        "sand"
+        "sand",
+        "crafting_table"
 
     ];
 
@@ -1816,12 +1854,21 @@ function placeBlock() {
             sandMaterial;
 
     }
+    else if (
+    selected.type === "crafting_table"
+) {
+
+    material =
+        craftingTableMaterial;
+
+}
 
 
     // =================================
     // 🧱 BLOĞU OLUŞTUR
     // =================================
 
+   const newBlock =
     createBlock(
         activeScene,
         position.x,
@@ -1829,6 +1876,9 @@ function placeBlock() {
         position.z,
         material
     );
+
+newBlock.userData.type =
+    selected.type;
 
 
     // =================================
@@ -2101,7 +2151,26 @@ export function updateInteraction(
             true;
 
     }
+selectedCraftingTable = null;
 
+if (hit) {
+
+    const type =
+        getBlockType(
+            hit.object
+        );
+
+    if (
+        type ===
+        "crafting_table"
+    ) {
+
+        selectedCraftingTable =
+            hit.object;
+
+    }
+
+}
 
     // Kırma
 

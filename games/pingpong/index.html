@@ -2,36 +2,132 @@
 <html lang="tr">
 
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>NovaPlay - Ping Pong</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<link rel="stylesheet" href="style.css">
+    <!-- SEO -->
+    <title>Ping Pong Oyunu | Ücretsiz Online Masa Tenisi | NovaPlay</title>
+
+    <meta
+        name="description"
+        content="Ping Pong oyununu ücretsiz ve online oyna! Raketi kontrol et, bilgisayara karşı mücadele et ve en yüksek skoru yap. NovaPlay'de hemen oyna."
+    >
+
+    <meta name="author" content="NovaPlay">
+
+    <!-- Canonical -->
+    <link
+        rel="canonical"
+        href="https://alituna07.github.io/NovaPlay/games/pingpong/"
+    >
+
+    <!-- Favicon -->
+    <link
+        rel="icon"
+        type="image/png"
+        href="../../logo.png"
+    >
+
+    <!-- Open Graph -->
+    <meta
+        property="og:title"
+        content="Ping Pong Oyunu | NovaPlay"
+    >
+
+    <meta
+        property="og:description"
+        content="Ücretsiz online Ping Pong oyunu. Raketi kontrol et ve rakibini yen!"
+    >
+
+    <meta
+        property="og:image"
+        content="https://alituna07.github.io/NovaPlay/logo.png"
+    >
+
+    <meta
+        property="og:url"
+        content="https://alituna07.github.io/NovaPlay/games/pingpong/"
+    >
+
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="NovaPlay">
+
+    <!-- Structured Data -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "VideoGame",
+        "name": "NovaPlay Ping Pong",
+        "description": "Ücretsiz online Ping Pong masa tenisi oyunu. Raketi kontrol et ve bilgisayara karşı mücadele et.",
+        "url": "https://alituna07.github.io/NovaPlay/games/pingpong/",
+        "image": "https://alituna07.github.io/NovaPlay/logo.png",
+        "genre": "Sports",
+        "gamePlatform": [
+            "Web Browser"
+        ],
+        "applicationCategory": "Game",
+        "operatingSystem": "Any"
+    }
+    </script>
+
+    <link rel="stylesheet" href="style.css">
 
 </head>
 
 <body>
 
-<h1>🏓 Ping Pong</h1>
+    <h1>🏓 Ücretsiz Online Ping Pong Oyunu</h1>
 
-<div class="score">
-    <span id="playerScore">0</span>
-    -
-    <span id="computerScore">0</span>
-</div>
+    <p>
+        Ping Pong oyununu ücretsiz online oyna!
+        Raketi kontrol et, bilgisayara karşı mücadele et
+        ve en yüksek skoru yap.
+    </p>
 
-<canvas id="game" width="800" height="400"></canvas>
+    <div class="score">
 
-<p>⬆️ ⬇️ Ok tuşları ile raketi hareket ettir</p>
-<div class="mobile-controls">
-    <button id="upBtn">⬆️</button>
-    <button id="downBtn">⬇️</button>
-</div>
+        <span id="playerScore">0</span>
+        -
+        <span id="computerScore">0</span>
 
-<button onclick="restartGame()">🔄 Yeniden Başlat</button>
-<script src="../../common.js"></script>
-<script src="script.js"></script>
+    </div>
+
+    <canvas
+        id="game"
+        width="800"
+        height="400"
+        aria-label="Ping Pong oyun alanı">
+    </canvas>
+
+    <p>
+        ⬆️ ⬇️ Ok tuşları ile raketi hareket ettir
+    </p>
+
+    <div class="mobile-controls">
+
+        <button id="upBtn">
+            ⬆️
+        </button>
+
+        <button id="downBtn">
+            ⬇️
+        </button>
+
+    </div>
+
+    <button onclick="restartGame()">
+        🔄 Yeniden Başlat
+    </button>
+
+    <br><br>
+
+    <a href="../../index.html">
+        🏠 NovaPlay Ana Sayfa
+    </a>
+
+    <script src="../../common.js"></script>
+    <script src="script.js"></script>
 
 </body>
 

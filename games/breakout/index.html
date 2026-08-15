@@ -1,35 +1,121 @@
 <!DOCTYPE html>
 <html lang="tr">
+
 <head>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NovaPlay | Breakout 2.0</title>
+
+    <!-- SEO -->
+    <title>Breakout Oyunu | Ücretsiz Online Breakout | NovaPlay</title>
+
+    <meta
+        name="description"
+        content="Breakout oyununu ücretsiz ve online oyna! Topu sektir, tuğlaları kır, seviyeleri tamamla ve en yüksek skoru yap. NovaPlay'de hemen oyna."
+    >
+
+    <meta name="author" content="NovaPlay">
+
+    <!-- Canonical -->
+    <link
+        rel="canonical"
+        href="https://alituna07.github.io/NovaPlay/games/breakout/"
+    >
+
+    <!-- Favicon -->
+    <link
+        rel="icon"
+        type="image/png"
+        href="../../logo.png"
+    >
+
+    <!-- Open Graph -->
+    <meta
+        property="og:title"
+        content="Breakout Oyunu | NovaPlay"
+    >
+
+    <meta
+        property="og:description"
+        content="Ücretsiz online Breakout oyunu. Tuğlaları kır, seviyeleri tamamla ve yüksek skor yap!"
+    >
+
+    <meta
+        property="og:image"
+        content="https://alituna07.github.io/NovaPlay/logo.png"
+    >
+
+    <meta
+        property="og:url"
+        content="https://alituna07.github.io/NovaPlay/games/breakout/"
+    >
+
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="NovaPlay">
+
+    <!-- Structured Data -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "VideoGame",
+        "name": "NovaPlay Breakout 2.0",
+        "description": "Ücretsiz online Breakout oyunu. Topu sektir, tuğlaları kır ve seviyeleri tamamla.",
+        "url": "https://alituna07.github.io/NovaPlay/games/breakout/",
+        "image": "https://alituna07.github.io/NovaPlay/logo.png",
+        "genre": "Arcade",
+        "gamePlatform": [
+            "Web Browser"
+        ],
+        "applicationCategory": "Game",
+        "operatingSystem": "Any"
+    }
+    </script>
 
     <link rel="stylesheet" href="style.css">
+
 </head>
 
 <body>
 
-    <h1>🧱 Breakout 2.0</h1>
+    <h1>🧱 Ücretsiz Breakout Oyunu</h1>
+
+    <p>
+        Breakout oyununu ücretsiz online oyna!
+        Topu sektir, tuğlaları kır, seviyeleri tamamla
+        ve en yüksek skorunu yap.
+    </p>
 
     <div class="hud">
 
-        <div>⭐ Skor: <span id="score">0</span></div>
+        <div>
+            ⭐ Skor:
+            <span id="score">0</span>
+        </div>
 
-        <div>❤️ Can: <span id="lives">3</span></div>
+        <div>
+            ❤️ Can:
+            <span id="lives">3</span>
+        </div>
 
-        <div>📈 Level: <span id="level">1</span></div>
+        <div>
+            📈 Level:
+            <span id="level">1</span>
+        </div>
 
     </div>
 
-   <canvas
-    id="game"
-    width="400"
-    height="500">
-</canvas>
+    <canvas
+        id="game"
+        width="400"
+        height="500"
+        aria-label="Breakout oyun alanı">
+    </canvas>
+
     <div class="buttons">
 
-        <button id="playButton" onclick="startGame()">
+        <button
+            id="playButton"
+            onclick="startGame()">
             ▶ Oyna
         </button>
 
@@ -39,7 +125,14 @@
 
     </div>
 
+    <br>
+
+    <a href="../../index.html">
+        🏠 NovaPlay Ana Sayfa
+    </a>
+
     <script src="script.js"></script>
 
 </body>
+
 </html>
