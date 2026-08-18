@@ -1,5 +1,10 @@
 import * as THREE from "https://unpkg.com/three@0.179.1/build/three.module.js";
 
+import {
+    createCharacter,
+    updateCharacterAnimation
+} from "./character.js";
+
 import { db } from "./firebase.js";
 
 import {
@@ -9,10 +14,10 @@ import {
     onValue,
     onDisconnect,
     remove,
-    update
+    update,
+    push,
+    runTransaction
 } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-database.js";
-
-
 // ======================================
 // OYUNCU
 // ======================================
@@ -22,7 +27,7 @@ const playerId = crypto.randomUUID();
 let roomId = null;
 
 let players = {};
-
+let bridgePattern = null;
 const otherPlayers = {};
 
 
@@ -76,6 +81,7 @@ function generateRoomId() {
 }
 
 
+
 // ======================================
 // RASTGELE ODAYA GİR
 // ======================================
@@ -86,85 +92,257 @@ export async function joinRandomRoom() {
 
     try {
 
-        const roomsRef = ref(db, "rooms");
-
-        const snapshot = await get(roomsRef);
-
-        let selectedRoom = null;
+        const roomsRef =
+            ref(db, "rooms");
 
 
         // ==================================
-        // AÇIK ODA ARA
+        // ATOMİK ODA EŞLEŞTİRME
         // ==================================
 
-        if (snapshot.exists()) {
+        const result =
+            await runTransaction(
+                roomsRef,
+                currentRooms => {
 
-            const rooms = snapshot.val();
+                    const rooms =
+                        currentRooms || {};
 
-            for (const id in rooms) {
+                    const now =
+                        Date.now();
 
-                const room =
-                    rooms[id];
 
-                // Oyun başlamışsa geç
-                if (room.started === true) {
-                    continue;
+                    // ==================================
+                    // AÇIK ODA ARA
+                    // ==================================
+
+                    for (const id in rooms) {
+
+                        const room =
+                            rooms[id];
+
+
+                        if (!room) {
+                            continue;
+                        }
+
+
+                        // Oyun başlamışsa geç
+                        if (
+                            room.started === true
+                        ) {
+                            continue;
+                        }
+
+
+                        // Eski/süresi dolmuş oda
+                        if (
+                            room.startTime &&
+                            room.startTime <= now
+                        ) {
+                            continue;
+                        }
+
+
+                        const roomPlayers =
+                            room.players || {};
+
+
+                        const playerCount =
+                            Object.keys(
+                                roomPlayers
+                            ).length;
+
+
+                        // ==================================
+                        // ODA UYGUN
+                        // ==================================
+
+                        if (
+                            playerCount < 50
+                        ) {
+
+                            console.log(
+                                "🎮 Açık oda bulundu:",
+                                id
+                            );
+
+
+                            // Oyuncuyu doğrudan
+                            // transaction içinde ekle
+                            roomPlayers[playerId] = {
+
+                                x: 0,
+                                y: 1.1,
+                                z: 3,
+                                rotationY: 0,
+                                name: getPlayerName()
+
+                            };
+
+
+                            room.players =
+                                roomPlayers;
+
+
+                            return rooms;
+
+                        }
+
+                    }
+
+
+                    // ==================================
+                    // YENİ ODA OLUŞTUR
+                    // ==================================
+
+                    const newRoomId =
+                        generateRoomId();
+
+
+                    const startTime =
+                        now + 30000;
+
+
+                    // ==================================
+                    // ORTAK KÖPRÜ DESENİ
+                    // ==================================
+
+                    const newPattern = [];
+
+
+                    for (
+                        let i = 0;
+                        i < 20;
+                        i++
+                    ) {
+
+                        newPattern.push(
+
+                            Math.random() < 0.5
+                                ? "left"
+                                : "right"
+
+                        );
+
+                    }
+
+
+                    // ==================================
+                    // ODAYI OLUŞTUR
+                    // ==================================
+
+                    rooms[newRoomId] = {
+
+                        started: false,
+
+                        startTime:
+
+                            startTime,
+
+                        bridgePattern:
+
+                            newPattern,
+
+                        players: {
+
+                            [playerId]: {
+
+                                x: 0,
+                                y: 1,
+                                z: 3,
+                                rotationY: 0
+
+                            }
+
+                        }
+
+                    };
+
+
+                    console.log(
+                        "🆕 Yeni oda oluşturuldu:",
+                        newRoomId
+                    );
+
+
+                    return rooms;
+
                 }
+            );
 
 
-                const roomPlayers =
-                    room.players || {};
+        // ==================================
+        // TRANSACTION BAŞARISIZ
+        // ==================================
 
-                const playerCount =
-                    Object.keys(
-                        roomPlayers
-                    ).length;
+        if (
+            !result.committed
+        ) {
+
+            console.error(
+                "❌ Oda eşleştirme başarısız."
+            );
+
+            return;
+
+        }
 
 
-                if (playerCount < 50) {
+        // ==================================
+        // OYUNCUNUN HANGİ ODADA
+        // OLDUĞUNU BUL
+        // ==================================
 
-                    selectedRoom = id;
+        const rooms =
+            result.snapshot.val() || {};
 
-                    break;
 
-                }
+        let foundRoomId = null;
+
+
+        for (const id in rooms) {
+
+            const room =
+                rooms[id];
+
+
+            if (
+                room?.players?.[playerId]
+            ) {
+
+                foundRoomId = id;
+
+                break;
 
             }
 
         }
 
 
-        // ==================================
-        // YENİ ODA
-        // ==================================
+        if (!foundRoomId) {
 
-        if (!selectedRoom) {
-
-            selectedRoom =
-                generateRoomId();
-
-            console.log(
-                "🆕 Yeni oda oluşturuluyor:",
-                selectedRoom
+            console.error(
+                "❌ Oyuncunun odası bulunamadı!"
             );
 
-        }
-        else {
-
-            console.log(
-                "🎮 Açık oda bulundu:",
-                selectedRoom
-            );
+            return;
 
         }
 
 
         roomId =
-            selectedRoom;
+            foundRoomId;
+
+
+        console.log(
+            "🏠 KULLANILAN ROOM ID:",
+            roomId
+        );
 
 
         // ==================================
-        // OYUNCU
+        // PLAYER REF
         // ==================================
 
         const playerRef =
@@ -174,17 +352,9 @@ export async function joinRandomRoom() {
             );
 
 
-        await set(
-            playerRef,
-            {
-                x: 0,
-                y: 1,
-                z: 3,
-                rotationY: 0
-            }
-        );
-        
-
+        // ==================================
+        // OYUNCU ÇIKINCA SİL
+        // ==================================
 
         onDisconnect(
             playerRef
@@ -192,7 +362,7 @@ export async function joinRandomRoom() {
 
 
         // ==================================
-        // ODA BAŞLANGIÇ ZAMANI
+        // ODA VERİSİNİ AL
         // ==================================
 
         const roomRef =
@@ -206,7 +376,14 @@ export async function joinRandomRoom() {
             await get(roomRef);
 
 
-        if (!roomSnapshot.exists()) {
+        if (
+            !roomSnapshot.exists()
+        ) {
+
+            console.error(
+                "❌ Oda bulunamadı:",
+                roomId
+            );
 
             return;
 
@@ -217,36 +394,18 @@ export async function joinRandomRoom() {
             roomSnapshot.val();
 
 
-        // İlk oyuncuysa sayaç oluştur
-        if (!roomData.startTime) {
+        // ==================================
+        // ORTAK KÖPRÜ DESENİ
+        // ==================================
 
-            const startTime =
-                Date.now() + 30000;
-
-
-            await set(
-                ref(
-                    db,
-                    `rooms/${roomId}/startTime`
-                ),
-                startTime
-            );
+        bridgePattern =
+            roomData.bridgePattern || null;
 
 
-            await set(
-                ref(
-                    db,
-                    `rooms/${roomId}/started`
-                ),
-                false
-            );
-
-
-            console.log(
-                "⏱️ 30 saniyelik bekleme başladı"
-            );
-
-        }
+        console.log(
+            "🌉 ORTAK KÖPRÜ:",
+            bridgePattern
+        );
 
 
         // ==================================
@@ -255,11 +414,13 @@ export async function joinRandomRoom() {
 
         listenPlayers();
 
+        listenBrokenTiles();
+
         listenRoom();
 
 
         console.log(
-            "✅ Odaya girildi:",
+            "✅ ODAYA GİRİLDİ:",
             roomId
         );
 
@@ -274,7 +435,6 @@ export async function joinRandomRoom() {
     }
 
 }
-
 
 // ======================================
 // OYUNCU ADINI AL
@@ -327,29 +487,35 @@ function listenRoom() {
                 // OYUN BAŞLADI
                 // ==================================
 
-                if (room.started === true) {
+                if (room.started === true && !gameStarted) {
 
-                    if (!gameStarted) {
+                    gameStarted = true;
 
-                        gameStarted = true;
+                    stopCountdown();
 
-                        stopCountdown();
+                    countdownStartTime = null;
 
-                        countdownStartTime = null;
+                    hideWaitingRoom();
 
-                        hideWaitingRoom();
+                    // ==================================
+                    // DİĞER OYUNCULARI SAHNEYE GETİR
+                    // ==================================
 
-                        window.dispatchEvent(
-                            new CustomEvent(
-                                "novabridge-game-start"
-                            )
-                        );
+                    setTimeout(() => {
 
-                        console.log(
-                            "🎮 OYUN BAŞLADI!"
-                        );
+                        updateOtherPlayers();
 
-                    }
+                    }, 100);
+
+                    window.dispatchEvent(
+                        new CustomEvent(
+                            "novabridge-game-start"
+                        )
+                    );
+
+                    console.log(
+                        "🎮 OYUN BAŞLADI!"
+                    );
 
                     return;
 
@@ -572,37 +738,42 @@ async function startRoomGame() {
 
     if (gameStarted) return;
 
-
     const startedRef =
         ref(
             db,
             `rooms/${roomId}/started`
         );
 
+    try {
 
-    const snapshot =
-        await get(startedRef);
+        const snapshot =
+            await get(startedRef);
 
+        if (
+            snapshot.exists() &&
+            snapshot.val() === true
+        ) {
+            return;
+        }
 
-    if (
-        snapshot.exists() &&
-        snapshot.val() === true
-    ) {
+        await set(
+            startedRef,
+            true
+        );
 
-        return;
+        console.log(
+            "🎮 Oyun başlatma sinyali gönderildi!"
+        );
 
     }
+    catch (error) {
 
+        console.error(
+            "❌ Oyun başlatılamadı:",
+            error
+        );
 
-    await set(
-        startedRef,
-        true
-    );
-
-
-    console.log(
-        "🎮 Oyun başlatıldı!"
-    );
+    }
 
 }
 
@@ -720,85 +891,173 @@ function updateOtherPlayers() {
 
     if (!gameStarted) return;
 
-
     import("./script.js")
         .then(({ scene }) => {
 
-            for (
-                const id in players
-            ) {
+            // ==================================
+            // OYUNCULARI GÜNCELLE
+            // ==================================
 
-                if (
-                    id === playerId
-                ) {
+            for (const id in players) {
 
+                if (id === playerId) {
                     continue;
-
                 }
-
 
                 const data =
                     players[id];
 
+                if (!data) {
+                    continue;
+                }
 
-                if (
-                    !otherPlayers[id]
-                ) {
 
-                    const geometry =
-                        new THREE.BoxGeometry(
-                            1,
-                            2,
-                            1
+                // ==================================
+                // KARAKTER YOKSA OLUŞTUR
+                // ==================================
+
+                if (!otherPlayers[id]) {
+
+                    const character =
+    createCharacter(
+        id,
+        data.name || "Oyuncu"
+    );
+                    if (!character) {
+                        console.error(
+                            "❌ Karakter oluşturulamadı:",
+                            id
                         );
+                        continue;
+                    }
 
 
-                    const material =
-                        new THREE.MeshStandardMaterial({
-                            color: 0xff3333
-                        });
-
-
-                    const mesh =
-                        new THREE.Mesh(
-                            geometry,
-                            material
-                        );
-
-
-                    mesh.position.set(
+                    character.position.set(
                         data.x ?? -1.5,
                         data.y ?? 1.1,
                         data.z ?? 0
                     );
+                    character.userData.targetX =
+    data.x ?? -1.5;
+
+character.userData.targetY =
+    data.y ?? 1.1;
+
+character.userData.targetZ =
+    data.z ?? 0;
+
+character.userData.targetRotationY =
+    data.rotationY ?? 0;
 
 
-                    mesh.rotation.y =
+                    character.rotation.y =
                         data.rotationY ?? 0;
 
 
-                    scene.add(mesh);
+                    character.userData.lastX =
+                        data.x ?? -1.5;
+
+                    character.userData.lastZ =
+                        data.z ?? 0;
+
+                    character.userData.isMoving =
+                        false;
+
+
+                    scene.add(
+                        character
+                    );
 
 
                     otherPlayers[id] =
-                        mesh;
+                        character;
+
+
+                    console.log(
+                        "👤 Oyuncu oluşturuldu:",
+                        id
+                    );
 
                 }
 
 
-                const mesh =
+                // ==================================
+                // KARAKTERİ TEKRAR AL
+                // ==================================
+
+                const character =
                     otherPlayers[id];
 
 
-                mesh.position.set(
-                    data.x ?? -1.5,
-                    data.y ?? 1.1,
-                    data.z ?? 0
-                );
+                // Karakter herhangi bir nedenle
+                // yoksa bu turu atla
+                if (!character) {
+                    continue;
+                }
 
 
-                mesh.rotation.y =
+                // ==================================
+                // YENİ KONUM
+                // ==================================
+
+                const currentX =
+                    data.x ?? -1.5;
+
+                const currentY =
+                    data.y ?? 1.1;
+
+                const currentZ =
+                    data.z ?? 0;
+
+
+                const lastX =
+                    character.userData.lastX ??
+                    currentX;
+
+                const lastZ =
+                    character.userData.lastZ ??
+                    currentZ;
+
+
+                // ==================================
+                // HAREKET Mİ EDİYOR?
+                // ==================================
+
+                const distanceMoved =
+                    Math.hypot(
+                        currentX - lastX,
+                        currentZ - lastZ
+                    );
+
+
+                const moving =
+                    distanceMoved > 0.005;
+
+
+                character.userData.isMoving =
+                    moving;
+
+
+                // ==================================
+                // KONUMU GÜNCELLE
+                // ==================================
+
+                character.userData.targetX = currentX;
+                character.userData.targetY = currentY;
+                character.userData.targetZ = currentZ;
+                character.userData.targetRotationY =
                     data.rotationY ?? 0;
+
+
+                // ==================================
+                // SON KONUMU KAYDET
+                // ==================================
+
+                character.userData.lastX =
+                    currentX;
+
+                character.userData.lastZ =
+                    currentZ;
 
             }
 
@@ -811,21 +1070,59 @@ function updateOtherPlayers() {
                 const id in otherPlayers
             ) {
 
-                if (
-                    !players[id]
-                ) {
+                if (!players[id]) {
 
-                    scene.remove(
-                        otherPlayers[id]
-                    );
+                    const character =
+                        otherPlayers[id];
 
 
-                    otherPlayers[id]
-                        .geometry.dispose();
+                    if (character) {
+
+                        scene.remove(
+                            character
+                        );
 
 
-                    otherPlayers[id]
-                        .material.dispose();
+                        character.traverse(
+                            object => {
+
+                                if (
+                                    object.geometry
+                                ) {
+
+                                    object.geometry.dispose();
+
+                                }
+
+                                if (
+                                    object.material
+                                ) {
+
+                                    if (
+                                        Array.isArray(
+                                            object.material
+                                        )
+                                    ) {
+
+                                        object.material.forEach(
+                                            material => {
+                                                material.dispose();
+                                            }
+                                        );
+
+                                    }
+                                    else {
+
+                                        object.material.dispose();
+
+                                    }
+
+                                }
+
+                            }
+                        );
+
+                    }
 
 
                     delete otherPlayers[id];
@@ -834,10 +1131,17 @@ function updateOtherPlayers() {
 
             }
 
+        })
+        .catch(error => {
+
+            console.error(
+                "❌ Oyuncu güncelleme hatası:",
+                error
+            );
+
         });
 
 }
-
 
 // ======================================
 // OYUNCULARI AL
@@ -872,21 +1176,40 @@ export async function leaveRoom() {
     await remove(playerRef);
 
 
-    roomId = null;
+    const oldRoomId = roomId;
 
-    gameStarted = false;
+await remove(
+    ref(
+        db,
+        `rooms/${oldRoomId}/players/${playerId}`
+    )
+);
 
-    countdownStartTime = null;
+if (oldRoomId) {
 
-
-    hideWaitingRoom();
-
-
-    console.log(
-        "🚪 Odadan çıkıldı"
+    await remove(
+        ref(
+            db,
+            `rooms/${oldRoomId}/brokenTiles`
+        )
     );
 
 }
+
+roomId = null;
+
+gameStarted = false;
+
+countdownStartTime = null;
+
+hideWaitingRoom();
+
+console.log(
+    "🚪 Odadan çıkıldı"
+);
+
+}
+
 
 
 // ======================================
@@ -930,6 +1253,162 @@ export function updateGameInfoUI() {
 
         roomElement.textContent =
             roomId || "-";
+
+    }
+
+}
+// ======================================
+// KIRILAN CAMI GÖNDER
+// ======================================
+
+export async function sendBrokenTile(
+    side,
+    index
+) {
+
+    if (!roomId) {
+        return;
+    }
+
+    await set(
+
+        ref(
+            db,
+            `rooms/${roomId}/brokenTiles/${side}-${index}`
+        ),
+
+        {
+            side,
+            index
+        }
+
+    );
+
+}
+// ======================================
+// KIRILAN CAMLARI DİNLE
+// ======================================
+
+function listenBrokenTiles() {
+
+    if (!roomId) {
+        return;
+    }
+
+    const brokenTilesRef =
+        ref(
+            db,
+            `rooms/${roomId}/brokenTiles`
+        );
+
+    onValue(
+        brokenTilesRef,
+        snapshot => {
+
+            if (!snapshot.exists()) {
+                return;
+            }
+
+            const tiles =
+                snapshot.val();
+
+            import("./bridge.js")
+                .then(
+                    ({
+                        breakTile
+                    }) => {
+
+                        for (
+                            const key in tiles
+                        ) {
+
+                            const tile =
+                                tiles[key];
+
+                            breakTile(
+                                tile.side,
+                                tile.index
+                            );
+
+                        }
+
+                    }
+                );
+
+        }
+    );
+
+}
+// ======================================
+// ORTAK KÖPRÜ DESENİNİ AL
+// ======================================
+
+export function getBridgePattern() {
+
+    return bridgePattern;
+
+}
+export function updateAllCharacterAnimations(delta) {
+
+    for (const id in otherPlayers) {
+
+        const character =
+            otherPlayers[id];
+
+        if (!character) {
+            continue;
+        }
+
+        updateCharacterAnimation(
+            character,
+            character.userData.isMoving === true,
+            delta
+        );
+
+    }
+
+}
+export function updateOtherPlayerMovement() {
+
+    for (const id in otherPlayers) {
+
+        const character =
+            otherPlayers[id];
+
+        if (!character) continue;
+
+        if (
+            character.userData.targetX === undefined
+        ) {
+            continue;
+        }
+
+        character.position.x +=
+            (
+                character.userData.targetX -
+                character.position.x
+            ) * 0.15;
+
+        character.position.y +=
+            (
+                character.userData.targetY -
+                character.position.y
+            ) * 0.15;
+
+        character.position.z +=
+            (
+                character.userData.targetZ -
+                character.position.z
+            ) * 0.15;
+
+        const targetRotation =
+            character.userData.targetRotationY ?? 0;
+
+        character.rotation.y +=
+            (
+                targetRotation -
+                character.rotation.y
+            ) * 0.15;
 
     }
 

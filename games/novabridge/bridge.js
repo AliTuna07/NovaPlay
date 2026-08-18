@@ -15,20 +15,42 @@ const LEFT_X = -1.5;
 
 const RIGHT_X = 1.5;
 
+
+// ======================================
+// KÖPRÜLER
+// ======================================
+
 export const solidPlatforms = [];
-export const bridgeTiles = [];
-//=======================================
+
+export const bridgeTiles = {};
+
+
+// ======================================
+// GÜVENLİ CAMLAR
+// ======================================
+
+const safeTiles = [];
+
+
+// ======================================
 // CAM MALZEMESİ
 // ======================================
 
 const glassMaterial =
     new THREE.MeshPhysicalMaterial({
+
         color: 0x66ddff,
+
         transparent: true,
+
         opacity: 0.7,
+
         roughness: 0.1,
+
         metalness: 0,
+
         transmission: 0.2
+
     });
 
 
@@ -45,19 +67,44 @@ const glassGeometry =
 
 
 // ======================================
-// GÜVENLİ CAMLAR
-// ======================================
-
-const safeTiles = [];
-
-
-// ======================================
 // KÖPRÜ OLUŞTUR
 // ======================================
 
-export function createBridge() {
+export function createBridge(pattern = null) {
 
-  
+    // Eski verileri temizle
+    safeTiles.length = 0;
+
+    for (const key in bridgeTiles) {
+
+        const tile =
+            bridgeTiles[key];
+
+        scene.remove(tile);
+
+    }
+
+    for (
+        let i = 0;
+        i < solidPlatforms.length;
+        i++
+    ) {
+
+        scene.remove(
+            solidPlatforms[i]
+        );
+
+    }
+
+    for (const key in bridgeTiles) {
+
+        delete bridgeTiles[key];
+
+    }
+
+    solidPlatforms.length = 0;
+
+
     // ==================================
     // BAŞLANGIÇ PLATFORMU
     // ==================================
@@ -89,10 +136,15 @@ export function createBridge() {
     scene.add(
         startPlatform
     );
-    bridgeTiles.length = 0;
-solidPlatforms.length = 0;
 
-solidPlatforms.push(startPlatform);
+    solidPlatforms.push(
+        startPlatform
+    );
+
+
+    // ==================================
+    // KÖPRÜ CAMLARI
+    // ==================================
 
     for (
         let i = 0;
@@ -100,10 +152,35 @@ solidPlatforms.push(startPlatform);
         i++
     ) {
 
-        const safeSide =
-            Math.random() < 0.5
-                ? "left"
-                : "right";
+        let safeSide;
+
+
+        // ==================================
+        // ORTAK DESEN VARSA ONU KULLAN
+        // ==================================
+
+        if (
+            pattern &&
+            pattern[i]
+        ) {
+
+            safeSide =
+                pattern[i];
+
+        }
+
+        // ==================================
+        // DESEN YOKSA RASTGELE
+        // ==================================
+
+        else {
+
+            safeSide =
+                Math.random() < 0.5
+                    ? "left"
+                    : "right";
+
+        }
 
 
         safeTiles.push(
@@ -118,7 +195,7 @@ solidPlatforms.push(startPlatform);
         const left =
             new THREE.Mesh(
                 glassGeometry,
-                glassMaterial
+                glassMaterial.clone()
             );
 
         left.position.set(
@@ -127,14 +204,12 @@ solidPlatforms.push(startPlatform);
             -i * TILE_DISTANCE
         );
 
-        
-scene.add(left);
+        scene.add(left);
 
-bridgeTiles.push({
-    mesh: left,
-    side: "left",
-    index: i
-});
+        bridgeTiles[
+            `left-${i}`
+        ] = left;
+
 
         // ==================================
         // SAĞ CAM
@@ -143,7 +218,7 @@ bridgeTiles.push({
         const right =
             new THREE.Mesh(
                 glassGeometry,
-                glassMaterial
+                glassMaterial.clone()
             );
 
         right.position.set(
@@ -152,21 +227,25 @@ bridgeTiles.push({
             -i * TILE_DISTANCE
         );
 
-       scene.add(right);
+        scene.add(right);
 
-bridgeTiles.push({
-    mesh: right,
-    side: "right",
-    index: i
-});
+        bridgeTiles[
+            `right-${i}`
+        ] = right;
 
     }
+
+
+    console.log(
+        "🌉 Köprü oluşturuldu:",
+        safeTiles
+    );
 
 }
 
 
 // ======================================
-// BİR CAMIN GÜVENLİ Mİ OLDUĞUNU KONTROL ET
+// CAM GÜVENLİ Mİ?
 // ======================================
 
 export function isSafeTile(
@@ -178,7 +257,9 @@ export function isSafeTile(
         index < 0 ||
         index >= safeTiles.length
     ) {
+
         return false;
+
     }
 
     return (
@@ -189,7 +270,7 @@ export function isSafeTile(
 
 
 // ======================================
-// OYUNCUNUN BULUNDUĞU CAMI BUL
+// OYUNCUNUN CAMINI BUL
 // ======================================
 
 export function getTileInfo(
@@ -202,20 +283,107 @@ export function getTileInfo(
             -z / TILE_DISTANCE
         );
 
-
     const side =
         x < 0
             ? "left"
             : "right";
 
-
     return {
+
         index,
+
         side,
-        safe: isSafeTile(
-            side,
-            index
-        )
+
+        safe:
+            isSafeTile(
+                side,
+                index
+            )
+
     };
+
+}
+
+
+// ======================================
+// CAMI KIR
+// ======================================
+
+export function breakTile(
+    side,
+    index
+) {
+
+    const key =
+        `${side}-${index}`;
+
+    const tile =
+        bridgeTiles[key];
+
+    if (!tile) {
+        return;
+    }
+
+
+    tile.material.opacity = 0.3;
+
+
+    setTimeout(() => {
+
+        let fallSpeed = 0;
+
+
+        function animateBreak() {
+
+            if (!bridgeTiles[key]) {
+                return;
+            }
+
+
+            fallSpeed += 0.02;
+
+
+            tile.position.y -=
+                fallSpeed;
+
+
+            tile.rotation.x +=
+                0.05;
+
+
+            tile.rotation.z +=
+                0.03;
+
+
+            if (
+                tile.position.y > -20
+            ) {
+
+                requestAnimationFrame(
+                    animateBreak
+                );
+
+            }
+
+            else {
+
+                scene.remove(
+                    tile
+                );
+
+                tile.geometry.dispose();
+
+                tile.material.dispose();
+
+                delete bridgeTiles[key];
+
+            }
+
+        }
+
+
+        animateBreak();
+
+    }, 200);
 
 }

@@ -1,15 +1,23 @@
 import * as THREE from "https://unpkg.com/three@0.179.1/build/three.module.js";
-import { showGameOver } from "./ui.js";
 
+import { showGameOver } from "./ui.js";
 
 import {
     joinRandomRoom,
     updatePlayerPosition,
     leaveRoom,
-    getOtherPlayerMeshes
+    getOtherPlayerMeshes,
+    sendBrokenTile,
+    getBridgePattern,
+    updateAllCharacterAnimations,
+    updateOtherPlayerMovement
 } from "./multiplayer.js";
 
-import { createBridge, isSafeTile } from "./bridge.js";
+import {
+    createBridge,
+    isSafeTile,
+    breakTile
+} from "./bridge.js";
 
 import {
     createPlayer,
@@ -22,6 +30,8 @@ let spectatorTarget = null;
 
 let spectatorIndex = 0;
 let gameStarted = false;
+const brokenTiles = new Set();
+const clock = new THREE.Clock();
 // ======================================
 // SAHNE
 // ======================================
@@ -94,7 +104,21 @@ function startGame() {
 
     gameStarted = true;
 
-    createBridge();
+    // ==================================
+    // ORTAK KÖPRÜ DESENİ
+    // ==================================
+
+    const pattern =
+        getBridgePattern();
+
+    console.log(
+        "🌉 Ortak köprü deseni:",
+        pattern
+    );
+
+    createBridge(
+        pattern
+    );
 
     createPlayer();
 
@@ -621,11 +645,32 @@ function updatePhysics() {
                 }
 
             }
-            else {
+           else {
 
-                grounded = false;
+    const tileKey =
+        `${tile.side}-${tile.index}`;
+if (
+    !brokenTiles.has(tileKey)
+) {
 
-            }
+    brokenTiles.add(
+        tileKey
+    );
+
+    sendBrokenTile(
+        tile.side,
+        tile.index
+    );
+
+    breakTile(
+        tile.side,
+        tile.index
+    );
+
+}
+    grounded = false;
+
+}
 
         }
         else {
@@ -636,7 +681,12 @@ function updatePhysics() {
 
     }
 
-
+updatePlayerPosition(
+    player.position.x,
+    player.position.y,
+    player.position.z,
+    player.rotation.y
+);
     // ==================================
     // DÜŞME KONTROLÜ
     // ==================================
@@ -933,11 +983,18 @@ function animate() {
         animate
     );
 
+    const delta =
+        clock.getDelta();
 
     updateMovement();
     updatePhysics();
     updateCamera();
 
+    updateOtherPlayerMovement();
+
+     updateAllCharacterAnimations(
+         delta
+          );
 
     renderer.render(
         scene,
