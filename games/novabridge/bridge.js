@@ -1,159 +1,221 @@
-import * as THREE from "https://unpkg.com/three@0.160.0/build/three.module.js";
+import * as THREE from "https://unpkg.com/three@0.179.1/build/three.module.js";
 
+import { scene } from "./script.js";
+
+
+// ======================================
+// KÖPRÜ AYARLARI
+// ======================================
+
+const BRIDGE_LENGTH = 20;
+
+const TILE_DISTANCE = 3;
+
+const LEFT_X = -1.5;
+
+const RIGHT_X = 1.5;
+
+export const solidPlatforms = [];
 export const bridgeTiles = [];
-export const safePath = [];
+//=======================================
+// CAM MALZEMESİ
+// ======================================
 
-export function createBridge(scene){
-
-    // Zemin yok, boşluk hissi
-    scene.fog = new THREE.Fog(0x05070f, 18, 60);
-
-    // Cam materyali
-    const glassMaterial = new THREE.MeshPhysicalMaterial({
+const glassMaterial =
+    new THREE.MeshPhysicalMaterial({
         color: 0x66ddff,
         transparent: true,
-        opacity: 0.45,
-        transmission: 1,
-        roughness: 0,
-        metalness: 0.1,
-        thickness: 0.5
+        opacity: 0.7,
+        roughness: 0.1,
+        metalness: 0,
+        transmission: 0.2
     });
 
-    // Metal iskelet
-    const frameMaterial = new THREE.MeshStandardMaterial({
-        color: 0x666666,
-        metalness: 0.8,
-        roughness: 0.3
-    });
 
-    // Başlangıç platformu
-    const start = new THREE.Mesh(
-        new THREE.BoxGeometry(6,0.5,4),
-        frameMaterial
+// ======================================
+// CAM GEOMETRİSİ
+// ======================================
+
+const glassGeometry =
+    new THREE.BoxGeometry(
+        2,
+        0.2,
+        2
     );
 
-    start.position.set(0,-0.25,2);
 
-    scene.add(start);
+// ======================================
+// GÜVENLİ CAMLAR
+// ======================================
 
-    // Camlar
-    for(let row=0; row<15; row++){
+const safeTiles = [];
 
-        bridgeTiles[row] = [];
 
-        safePath[row] = Math.floor(Math.random()*2);
+// ======================================
+// KÖPRÜ OLUŞTUR
+// ======================================
 
-        for(let side=0; side<2; side++){
+export function createBridge() {
 
-            const group = new THREE.Group();
+  
+    // ==================================
+    // BAŞLANGIÇ PLATFORMU
+    // ==================================
 
-            // Çerçeve
-            const frame = new THREE.Mesh(
-                new THREE.BoxGeometry(2.15,0.15,2.15),
-                frameMaterial
+    const startMaterial =
+        new THREE.MeshStandardMaterial({
+            color: 0x555555
+        });
+
+    const startGeometry =
+        new THREE.BoxGeometry(
+            5,
+            0.5,
+            5
+        );
+
+    const startPlatform =
+        new THREE.Mesh(
+            startGeometry,
+            startMaterial
+        );
+
+    startPlatform.position.set(
+        0,
+        -0.25,
+        3
+    );
+
+    scene.add(
+        startPlatform
+    );
+    bridgeTiles.length = 0;
+solidPlatforms.length = 0;
+
+solidPlatforms.push(startPlatform);
+
+    for (
+        let i = 0;
+        i < BRIDGE_LENGTH;
+        i++
+    ) {
+
+        const safeSide =
+            Math.random() < 0.5
+                ? "left"
+                : "right";
+
+
+        safeTiles.push(
+            safeSide
+        );
+
+
+        // ==================================
+        // SOL CAM
+        // ==================================
+
+        const left =
+            new THREE.Mesh(
+                glassGeometry,
+                glassMaterial
             );
 
-            // Cam
-            const glass = new THREE.Mesh(
-                new THREE.BoxGeometry(2,0.08,2),
-                glassMaterial.clone()
+        left.position.set(
+            LEFT_X,
+            0,
+            -i * TILE_DISTANCE
+        );
+
+        
+scene.add(left);
+
+bridgeTiles.push({
+    mesh: left,
+    side: "left",
+    index: i
+});
+
+        // ==================================
+        // SAĞ CAM
+        // ==================================
+
+        const right =
+            new THREE.Mesh(
+                glassGeometry,
+                glassMaterial
             );
 
-            glass.position.y = 0.05;
+        right.position.set(
+            RIGHT_X,
+            0,
+            -i * TILE_DISTANCE
+        );
 
-            group.add(frame);
-            group.add(glass);
+       scene.add(right);
 
-            group.position.set(
-                side===0 ? -1.3 : 1.3,
-                0,
-                -row*2
-            );
-
-            scene.add(group);
-
-            bridgeTiles[row][side] = group;
-
-        }
+bridgeTiles.push({
+    mesh: right,
+    side: "right",
+    index: i
+});
 
     }
 
-    // Bitiş platformu
-    const finish = new THREE.Mesh(
-        new THREE.BoxGeometry(6,0.5,4),
-        frameMaterial
-    );
-
-    finish.position.set(0,-0.25,-30);
-
-    scene.add(finish);
-
 }
-export function isSafe(row, side){
 
-    if(row < 0 || row >= safePath.length){
-        return true;
+
+// ======================================
+// BİR CAMIN GÜVENLİ Mİ OLDUĞUNU KONTROL ET
+// ======================================
+
+export function isSafeTile(
+    side,
+    index
+) {
+
+    if (
+        index < 0 ||
+        index >= safeTiles.length
+    ) {
+        return false;
     }
 
-    return safePath[row] === side;
-
-}
-export function breakGlass(row, side){
-
-    console.log("Cam kırılıyor:", row, side);
-
-    const tile = bridgeTiles[row][side];
-
-    if(!tile) return;
-
-    tile.userData.breaking = true;
-
-}
-export function updateBridge(){
-
-    for(const row of bridgeTiles){
-
-        if(!row) continue;
-        if(row >= 15){
-
-    winGame();
-
-}
-
-        for(const tile of row){
-
-            if(!tile) continue;
-
-            if(tile.userData.breaking){
-
-                tile.rotation.x += 0.08;
-                tile.position.y -= 0.06;
-
-            }
-
-        }
-
-    }
-
-}
-function winGame(){
-
-    const currentXP =
-        Number(localStorage.getItem("novaXP")) || 0;
-
-    const currentCoins =
-        Number(localStorage.getItem("novaCoins")) || 0;
-
-    localStorage.setItem(
-        "novaXP",
-        currentXP + 2000
+    return (
+        safeTiles[index] === side
     );
 
-    localStorage.setItem(
-        "novaCoins",
-        currentCoins + 1000
-    );
+}
 
-    alert("🏆 Kazandın!\n⭐ +2000 XP\n🪙 +1000 NovaCoin");
+
+// ======================================
+// OYUNCUNUN BULUNDUĞU CAMI BUL
+// ======================================
+
+export function getTileInfo(
+    x,
+    z
+) {
+
+    const index =
+        Math.round(
+            -z / TILE_DISTANCE
+        );
+
+
+    const side =
+        x < 0
+            ? "left"
+            : "right";
+
+
+    return {
+        index,
+        side,
+        safe: isSafeTile(
+            side,
+            index
+        )
+    };
 
 }

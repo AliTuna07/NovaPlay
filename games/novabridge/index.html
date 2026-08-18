@@ -4,95 +4,52 @@
 <head>
 
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <!-- SEO -->
-    <title>NovaBridge | Ücretsiz Cam Köprü Oyunu | NovaPlay</title>
 
     <meta
-        name="description"
-        content="NovaBridge'i ücretsiz online oyna! Doğru camı seç, kırılabilir camlardan kaç ve köprüyü tamamla."
-    >
+        name="viewport"
+        content="width=device-width, initial-scale=1.0">
 
-    <meta name="author" content="NovaPlay">
+    <title>NovaBridge Online</title>
 
-    <!-- Canonical -->
     <link
-        rel="canonical"
-        href="https://alituna07.github.io/NovaPlay/games/novabridge/"
-    >
-
-    <!-- Favicon -->
-    <link
-        rel="icon"
-        type="image/png"
-        href="../../logo.png"
-    >
-
-    <!-- Open Graph -->
-    <meta
-        property="og:title"
-        content="NovaBridge | NovaPlay"
-    >
-
-    <meta
-        property="og:description"
-        content="Ücretsiz online cam köprü oyunu. Doğru camları seç ve köprüyü tamamla!"
-    >
-
-    <meta
-        property="og:image"
-        content="https://alituna07.github.io/NovaPlay/logo.png"
-    >
-
-    <meta
-        property="og:url"
-        content="https://alituna07.github.io/NovaPlay/games/novabridge/"
-    >
-
-    <meta property="og:type" content="website">
-    <meta property="og:site_name" content="NovaPlay">
-
-    <!-- Structured Data -->
-    <script type="application/ld+json">
-    {
-        "@context": "https://schema.org",
-        "@type": "VideoGame",
-        "name": "NovaBridge",
-        "description": "Ücretsiz online cam köprü oyunu. Doğru camları seçerek köprüyü tamamlamaya çalış.",
-        "url": "https://alituna07.github.io/NovaPlay/games/novabridge/",
-        "image": "https://alituna07.github.io/NovaPlay/logo.png",
-        "genre": [
-            "Arcade",
-            "Adventure"
-        ],
-        "gamePlatform": [
-            "Web Browser"
-        ],
-        "applicationCategory": "Game",
-        "operatingSystem": "Any"
-    }
-    </script>
+        rel="stylesheet"
+        href="style.css">
 
 </head>
 
 <body>
 
-    <div id="hud">
-        🪟 NovaBridge
+    <div id="ui">
+
+        <div id="menu">
+
+            <h1>NovaBridge Online</h1>
+
+            <input
+                id="playerName"
+                type="text"
+                placeholder="Oyuncu adı">
+
+            <button id="createRoom">
+                Oda Oluştur
+            </button>
+
+            <button id="joinRoom">
+                Odaya Katıl
+            </button>
+
+            <button id="randomRoom">
+                Rastgele Gir
+            </button>
+
+        </div>
+
     </div>
 
-    <main>
 
-        <h1>🪟 NovaBridge</h1>
+   
+    <canvas id="game"></canvas>
 
-        <p>
-            Ücretsiz online cam köprü oyununu oyna.
-            Doğru camı seç, kırılabilir camlardan kaç
-            ve köprünün sonuna ulaş!
-        </p>
-
-    </main>
 
     <script
         type="module"

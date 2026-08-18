@@ -1,35 +1,443 @@
-body{
+body {
+    margin: 0;
 
-margin:0;
+    overflow: hidden;
 
-overflow:hidden;
+    font-family: Arial, sans-serif;
 
-background:black;
-
-font-family:Arial;
-
+    background: #87ceeb;
 }
 
-canvas{
 
-display:block;
+/* =====================================
+   OYUN CANVAS
+===================================== */
 
+#game {
+    display: block;
+
+    position: fixed;
+
+    inset: 0;
+
+    width: 100vw;
+    height: 100vh;
+
+    z-index: 1;
 }
 
-#hud{
 
-position:absolute;
+/* =====================================
+   BAŞLANGIÇ MENÜSÜ
+===================================== */
 
-top:20px;
+#ui {
+    position: fixed;
 
-left:20px;
+    inset: 0;
 
-font-size:30px;
+    display: flex;
 
-color:white;
+    align-items: center;
 
-text-shadow:0 0 20px cyan;
+    justify-content: center;
 
-z-index:100;
+    z-index: 100;
+}
 
+
+#menu {
+
+    width: min(360px, 85vw);
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 12px;
+
+    padding: 30px;
+
+    text-align: center;
+
+    background: rgba(15, 20, 35, 0.92);
+
+    border-radius: 18px;
+
+    box-shadow:
+        0 20px 60px rgba(0, 0, 0, 0.4);
+}
+
+
+#menu h1 {
+
+    margin: 0 0 10px;
+
+    color: white;
+
+    font-size: 32px;
+}
+
+
+#menu input,
+#menu button {
+
+    box-sizing: border-box;
+
+    width: 100%;
+
+    padding: 13px;
+
+    border-radius: 10px;
+
+    font-size: 16px;
+}
+
+
+#menu input {
+
+    border: 1px solid #777;
+
+    outline: none;
+}
+
+
+#menu button {
+
+    border: none;
+
+    cursor: pointer;
+
+    background: white;
+
+    color: #111;
+
+    transition:
+        transform 0.15s,
+        background 0.15s;
+}
+
+
+#menu button:hover {
+
+    transform: scale(1.03);
+
+    background: #e8f7ff;
+}
+
+
+/* =====================================
+   SAĞ ÜST OYUN BİLGİSİ
+===================================== */
+
+#game-info {
+
+    position: fixed;
+
+    top: 15px;
+
+    right: 15px;
+
+    z-index: 200;
+
+    min-width: 170px;
+
+    padding: 12px 15px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 7px;
+
+    color: white;
+
+    font-size: 14px;
+
+    background: rgba(0, 0, 0, 0.55);
+
+    border-radius: 10px;
+
+    backdrop-filter: blur(6px);
+}
+
+
+#game-info span {
+
+    font-weight: bold;
+}
+
+
+/* =====================================
+   OYUN BİTTİ EKRANI
+===================================== */
+
+#game-over-screen {
+
+    position: fixed;
+
+    inset: 0;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    background: rgba(0, 0, 0, 0.75);
+
+    z-index: 9999;
+}
+
+
+.game-over-box {
+
+    width: min(420px, 90vw);
+
+    padding: 35px;
+
+    text-align: center;
+
+    background: rgba(20, 20, 30, 0.95);
+
+    border-radius: 18px;
+
+    box-shadow:
+        0 15px 50px rgba(0, 0, 0, 0.5);
+}
+
+
+.game-over-box h1 {
+
+    margin: 0 0 15px;
+
+    font-size: 42px;
+
+    color: white;
+}
+
+
+.game-over-box p {
+
+    color: #ddd;
+
+    font-size: 18px;
+}
+
+
+#game-over-buttons {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 12px;
+
+    margin-top: 25px;
+}
+
+
+#game-over-buttons button {
+
+    border: none;
+
+    padding: 14px 20px;
+
+    border-radius: 10px;
+
+    font-size: 16px;
+
+    cursor: pointer;
+
+    background: #ffffff;
+
+    color: #111;
+}
+
+
+#game-over-buttons button:hover {
+
+    transform: scale(1.03);
+}
+/* =====================================
+   BEKLEME ODASI
+===================================== */
+
+#waiting-room {
+
+    position: fixed;
+
+    inset: 0;
+
+    z-index: 500;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    background:
+        rgba(0, 0, 0, 0.75);
+}
+
+
+#waiting-box {
+
+    width: min(420px, 90vw);
+
+    padding: 30px;
+
+    text-align: center;
+
+    color: white;
+
+    background:
+        rgba(20, 25, 40, 0.96);
+
+    border-radius: 18px;
+
+    box-shadow:
+        0 20px 60px
+        rgba(0, 0, 0, 0.5);
+}
+
+
+#waiting-box h1 {
+
+    margin-top: 0;
+
+    font-size: 30px;
+}
+
+
+#waiting-countdown {
+
+    margin: 20px 0;
+
+    font-size: 64px;
+
+    font-weight: bold;
+}
+
+
+#waiting-player-count {
+
+    font-weight: bold;
+}
+
+
+#waiting-player-list {
+
+    max-height: 180px;
+
+    overflow-y: auto;
+
+    margin-top: 15px;
+
+    padding: 10px;
+
+    border-radius: 10px;
+
+    background:
+        rgba(255, 255, 255, 0.08);
+}
+
+
+#waiting-player-list div {
+
+    padding: 6px;
+
+    text-align: left;
+}
+#waiting-room {
+    position: fixed;
+    inset: 0;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    background: rgba(0, 0, 0, 0.85);
+
+    z-index: 5000;
+}
+
+#waiting-box {
+    width: 380px;
+
+    padding: 35px;
+
+    text-align: center;
+
+    background: #151522;
+
+    color: white;
+
+    border-radius: 20px;
+
+    box-shadow:
+        0 15px 50px
+        rgba(0, 0, 0, 0.5);
+}
+
+#waiting-box h1 {
+    font-size: 36px;
+    margin-bottom: 5px;
+}
+
+#waiting-box h2 {
+    margin-top: 5px;
+}
+
+#waiting-countdown {
+    font-size: 80px;
+
+    font-weight: bold;
+
+    margin: 20px 0;
+}
+#game {
+    display: block;
+
+    width: 100vw;
+    height: 100vh;
+
+    cursor: crosshair;
+}
+#ui {
+    position: absolute;
+
+    top: 10px;
+    left: 10px;
+
+    z-index: 100;
+
+    pointer-events: none;
+}
+
+#menu {
+    pointer-events: auto;
+}
+html,
+body {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    overflow: hidden;
+}
+
+#game {
+    display: block;
+    width: 100vw;
+    height: 100vh;
+}
+
+#ui {
+    pointer-events: none;
+}
+
+#menu {
+    pointer-events: auto;
 }
