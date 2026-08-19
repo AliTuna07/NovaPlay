@@ -141,7 +141,39 @@ export function createBridge(pattern = null) {
         startPlatform
     );
 
+// ======================================
+// BİTİŞ PLATFORMU
+// ======================================
 
+const finishMaterial =
+    new THREE.MeshStandardMaterial({
+        color: 0x444444
+    });
+
+const finishGeometry =
+    new THREE.BoxGeometry(
+        5,
+        0.5,
+        5
+    );
+
+const finishPlatform =
+    new THREE.Mesh(
+        finishGeometry,
+        finishMaterial
+    );
+
+finishPlatform.position.set(
+    0,
+    -0.25,
+    -BRIDGE_LENGTH * TILE_DISTANCE
+);
+
+finishPlatform.userData.isFinishPlatform = true;
+
+scene.add(finishPlatform);
+
+solidPlatforms.push(finishPlatform);
     // ==================================
     // KÖPRÜ CAMLARI
     // ==================================
@@ -240,7 +272,83 @@ export function createBridge(pattern = null) {
         "🌉 Köprü oluşturuldu:",
         safeTiles
     );
+function createLightBar(x, length) {
 
+    const barGeometry =
+        new THREE.BoxGeometry(
+            0.1,
+            0.1,
+            length
+        );
+
+    const barMaterial =
+        new THREE.MeshStandardMaterial({
+            color: 0xff0000,
+            emissive: 0xff0000,
+            emissiveIntensity: 2
+        });
+
+    const bar =
+        new THREE.Mesh(
+            barGeometry,
+            barMaterial
+        );
+
+    bar.position.set(
+        x,
+        0.03,
+        -length / 2 + 1.5
+    );
+
+    scene.add(bar);
+
+
+    // ==================================
+    // AMPULLER
+    // ==================================
+
+    const bulbGeometry =
+        new THREE.SphereGeometry(
+            0.12,
+            8,
+            8
+        );
+
+    const bulbMaterial =
+        new THREE.MeshStandardMaterial({
+            color: 0xff0000,
+            emissive: 0xff0000,
+            emissiveIntensity: 4
+        });
+
+
+    for (
+        let z = 0;
+        z > -length;
+        z -= 2
+    ) {
+
+        const bulb =
+            new THREE.Mesh(
+                bulbGeometry,
+                bulbMaterial
+            );
+
+        bulb.position.set(
+            x,
+            0.2,
+            z
+        );
+
+        scene.add(bulb);
+    }
+}
+const bridgeLength = 60;
+
+createLightBar(-3, bridgeLength);
+createLightBar(-0.3, bridgeLength);
+createLightBar(0.3, bridgeLength);
+createLightBar(3, bridgeLength);
 }
 
 

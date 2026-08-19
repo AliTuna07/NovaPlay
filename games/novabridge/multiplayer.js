@@ -27,7 +27,9 @@ const playerId = crypto.randomUUID();
 let roomId = null;
 
 let players = {};
+let finishedPlayers = {};
 let bridgePattern = null;
+let restartingRoom = false;
 const otherPlayers = {};
 
 
@@ -173,10 +175,11 @@ export async function joinRandomRoom() {
                             roomPlayers[playerId] = {
 
                                 x: 0,
-                                y: 1.1,
+                                y: 0.6,
                                 z: 3,
                                 rotationY: 0,
-                                name: getPlayerName()
+                                name: getPlayerName(),
+                                finished: false
 
                             };
 
@@ -251,7 +254,10 @@ export async function joinRandomRoom() {
                                 x: 0,
                                 y: 1,
                                 z: 3,
-                                rotationY: 0
+                                rotationY: 0,
+                                name: getPlayerName(),
+                                finished: false
+
 
                             }
 
@@ -412,11 +418,15 @@ export async function joinRandomRoom() {
         // OYUNCULARI DİNLE
         // ==================================
 
-        listenPlayers();
+       listenPlayers();
 
-        listenBrokenTiles();
+       listenBrokenTiles();
 
-        listenRoom();
+       listenRoom();
+
+       listenFinishedPlayers();
+      
+
 
 
         console.log(
@@ -487,7 +497,10 @@ function listenRoom() {
                 // OYUN BAŞLADI
                 // ==================================
 
-                if (room.started === true && !gameStarted) {
+                if (
+                    room.started === true &&
+                    !gameStarted
+                ) {
 
                     gameStarted = true;
 
@@ -497,9 +510,6 @@ function listenRoom() {
 
                     hideWaitingRoom();
 
-                    // ==================================
-                    // DİĞER OYUNCULARI SAHNEYE GETİR
-                    // ==================================
 
                     setTimeout(() => {
 
@@ -507,11 +517,13 @@ function listenRoom() {
 
                     }, 100);
 
+
                     window.dispatchEvent(
                         new CustomEvent(
                             "novabridge-game-start"
                         )
                     );
+
 
                     console.log(
                         "🎮 OYUN BAŞLADI!"
@@ -527,16 +539,32 @@ function listenRoom() {
                 // ==================================
 
                 if (
-                    room.startTime &&
-                    !gameStarted
+                    room.started === false &&
+                    room.startTime
                 ) {
 
-                    // Bekleme ekranını göster
+                    // Yeni tur başladıysa
+                    // oyun durumunu sıfırla
+                    if (gameStarted) {
+
+                        gameStarted = false;
+
+                        console.log(
+                            "🔄 Yeni tur için oyun sıfırlandı."
+                        );
+
+                        window.dispatchEvent(
+                            new CustomEvent(
+                                "novabridge-round-reset"
+                            )
+                        );
+
+                    }
+
+
                     showWaitingRoom();
 
 
-                    // Aynı sayaç zaten çalışıyorsa
-                    // tekrar başlatma
                     if (
                         countdownStartTime !==
                         room.startTime
@@ -798,6 +826,7 @@ function hideWaitingRoom() {
 }
 
 
+
 // ======================================
 // KENDİ KONUMUMUZU GÖNDER
 // ======================================
@@ -813,18 +842,14 @@ export function updatePlayerPosition(
         !roomId ||
         !gameStarted
     ) {
-
         return;
-
     }
-
 
     const playerRef =
         ref(
             db,
             `rooms/${roomId}/players/${playerId}`
         );
-
 
     update(
         playerRef,
@@ -835,9 +860,26 @@ export function updatePlayerPosition(
             rotationY
         }
     );
-
 }
+export function updatePlayerFinished(finished) {
 
+    if (!roomId || !gameStarted) {
+        return;
+    }
+
+    const playerRef =
+        ref(
+            db,
+            `rooms/${roomId}/players/${playerId}`
+        );
+
+    update(
+        playerRef,
+        {
+            finished
+        }
+    );
+}
 
 // ======================================
 // OYUNCULARI DİNLE
@@ -934,14 +976,14 @@ function updateOtherPlayers() {
 
                     character.position.set(
                         data.x ?? -1.5,
-                        data.y ?? 1.1,
+                        (data.y ?? 0.6) - 0.3,
                         data.z ?? 0
                     );
                     character.userData.targetX =
     data.x ?? -1.5;
 
 character.userData.targetY =
-    data.y ?? 1.1;
+    (data.y ?? 0.6) - 0.3;
 
 character.userData.targetZ =
     data.z ?? 0;
@@ -962,6 +1004,7 @@ character.userData.targetRotationY =
 
                     character.userData.isMoving =
                         false;
+                        character.userData.lastMoveTime = 0;
 
 
                     scene.add(
@@ -1004,7 +1047,7 @@ character.userData.targetRotationY =
                     data.x ?? -1.5;
 
                 const currentY =
-                    data.y ?? 1.1;
+                    data.y ?? 0.6;
 
                 const currentZ =
                     data.z ?? 0;
@@ -1024,18 +1067,29 @@ character.userData.targetRotationY =
                 // ==================================
 
                 const distanceMoved =
-                    Math.hypot(
-                        currentX - lastX,
-                        currentZ - lastZ
-                    );
+    Math.hypot(
+        currentX - lastX,
+        currentZ - lastZ
+    );
 
+if (distanceMoved > 0.005) {
 
-                const moving =
-                    distanceMoved > 0.005;
+    character.userData.isMoving = true;
 
+    character.userData.lastMoveTime =
+        performance.now();
 
-                character.userData.isMoving =
-                    moving;
+}
+else {
+
+    const timeSinceMove =
+        performance.now() -
+        (character.userData.lastMoveTime || 0);
+
+    character.userData.isMoving =
+        timeSinceMove < 150;
+
+}
 
 
                 // ==================================
@@ -1375,10 +1429,20 @@ export function updateOtherPlayerMovement() {
         const character =
             otherPlayers[id];
 
-        if (!character) continue;
+        // Karakter tamamen yoksa geç
+        if (!character) {
+            continue;
+        }
+
+        // Three.js objesi sahneden silinmişse geç
+        if (!character.position) {
+            continue;
+        }
 
         if (
-            character.userData.targetX === undefined
+            character.userData.targetX === undefined ||
+            character.userData.targetY === undefined ||
+            character.userData.targetZ === undefined
         ) {
             continue;
         }
@@ -1409,6 +1473,227 @@ export function updateOtherPlayerMovement() {
                 targetRotation -
                 character.rotation.y
             ) * 0.15;
+    }
+
+}
+// ======================================
+// OYUNCU BİTİŞ PLATFORMUNA ULAŞTI
+// ======================================
+
+export async function setPlayerFinished() {
+
+    if (!roomId) return;
+
+    const playerName =
+        players[playerId]?.name ||
+        "Oyuncu";
+
+    await set(
+        ref(
+            db,
+            `rooms/${roomId}/finishedPlayers/${playerId}`
+        ),
+        {
+            name: playerName,
+            time: Date.now()
+        }
+    );
+
+}
+// ======================================
+// YENİ TUR BAŞLAT
+// ======================================
+
+// ======================================
+// YENİ TUR BAŞLAT
+// ======================================
+
+export async function restartRoom() {
+
+    if (!roomId) return;
+
+    try {
+
+        const roomRef =
+            ref(
+                db,
+                `rooms/${roomId}`
+            );
+
+        const snapshot =
+            await get(roomRef);
+
+        if (!snapshot.exists()) {
+            return;
+        }
+
+        const room =
+            snapshot.val();
+
+        // Yeni 30 saniyelik bekleme
+        const newStartTime =
+            Date.now() + 30000;
+
+        await update(
+            roomRef,
+            {
+                started: false,
+                startTime: newStartTime,
+                finishedPlayers: null,
+                brokenTiles: null
+            }
+        );
+
+        // Oyuncuların durumunu sıfırla
+        const currentPlayers =
+            room.players || {};
+
+        const updates = {};
+
+        for (
+            const id in currentPlayers
+        ) {
+
+            updates[
+                `players/${id}/finished`
+            ] = false;
+
+            updates[
+                `players/${id}/x`
+            ] = 0;
+
+            updates[
+                `players/${id}/y`
+            ] = 0.6;
+
+            updates[
+                `players/${id}/z`
+            ] = 3;
+
+            updates[
+                `players/${id}/rotationY`
+            ] = 0;
+
+        }
+
+        await update(
+            roomRef,
+            updates
+        );
+
+        console.log(
+            "🔄 Yeni tur hazırlanıyor..."
+        );
+
+    }
+    catch (error) {
+
+        console.error(
+            "❌ Yeni tur başlatılamadı:",
+            error
+        );
+
+    }
+
+}
+
+// ======================================
+// BİTİŞE ULAŞAN OYUNCULARI DİNLE
+// ======================================
+
+export function listenFinishedPlayers(
+    callback = null
+) {
+
+    if (!roomId) return;
+
+    const finishedRef =
+        ref(
+            db,
+            `rooms/${roomId}/finishedPlayers`
+        );
+
+    onValue(
+        finishedRef,
+        snapshot => {
+
+            finishedPlayers =
+                snapshot.exists()
+                    ? snapshot.val()
+                    : {};
+
+            // Callback verilmişse çalıştır
+            if (typeof callback === "function") {
+
+                callback(
+                    finishedPlayers
+                );
+
+            }
+
+            // Herkese tur sonu bilgisini gönder
+            if (
+                Object.keys(finishedPlayers).length > 0
+            ) {
+
+                window.dispatchEvent(
+                    new CustomEvent(
+                        "novabridge-round-finished",
+                        {
+                            detail: finishedPlayers
+                        }
+                    )
+                );
+
+            }
+
+        }
+    );
+
+}
+// ======================================
+// YENİ TUR İÇİN HAZIR
+// ======================================
+
+export async function readyForNextRound() {
+
+    if (!roomId) {
+        return;
+    }
+
+    const playerRef =
+        ref(
+            db,
+            `rooms/${roomId}/players/${playerId}`
+        );
+
+    try {
+
+        await update(
+            playerRef,
+            {
+                readyNextRound: true,
+                finished: false,
+
+                x: 0,
+                y: 0.6,
+                z: 3,
+
+                rotationY: 0
+            }
+        );
+
+        console.log(
+            "🏠 Oyuncu yeni tur için odada kalıyor."
+        );
+
+    }
+    catch (error) {
+
+        console.error(
+            "❌ Yeni tura hazırlanırken hata:",
+            error
+        );
 
     }
 

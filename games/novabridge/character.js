@@ -505,20 +505,19 @@ export function updateCharacterAnimation(
             character.userData.walkTime;
 
         const swing =
-            Math.sin(time) * 0.65;
+    Math.sin(time) * 0.55;
 
-        leftArm.rotation.x =
-            swing;
+leftArm.rotation.x =
+    swing;
 
-        rightArm.rotation.x =
-            -swing;
+rightArm.rotation.x =
+    -swing;
 
-        leftLeg.rotation.x =
-            -swing;
+leftLeg.rotation.x =
+    -swing;
 
-        rightLeg.rotation.x =
-            swing;
-
+rightLeg.rotation.x =
+    swing;
         character.rotation.z =
             Math.sin(time * 2) *
             0.025;

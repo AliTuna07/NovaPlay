@@ -10,7 +10,10 @@ import {
     sendBrokenTile,
     getBridgePattern,
     updateAllCharacterAnimations,
-    updateOtherPlayerMovement
+    updateOtherPlayerMovement,
+    setPlayerFinished,
+    restartRoom,
+    readyForNextRound
 } from "./multiplayer.js";
 
 import {
@@ -72,20 +75,31 @@ renderer.setSize(
 
 
 // ======================================
-// ARKA PLAN
+// KIRMIZI ARENA
 // ======================================
 
 scene.background =
-    new THREE.Color(0x87ceeb);
+    new THREE.Color(0x220000);
+
+scene.fog =
+    new THREE.Fog(
+        0x220000,
+        10,
+        80
+    );
 
 
-// ======================================
-// IŞIK
-// ======================================
+const ambientLight =
+    new THREE.AmbientLight(
+        0xff2222,
+        1.5
+    );
+
+scene.add(ambientLight);
 
 const light =
     new THREE.DirectionalLight(
-        0xffffff,
+        0xff4444,
         2
     );
 
@@ -96,6 +110,36 @@ light.position.set(
 );
 
 scene.add(light);
+
+const redLight1 =
+    new THREE.PointLight(
+        0xff0000,
+        80,
+        100
+    );
+
+redLight1.position.set(
+    -8,
+    8,
+    20
+);
+
+scene.add(redLight1);
+
+const redLight2 =
+    new THREE.PointLight(
+        0xff0000,
+        80,
+        100
+    );
+
+redLight2.position.set(
+    8,
+    8,
+    20
+);
+
+scene.add(redLight2);
 
 
 function startGame() {
@@ -119,8 +163,30 @@ function startGame() {
     createBridge(
         pattern
     );
+const finishPlatform =
+    new THREE.Mesh(
+        new THREE.BoxGeometry(5, 0.5, 5),
+        new THREE.MeshStandardMaterial({
+            color: 0x333333,
+            emissive: 0x220000,
+            emissiveIntensity: 0.5
+        })
+    );
 
+finishPlatform.position.set(
+    0,
+    -0.25,
+    -61
+);
+
+finishPlatform.userData.isFinishPlatform = true;
+
+scene.add(finishPlatform);
+
+if (!player) {
     createPlayer();
+}
+   
 
     const gameInfo =
         document.getElementById(
@@ -156,6 +222,50 @@ window.addEventListener(
     () => {
 
         startGame();
+
+    }
+);
+window.addEventListener(
+    "novabridge-round-reset",
+    () => {
+
+        console.log("🔄 Script: yeni tur için sıfırlanıyor...");
+
+        gameStarted = false;
+
+        gameOver = false;
+
+        spectatorMode = false;
+        spectatorTarget = null;
+        spectatorIndex = 0;
+
+        velocityY = 0;
+        grounded = true;
+
+        brokenTiles.clear();
+
+        if (player) {
+
+            player.visible = true;
+
+            player.position.set(
+                0,
+                0.6,
+                3
+            );
+
+            player.rotation.set(
+                0,
+                0,
+                0
+            );
+
+            player.hasFinished = false;
+
+        }
+
+        yaw = 0;
+        pitch = 0;
 
     }
 );
@@ -499,11 +609,11 @@ if (
 
 
         updatePlayerPosition(
-            player.position.x,
-            player.position.y,
-            player.position.z,
-            player.rotation.y
-        );
+    player.position.x,
+    player.position.y,
+    player.position.z,
+    player.rotation.y
+);
 
     }
 
@@ -579,11 +689,9 @@ function getCurrentTile() {
 function updatePhysics() {
 
     if (!gameStarted) return;
-
     if (!player) return;
 
     velocityY -= gravity;
-
     player.position.y += velocityY;
 
     const playerBottom =
@@ -597,8 +705,30 @@ function updatePhysics() {
         player.position.z >= 0.5 &&
         player.position.z <= 5.5;
 
+    const onFinishPlatform =
+        player.position.x >= -2.5 &&
+        player.position.x <= 2.5 &&
+        player.position.z <= -57 &&
+        player.position.z >= -63;
 
+    // BİTİŞ
     if (
+        onFinishPlatform &&
+        playerBottom <= platformTop
+    ) {
+
+        player.position.y =
+            platformTop + 1;
+
+        velocityY = 0;
+        grounded = true;
+
+        playerFinished();
+
+    }
+
+    // BAŞLANGIÇ
+    else if (
         onStartPlatform &&
         playerBottom <= platformTop
     ) {
@@ -607,16 +737,15 @@ function updatePhysics() {
             platformTop + 1;
 
         velocityY = 0;
-
         grounded = true;
 
     }
 
+    // CAMLAR
     else {
 
         const tile =
             getCurrentTile();
-
 
         if (tile) {
 
@@ -625,7 +754,6 @@ function updatePhysics() {
                     tile.side,
                     tile.index
                 );
-
 
             if (safe) {
 
@@ -639,41 +767,36 @@ function updatePhysics() {
                         groundY;
 
                     velocityY = 0;
-
                     grounded = true;
 
                 }
 
+            } else {
+
+                const tileKey =
+                    `${tile.side}-${tile.index}`;
+
+                if (!brokenTiles.has(tileKey)) {
+
+                    brokenTiles.add(tileKey);
+
+                    sendBrokenTile(
+                        tile.side,
+                        tile.index
+                    );
+
+                    breakTile(
+                        tile.side,
+                        tile.index
+                    );
+
+                }
+
+                grounded = false;
+
             }
-           else {
 
-    const tileKey =
-        `${tile.side}-${tile.index}`;
-if (
-    !brokenTiles.has(tileKey)
-) {
-
-    brokenTiles.add(
-        tileKey
-    );
-
-    sendBrokenTile(
-        tile.side,
-        tile.index
-    );
-
-    breakTile(
-        tile.side,
-        tile.index
-    );
-
-}
-    grounded = false;
-
-}
-
-        }
-        else {
+        } else {
 
             grounded = false;
 
@@ -681,16 +804,14 @@ if (
 
     }
 
-updatePlayerPosition(
-    player.position.x,
-    player.position.y,
-    player.position.z,
-    player.rotation.y
-);
-    // ==================================
-    // DÜŞME KONTROLÜ
-    // ==================================
+    updatePlayerPosition(
+        player.position.x,
+        player.position.y,
+        player.position.z,
+        player.rotation.y
+    );
 
+    // DÜŞME
     if (
         player.position.y < -10 &&
         !gameOver
@@ -701,9 +822,12 @@ updatePlayerPosition(
     }
 
 }
+
+
 function playerDied() {
 
     if (gameOver) return;
+    if (!player) return;
 
     gameOver = true;
 
@@ -972,6 +1096,406 @@ window.addEventListener(
     }
 );
 
+function playerFinished() {
+
+    if (player.hasFinished) {
+        return;
+    }
+
+    player.hasFinished = true;
+
+    console.log(
+        "🏁 Oyuncu bitiş platformuna ulaştı!"
+    );
+
+    // Firebase'e bitiş bilgisini gönder
+    setPlayerFinished();
+
+    // Tur sonu menüsünü aç
+    showRoundEndScreen();
+
+}
+// ======================================
+// TUR SONU MENÜSÜ
+// ======================================
+
+
+function restartLocalGame() {
+
+    console.log(
+        "🔄 Yeni tur hazırlanıyor..."
+    );
+
+    gameOver = false;
+
+    spectatorMode = false;
+
+    spectatorTarget = null;
+
+    spectatorIndex = 0;
+
+    velocityY = 0;
+
+    grounded = true;
+
+
+    // Oyuncunun durumunu sıfırla
+    if (player) {
+
+        player.visible = true;
+
+        player.position.set(
+            0,
+            0.6,
+            3
+        );
+
+        player.rotation.set(
+            0,
+            0,
+            0
+        );
+
+        player.hasFinished = false;
+
+    }
+
+
+    // Kamera
+    yaw = 0;
+
+    pitch = 0;
+
+
+    // Eski kırılmış camları unut
+    brokenTiles.clear();
+
+
+    // Yeni köprü oluştur
+    const pattern =
+        getBridgePattern();
+
+    createBridge(
+        pattern
+    );
+
+
+    // Multiplayer tarafına
+    // yeni tur sinyali gönder
+    restartRoom();
+
+}
+function showFinishedPlayerName(name) {
+
+    let list =
+        document.getElementById(
+            "finished-players"
+        );
+
+    if (!list) {
+
+        list =
+            document.createElement("div");
+
+        list.id =
+            "finished-players";
+
+        list.style.position =
+            "fixed";
+
+        list.style.top =
+            "20px";
+
+        list.style.left =
+            "50%";
+
+        list.style.transform =
+            "translateX(-50%)";
+
+        list.style.padding =
+            "12px 25px";
+
+        list.style.background =
+            "rgba(0,0,0,0.75)";
+
+        list.style.color =
+            "white";
+
+        list.style.fontSize =
+            "20px";
+
+        list.style.fontWeight =
+            "bold";
+
+        list.style.borderRadius =
+            "10px";
+
+        list.style.zIndex =
+            "1000";
+
+        document.body.appendChild(
+            list
+        );
+
+    }
+
+    list.innerHTML =
+        `🏁 Bitiş: ${name}`;
+
+}
+window.addEventListener(
+    "novabridge-finished-players",
+    event => {
+
+        const finishedPlayers =
+            event.detail || {};
+
+        let box =
+            document.getElementById(
+                "finished-players"
+            );
+
+        if (!box) {
+
+            box =
+                document.createElement("div");
+
+            box.id =
+                "finished-players";
+
+            box.style.position =
+                "fixed";
+
+            box.style.top =
+                "20px";
+
+            box.style.left =
+                "50%";
+
+            box.style.transform =
+                "translateX(-50%)";
+
+            box.style.padding =
+                "12px 24px";
+
+            box.style.background =
+                "rgba(0, 0, 0, 0.8)";
+
+            box.style.color =
+                "#fff";
+
+            box.style.fontSize =
+                "20px";
+
+            box.style.fontWeight =
+                "bold";
+
+            box.style.borderRadius =
+                "10px";
+
+            box.style.zIndex =
+                "9999";
+
+            document.body.appendChild(
+                box
+            );
+
+        }
+
+        const names =
+            Object.values(
+                finishedPlayers
+            );
+
+        if (names.length === 0) {
+
+            box.style.display =
+                "none";
+
+            return;
+
+        }
+
+        box.style.display =
+            "block";
+
+        box.innerHTML =
+            `
+            🏁 Bitişe Ulaşanlar
+            <br>
+            ${names
+                .map(
+                    (data, index) =>
+                        `${index + 1}. ${data.name || "Oyuncu"}`
+                )
+                .join("<br>")}
+            `;
+
+    }
+);
+window.addEventListener(
+    "novabridge-round-finished",
+    event => {
+
+        console.log(
+            "🏆 Tur bitti:",
+            event.detail
+        );
+
+        showRoundEndScreen();
+
+    }
+);
+// ======================================
+// TUR SONU EKRANI
+// ======================================
+
+function showRoundEndScreen() {
+
+    if (
+        document.getElementById(
+            "round-end-screen"
+        )
+    ) {
+        return;
+    }
+
+    const screen =
+        document.createElement("div");
+
+    screen.id =
+        "round-end-screen";
+
+    screen.innerHTML = `
+
+        <div id="round-end-box">
+
+            <div class="round-end-title">
+                🏆 TUR BİTTİ!
+            </div>
+
+            <div class="round-end-text">
+                Bir oyuncu bitişe ulaştı!
+            </div>
+
+            <div class="round-end-buttons">
+
+                <button id="stay-room-button">
+                    🏠 Odada Kal
+                </button>
+
+                <button id="leave-room-button">
+                    🚪 Oyundan Çık
+                </button>
+
+            </div>
+
+        </div>
+
+    `;
+
+    document.body.appendChild(
+        screen
+    );
+
+    // -----------------------------
+    // ODADA KAL
+    // -----------------------------
+
+    document
+        .getElementById(
+            "stay-room-button"
+        )
+        .addEventListener(
+            "click",
+            async () => {
+
+                await stayInRoom();
+
+            }
+        );
+
+    // -----------------------------
+    // OYUNDAN ÇIK
+    // -----------------------------
+
+    document
+        .getElementById(
+            "leave-room-button"
+        )
+        .addEventListener(
+            "click",
+            async () => {
+
+                await leaveGame();
+
+            }
+        );
+
+}
+async function stayInRoom() {
+
+    const screen =
+        document.getElementById(
+            "round-end-screen"
+        );
+
+    if (screen) {
+        screen.remove();
+    }
+
+    if (player) {
+
+        player.visible = true;
+
+        player.hasFinished = false;
+
+        player.position.set(
+            0,
+            0.6,
+            3
+        );
+
+        player.rotation.y = 0;
+
+    }
+
+    gameOver = false;
+
+    spectatorMode = false;
+
+    spectatorTarget = null;
+
+    spectatorIndex = 0;
+
+    velocityY = 0;
+
+    grounded = true;
+
+    brokenTiles.clear();
+
+    await readyForNextRound();
+
+    await restartRoom();
+
+}
+async function leaveGame() {
+
+    const screen =
+        document.getElementById(
+            "round-end-screen"
+        );
+
+    if (screen) {
+        screen.remove();
+    }
+
+    await leaveRoom();
+
+    window.location.href =
+        "../../index.html";
+
+}
 
 // ======================================
 // OYUN DÖNGÜSÜ

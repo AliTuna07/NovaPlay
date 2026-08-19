@@ -441,3 +441,125 @@ body {
 #menu {
     pointer-events: auto;
 }
+#round-end-screen {
+
+    position: fixed;
+
+    inset: 0;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    background:
+        rgba(20, 0, 0, 0.85);
+
+    z-index: 10000;
+
+}
+
+#round-end-box {
+
+    width: 420px;
+
+    padding: 35px;
+
+    text-align: center;
+
+    background:
+        linear-gradient(
+            145deg,
+            #250000,
+            #080000
+        );
+
+    border:
+        2px solid #ff0000;
+
+    border-radius: 18px;
+
+    box-shadow:
+        0 0 40px
+        rgba(255, 0, 0, 0.6);
+
+}
+
+.round-end-title {
+
+    font-size: 38px;
+
+    font-weight: bold;
+
+    color: white;
+
+    margin-bottom: 15px;
+
+}
+
+.round-end-text {
+
+    color: #ddd;
+
+    font-size: 18px;
+
+    margin-bottom: 30px;
+
+}
+
+.round-end-buttons {
+
+    display: flex;
+
+    gap: 15px;
+
+    justify-content: center;
+
+}
+
+.round-end-buttons button {
+
+    border: none;
+
+    border-radius: 10px;
+
+    padding: 14px 22px;
+
+    font-size: 17px;
+
+    font-weight: bold;
+
+    cursor: pointer;
+
+    transition:
+        transform 0.15s,
+        box-shadow 0.15s;
+
+}
+
+#stay-room-button {
+
+    background: #c40000;
+
+    color: white;
+
+}
+
+#leave-room-button {
+
+    background: #333;
+
+    color: white;
+
+}
+
+.round-end-buttons button:hover {
+
+    transform: scale(1.05);
+
+    box-shadow:
+        0 0 15px
+        rgba(255, 0, 0, 0.5);
+
+}
