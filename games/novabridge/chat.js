@@ -369,3 +369,33 @@ export function hideChat() {
     }
 
 }
+// ======================================
+// CHAT AÇ / KAPAT
+// ======================================
+
+const chatToggle =
+    document.getElementById("chatToggle");
+
+const chatBox =
+    document.getElementById("chatBox");
+
+if (chatToggle && chatBox) {
+
+    chatToggle.addEventListener(
+        "click",
+        () => {
+
+            const isHidden =
+                chatBox.classList.toggle(
+                    "chat-hidden"
+                );
+
+            chatToggle.textContent =
+                isHidden
+                    ? "💬"
+                    : "✕";
+
+        }
+    );
+
+}

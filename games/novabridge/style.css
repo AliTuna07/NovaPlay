@@ -834,3 +834,118 @@ body {
     }
 
 }
+/* ======================================
+   CHAT AÇ / KAPAT
+====================================== */
+
+#chatToggle {
+    position: fixed;
+
+    right: 20px;
+    bottom: 20px;
+
+    width: 55px;
+    height: 55px;
+
+    border: none;
+    border-radius: 50%;
+
+    background: #b00000;
+    color: white;
+
+    font-size: 25px;
+    font-weight: bold;
+
+    cursor: pointer;
+
+    z-index: 10001;
+
+    box-shadow:
+        0 0 15px rgba(255, 0, 0, 0.5);
+
+    transition:
+        transform 0.2s,
+        background 0.2s;
+}
+
+#chatToggle:hover {
+    transform: scale(1.08);
+    background: #e00000;
+}
+
+
+/* ======================================
+   CHAT KUTUSU
+====================================== */
+
+#chatBox {
+    position: fixed;
+
+    right: 20px;
+    bottom: 85px;
+
+    width: 300px;
+    height: 380px;
+
+    display: flex;
+    flex-direction: column;
+
+    background: rgba(15, 0, 0, 0.94);
+
+    border: 1px solid #ff2222;
+    border-radius: 12px;
+
+    overflow: hidden;
+
+    z-index: 10000;
+
+    transition:
+        opacity 0.2s,
+        transform 0.2s;
+}
+
+
+/* KAPALI */
+
+#chatBox.chat-hidden {
+
+    opacity: 0;
+
+    transform:
+        translateY(15px)
+        scale(0.95);
+
+    pointer-events: none;
+
+}
+
+
+/* ======================================
+   MOBİL
+====================================== */
+
+@media (max-width: 900px) {
+
+    #chatToggle {
+
+        right: 15px;
+        bottom: 15px;
+
+        width: 55px;
+        height: 55px;
+
+    }
+
+    #chatBox {
+
+        right: 15px;
+        bottom: 80px;
+
+        width: calc(100vw - 30px);
+        max-width: 350px;
+
+        height: 360px;
+
+    }
+
+}

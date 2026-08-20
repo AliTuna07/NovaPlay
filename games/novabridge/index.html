@@ -70,11 +70,39 @@
         src="script.js">
     </script>
     <script type="module" src="chat.js"></script>
-<div id="chatBox">
+<!-- ======================================
+     SOHBET
+====================================== -->
+
+<button id="chatToggle">
+    💬
+</button>
+
+<div id="chatBox" class="chat-hidden"></div>
 
     <div id="chatHeader">
         💬 Sohbet
     </div>
+
+    <div id="chatMessages"></div>
+
+    <div id="chatInputArea">
+
+        <input
+            id="chatInput"
+            type="text"
+            maxlength="200"
+            placeholder="Mesaj yaz..."
+            autocomplete="off"
+        >
+
+        <button id="chatSend">
+            ➤
+        </button>
+
+    </div>
+
+</div>
 
     <div id="chatMessages"></div>
 
