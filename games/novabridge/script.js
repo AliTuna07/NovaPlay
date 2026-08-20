@@ -1,5 +1,11 @@
 import * as THREE from "https://unpkg.com/three@0.179.1/build/three.module.js";
-
+import {
+    playWaitingMusic,
+    playGameMusic,
+    stopWaitingMusic,
+    stopGameMusic,
+    playSound
+} from "./sound.js";
 import { showGameOver } from "./ui.js";
 
 import {
@@ -141,13 +147,334 @@ redLight2.position.set(
 
 scene.add(redLight2);
 
+// ======================================
+// GİRİŞ KAPISI
+// ======================================
 
+let entranceDoor = null;
+let entranceDoorLeft = null;
+let entranceDoorRight = null;
+let entranceDoorLights = [];
+let entranceDoorOpening = false;
+let entranceDoorOpen = false;
+
+function createEntranceDoor() {
+
+    // Daha önce oluşturulduysa tekrar oluşturma
+    if (entranceDoor) return;
+
+    entranceDoor = new THREE.Group();
+
+    // ----------------------------------
+    // KAPI ÇERÇEVESİ
+    // ----------------------------------
+
+    const frameMaterial =
+        new THREE.MeshStandardMaterial({
+            color: 0x111111,
+            metalness: 0.8,
+            roughness: 0.3
+        });
+
+    const frameLeft =
+        new THREE.Mesh(
+            new THREE.BoxGeometry(0.35, 4.5, 0.5),
+            frameMaterial
+        );
+
+    frameLeft.position.set(
+        -3.1,
+        2.25,
+        0
+    );
+
+    entranceDoor.add(frameLeft);
+
+    const frameRight =
+        new THREE.Mesh(
+            new THREE.BoxGeometry(0.35, 4.5, 0.5),
+            frameMaterial
+        );
+
+    frameRight.position.set(
+        3.1,
+        2.25,
+        0
+    );
+
+    entranceDoor.add(frameRight);
+
+    const frameTop =
+        new THREE.Mesh(
+            new THREE.BoxGeometry(6.5, 0.35, 0.5),
+            frameMaterial
+        );
+
+    frameTop.position.set(
+        0,
+        4.5,
+        0
+    );
+
+    entranceDoor.add(frameTop);
+
+    // ----------------------------------
+    // KAPI PANELLERİ
+    // ----------------------------------
+
+    const doorMaterial =
+        new THREE.MeshStandardMaterial({
+            color: 0x222222,
+            metalness: 0.7,
+            roughness: 0.35,
+            emissive: 0x220000,
+            emissiveIntensity: 0.5
+        });
+
+    entranceDoorLeft =
+        new THREE.Mesh(
+            new THREE.BoxGeometry(3, 4.1, 0.3),
+            doorMaterial
+        );
+
+    entranceDoorLeft.position.set(
+        -1.5,
+        2.05,
+        0
+    );
+
+    entranceDoor.add(
+        entranceDoorLeft
+    );
+
+    entranceDoorRight =
+        new THREE.Mesh(
+            new THREE.BoxGeometry(3, 4.1, 0.3),
+            doorMaterial.clone()
+        );
+
+    entranceDoorRight.position.set(
+        1.5,
+        2.05,
+        0
+    );
+
+    entranceDoor.add(
+        entranceDoorRight
+    );
+
+    // ----------------------------------
+    // KAPI ÜZERİNDEKİ KIRMIZI IŞIKLAR
+    // ----------------------------------
+
+    const lightMaterial =
+        new THREE.MeshStandardMaterial({
+            color: 0xff0000,
+            emissive: 0xff0000,
+            emissiveIntensity: 5
+        });
+
+    for (let i = 0; i < 5; i++) {
+
+        const lamp =
+            new THREE.Mesh(
+                new THREE.SphereGeometry(
+                    0.12,
+                    12,
+                    12
+                ),
+                lightMaterial
+            );
+
+        lamp.position.set(
+            -2 + i,
+            4.05,
+            -0.3
+        );
+
+        entranceDoor.add(lamp);
+
+        const pointLight =
+            new THREE.PointLight(
+                0xff0000,
+                8,
+                8
+            );
+
+        pointLight.position.copy(
+            lamp.position
+        );
+
+        entranceDoor.add(pointLight);
+
+        entranceDoorLights.push(
+            pointLight
+        );
+    }
+
+    // ----------------------------------
+    // KAPIYI SAHNEYE EKLE
+    // ----------------------------------
+
+    entranceDoor.position.set(
+        0,
+        0,
+        1.2
+    );
+
+    scene.add(
+        entranceDoor
+    );
+
+    console.log(
+        "🚪 Giriş kapısı oluşturuldu."
+    );
+}
+
+
+// ======================================
+// KAPIYI AÇ
+// ======================================
+
+function openEntranceDoor() {
+
+    if (
+        entranceDoorOpening ||
+        entranceDoorOpen
+    ) {
+        return;
+    }
+
+    entranceDoorOpening = true;
+    doorCameraMode = true;
+
+    // Oyuncunun normal kamera yönünü sakla
+    savedDoorYaw = yaw;
+    savedDoorPitch = pitch;
+    playSound("doorOpen");
+    console.log(
+        "🚪 Giriş kapısı yavaşça açılıyor..."
+    );
+
+    const startLeftX =
+        entranceDoorLeft.position.x;
+
+    const startRightX =
+        entranceDoorRight.position.x;
+
+    const targetLeftX = -3;
+    const targetRightX = 3;
+
+    // Kapı daha yavaş açılıyor
+    const duration = 4500;
+
+    const startTime =
+        performance.now();
+
+    function animateDoor(currentTime) {
+
+        const elapsed =
+            currentTime - startTime;
+
+        const progress =
+            Math.min(
+                elapsed / duration,
+                1
+            );
+        doorAnimationProgress = progress;
+        // Yumuşak hareket
+        const eased =
+            progress < 0.5
+                ? 4 * progress * progress * progress
+                : 1 -
+                  Math.pow(
+                      -2 * progress + 2,
+                      3
+                  ) / 2;
+// ==================================
+// KIRMIZI IŞIK ANİMASYONU
+// ==================================
+
+const lightCycle =
+    Math.floor(
+        elapsed / 180
+    );
+
+entranceDoorLights.forEach(
+    (light, index) => {
+
+        const active =
+            (lightCycle + index) % 5 === 0;
+
+        light.intensity =
+            active ? 18 : 2;
+
+    }
+);
+        entranceDoorLeft.position.x =
+            THREE.MathUtils.lerp(
+                startLeftX,
+                targetLeftX,
+                eased
+            );
+
+        entranceDoorRight.position.x =
+            THREE.MathUtils.lerp(
+                startRightX,
+                targetRightX,
+                eased
+            );
+
+        if (progress < 1) {
+
+            requestAnimationFrame(
+                animateDoor
+            );
+
+        }
+        else {
+
+           entranceDoorOpening = false;
+           entranceDoorOpen = true;
+           doorAnimationProgress = 1;
+            // Kapı açıldıktan sonra tüm ışıklar sabit
+           entranceDoorLights.forEach(
+              light => {
+
+               light.intensity = 10;
+  
+            }
+         );
+
+            console.log(
+                "🚪 Giriş kapısı tamamen açıldı!"
+            );
+
+            // Kamerayı kısa süre daha tut
+            setTimeout(() => {
+
+                doorCameraMode = false;
+
+                // Oyuncunun normal görüşünü geri getir
+                yaw = savedDoorYaw;
+                pitch = savedDoorPitch;
+
+            }, 500);
+            doorAnimationProgress = 0;
+        }
+    }
+
+    requestAnimationFrame(
+        animateDoor
+    );
+}
 function startGame() {
 
     if (gameStarted) return;
 
     gameStarted = true;
-
+    createEntranceDoor();
+    openEntranceDoor();
     // ==================================
     // ORTAK KÖPRÜ DESENİ
     // ==================================
@@ -214,6 +541,7 @@ window.addEventListener(
         }
 
         await joinRandomRoom();
+        playWaitingMusic();
 
     }
 );
@@ -221,7 +549,9 @@ window.addEventListener(
     "novabridge-game-start",
     () => {
 
+        playGameMusic();
         startGame();
+        
 
     }
 );
@@ -238,7 +568,16 @@ window.addEventListener(
         spectatorMode = false;
         spectatorTarget = null;
         spectatorIndex = 0;
+        entranceDoorOpen = false;
+entranceDoorOpening = false;
 
+if (entranceDoor) {
+    scene.remove(entranceDoor);
+    entranceDoor = null;
+    entranceDoorLeft = null;
+    entranceDoorRight = null;
+    entranceDoorLights = [];
+}
         velocityY = 0;
         grounded = true;
 
@@ -274,6 +613,19 @@ window.addEventListener(
 // ======================================
 
 const keys = {};
+// ======================================
+// MOBİL KONTROLLER
+
+let mobileForward = 0;
+let mobileRight = 0;
+
+let joystickTouchId = null;
+let lookTouchId = null;
+
+let lastLookX = 0;
+let lastLookY = 0;
+//=======================================
+
 let velocityY = 0;
 
 const gravity = 0.02;
@@ -349,7 +701,10 @@ window.addEventListener(
 let yaw = 0;
 
 let pitch = 0;
-
+let doorCameraMode = false;
+let savedDoorYaw = 0;
+let savedDoorPitch = 0;
+let doorAnimationProgress = 0;
 const mouseSensitivity = 0.002;
 
 
@@ -495,23 +850,27 @@ document.addEventListener(
 // ======================================
 
 function updateMovement() {
-    if (!gameStarted) return;
-if (
-    gameOver &&
-    !spectatorMode
-) {
-    return;
-}
-    if (!player) return;
+   if (window.chatTyping) {
+        return;
+    }
 
+    if (!gameStarted) return;
+    if (!entranceDoorOpen) return;
+
+    if (
+        gameOver &&
+        !spectatorMode
+    ) {
+        return;
+    }
+
+    if (!player) return;
 
     const speed = 0.08;
 
 
-    let forward = 0;
-
-    let right = 0;
-
+    let forward = mobileForward;
+    let right = mobileRight;
 
     // W
     if (
@@ -741,13 +1100,36 @@ function updatePhysics() {
 
     }
 
-    // CAMLAR
-    else {
+    // ==================================
+// CAMLAR
+// ==================================
 
-        const tile =
-            getCurrentTile();
+else {
 
-        if (tile) {
+    const tile =
+        getCurrentTile();
+
+    if (tile) {
+
+        const groundY = 1.1;
+
+        // Oyuncunun ayaklarının cama
+        // yeterince yaklaşmasını bekle.
+        const playerBottom =
+            player.position.y - 1;
+
+        const standingOnGlass =
+            playerBottom <= groundY + 0.15 &&
+            playerBottom >= groundY - 0.25;
+
+        // Havada geçiyorsa camı kontrol etme
+        if (!standingOnGlass) {
+
+            grounded = false;
+
+        }
+
+        else {
 
             const safe =
                 isSafeTile(
@@ -755,30 +1137,36 @@ function updatePhysics() {
                     tile.index
                 );
 
+            // ------------------------------
+            // GÜVENLİ CAM
+            // ------------------------------
+
             if (safe) {
 
-                const groundY = 1.1;
+                player.position.y =
+                    groundY + 1;
 
-                if (
-                    player.position.y <= groundY
-                ) {
+                velocityY = 0;
+                grounded = true;
 
-                    player.position.y =
-                        groundY;
+            }
 
-                    velocityY = 0;
-                    grounded = true;
+            // ------------------------------
+            // KIRILAN CAM
+            // ------------------------------
 
-                }
-
-            } else {
+            else {
 
                 const tileKey =
                     `${tile.side}-${tile.index}`;
 
-                if (!brokenTiles.has(tileKey)) {
+                if (
+                    !brokenTiles.has(tileKey)
+                ) {
 
-                    brokenTiles.add(tileKey);
+                    brokenTiles.add(
+                        tileKey
+                    );
 
                     sendBrokenTile(
                         tile.side,
@@ -790,19 +1178,24 @@ function updatePhysics() {
                         tile.index
                     );
 
+                    playSound(
+                        "glassBreak"
+                    );
                 }
 
                 grounded = false;
-
             }
-
-        } else {
-
-            grounded = false;
-
         }
 
     }
+
+    else {
+
+        grounded = false;
+
+    }
+
+}
 
     updatePlayerPosition(
         player.position.x,
@@ -970,7 +1363,55 @@ function startSpectatorMode() {
 // ======================================
 
 function updateCamera() {
-if (!gameStarted) return;
+
+    if (!gameStarted) return;
+
+    // ==================================
+    // KAPI AÇILIŞ KAMERASI
+    // ==================================
+
+if (doorCameraMode) {
+
+    camera.rotation.order = "YXZ";
+
+    // Kamera kapının köprü tarafında başlar
+    // ve yavaşça köprünün sonuna doğru ilerler.
+
+    const cameraStartZ = 0.3;
+    const cameraEndZ = -55;
+
+    const cameraProgress =
+        Math.min(
+            doorAnimationProgress,
+            1
+        );
+
+    const easedCameraProgress =
+        1 -
+        Math.pow(
+            1 - cameraProgress,
+            2
+        );
+
+    const currentZ =
+        THREE.MathUtils.lerp(
+            cameraStartZ,
+            cameraEndZ,
+            easedCameraProgress
+        );
+
+    camera.position.set(
+        0,
+        2.5,
+        currentZ
+    );
+
+    // Her zaman köprünün ilerisine bak
+    camera.rotation.y = Math.PI;
+    camera.rotation.x = 0;
+
+    return;
+}
     // ==================================
     // İZLEYİCİ MODU
     // ==================================
@@ -983,13 +1424,11 @@ if (!gameStarted) return;
 
     }
 
-
     // ==================================
     // NORMAL FPS KAMERA
     // ==================================
 
     if (!player) return;
-
 
     camera.position.set(
         player.position.x,
@@ -997,19 +1436,19 @@ if (!gameStarted) return;
         player.position.z
     );
 
-
     camera.rotation.order =
         "YXZ";
 
-
     camera.rotation.y =
         yaw;
-
 
     camera.rotation.x =
         pitch;
 
 }
+
+
+    
 function updateSpectatorCamera() {
 
     if (!spectatorTarget) {
@@ -1103,7 +1542,7 @@ function playerFinished() {
     }
 
     player.hasFinished = true;
-
+    playSound("finish")
     console.log(
         "🏁 Oyuncu bitiş platformuna ulaştı!"
     );
@@ -1496,7 +1935,321 @@ async function leaveGame() {
         "../../index.html";
 
 }
+const chatInput = document.getElementById("chatInput");
 
+if (chatInput) {
+
+    chatInput.addEventListener("focus", () => {
+
+        window.chatTyping = true;
+
+    });
+
+    chatInput.addEventListener("blur", () => {
+
+        window.chatTyping = false;
+
+    });
+
+}
+// ======================================
+// MOBİL JOYSTICK
+// ======================================
+
+const joystick =
+    document.getElementById("joystick");
+
+const joystickKnob =
+    document.getElementById("joystick-knob");
+
+if (joystick && joystickKnob) {
+
+    joystick.addEventListener(
+        "touchstart",
+        event => {
+
+            if (!gameStarted) return;
+            if (!entranceDoorOpen) return;
+
+            const touch = event.changedTouches[0];
+
+            joystickTouchId =
+                touch.identifier;
+
+            updateJoystick(touch);
+
+            event.preventDefault();
+
+        },
+        { passive: false }
+    );
+
+    joystick.addEventListener(
+        "touchmove",
+        event => {
+
+            if (joystickTouchId === null) {
+                return;
+            }
+
+            for (const touch of event.changedTouches) {
+
+                if (
+                    touch.identifier ===
+                    joystickTouchId
+                ) {
+
+                    updateJoystick(touch);
+
+                    break;
+                }
+            }
+
+            event.preventDefault();
+
+        },
+        { passive: false }
+    );
+
+    joystick.addEventListener(
+        "touchend",
+        event => {
+
+            for (const touch of event.changedTouches) {
+
+                if (
+                    touch.identifier ===
+                    joystickTouchId
+                ) {
+
+                    joystickTouchId = null;
+
+                    mobileForward = 0;
+                    mobileRight = 0;
+
+                    joystickKnob.style.left = "35px";
+                    joystickKnob.style.top = "35px";
+
+                    break;
+                }
+            }
+
+            event.preventDefault();
+
+        },
+        { passive: false }
+    );
+}
+
+function updateJoystick(touch) {
+
+    const rect =
+        joystick.getBoundingClientRect();
+
+    const centerX =
+        rect.left + rect.width / 2;
+
+    const centerY =
+        rect.top + rect.height / 2;
+
+    let dx =
+        touch.clientX - centerX;
+
+    let dy =
+        touch.clientY - centerY;
+
+    const maxDistance = 35;
+
+    const distance =
+        Math.sqrt(
+            dx * dx +
+            dy * dy
+        );
+
+    if (distance > maxDistance) {
+
+        dx =
+            dx / distance *
+            maxDistance;
+
+        dy =
+            dy / distance *
+            maxDistance;
+
+    }
+
+    joystickKnob.style.left =
+        `${35 + dx}px`;
+
+    joystickKnob.style.top =
+        `${35 + dy}px`;
+
+    mobileRight =
+        dx / maxDistance;
+
+    mobileForward =
+        -dy / maxDistance;
+
+}
+// ======================================
+// MOBİL KAMERA
+// ======================================
+
+gameCanvas.addEventListener(
+    "touchstart",
+    event => {
+
+        if (!gameStarted) return;
+        if (!entranceDoorOpen) return;
+        if (gameOver) return;
+        if (spectatorMode) return;
+
+        for (const touch of event.changedTouches) {
+
+            // Sol taraf joysticke ait
+            if (
+                touch.clientX <
+                window.innerWidth * 0.4
+            ) {
+                continue;
+            }
+
+            lookTouchId =
+                touch.identifier;
+
+            lastLookX =
+                touch.clientX;
+
+            lastLookY =
+                touch.clientY;
+        }
+
+        event.preventDefault();
+
+    },
+    { passive: false }
+);
+
+gameCanvas.addEventListener(
+    "touchmove",
+    event => {
+
+        if (lookTouchId === null) {
+            return;
+        }
+
+        for (const touch of event.changedTouches) {
+
+            if (
+                touch.identifier !==
+                lookTouchId
+            ) {
+                continue;
+            }
+
+            const dx =
+                touch.clientX -
+                lastLookX;
+
+            const dy =
+                touch.clientY -
+                lastLookY;
+
+            yaw -=
+                dx * 0.008;
+
+            pitch -=
+                dy * 0.008;
+
+            const maxPitch =
+                Math.PI / 2 - 0.05;
+
+            pitch =
+                Math.max(
+                    -maxPitch,
+                    Math.min(
+                        maxPitch,
+                        pitch
+                    )
+                );
+
+            if (player) {
+
+                player.rotation.y =
+                    yaw;
+
+            }
+
+            lastLookX =
+                touch.clientX;
+
+            lastLookY =
+                touch.clientY;
+
+            break;
+        }
+
+        event.preventDefault();
+
+    },
+    { passive: false }
+);
+
+gameCanvas.addEventListener(
+    "touchend",
+    event => {
+
+        for (const touch of event.changedTouches) {
+
+            if (
+                touch.identifier ===
+                lookTouchId
+            ) {
+
+                lookTouchId = null;
+
+                break;
+            }
+        }
+
+        event.preventDefault();
+
+    },
+    { passive: false }
+);
+// ======================================
+// MOBİL ZIPLAMA
+// ======================================
+
+const jumpButton =
+    document.getElementById("jump-button");
+
+if (jumpButton) {
+
+    jumpButton.addEventListener(
+        "touchstart",
+        event => {
+
+            if (!gameStarted) return;
+            if (!entranceDoorOpen) return;
+            if (gameOver) return;
+            if (spectatorMode) return;
+
+            if (grounded) {
+
+                velocityY =
+                    jumpPower;
+
+                grounded = false;
+
+            }
+
+            event.preventDefault();
+
+        },
+        { passive: false }
+    );
+}
 // ======================================
 // OYUN DÖNGÜSÜ
 // ======================================

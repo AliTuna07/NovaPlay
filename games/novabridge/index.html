@@ -49,13 +49,48 @@
 
    
     <canvas id="game"></canvas>
+<!-- ======================================
+     MOBİL KONTROLLER
+====================================== -->
 
+<div id="mobile-controls">
+
+    <div id="joystick">
+        <div id="joystick-knob"></div>
+    </div>
+
+    <div id="mobile-buttons">
+        <button id="jump-button">↑</button>
+    </div>
+
+</div>
 
     <script
         type="module"
         src="script.js">
     </script>
+    <script type="module" src="chat.js"></script>
+<div id="chatBox">
 
+    <div id="chatHeader">
+        💬 Sohbet
+    </div>
+
+    <div id="chatMessages"></div>
+
+    <div id="chatInputArea">
+        <input
+            id="chatInput"
+            type="text"
+            maxlength="200"
+            placeholder="Mesaj yaz..."
+            autocomplete="off"
+        >
+
+        <button id="chatSend">➤</button>
+    </div>
+
+</div>
 </body>
 
 </html>

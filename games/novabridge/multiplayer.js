@@ -4,7 +4,12 @@ import {
     createCharacter,
     updateCharacterAnimation
 } from "./character.js";
-
+import {
+    initChat,
+    closeChat,
+    showChat,
+    hideChat
+} from "./chat.js";
 import { db } from "./firebase.js";
 
 import {
@@ -425,7 +430,15 @@ export async function joinRandomRoom() {
        listenRoom();
 
        listenFinishedPlayers();
-      
+      // ==================================
+      // CHAT BAŞLAT
+      // ==================================
+
+      initChat(
+    roomId,
+    playerId,
+    getPlayerName()
+);
 
 
 
@@ -504,6 +517,8 @@ function listenRoom() {
 
                     gameStarted = true;
 
+                    showChat();
+
                     stopCountdown();
 
                     countdownStartTime = null;
@@ -542,6 +557,7 @@ function listenRoom() {
                     room.started === false &&
                     room.startTime
                 ) {
+                    hideChat();
 
                     // Yeni tur başladıysa
                     // oyun durumunu sıfırla
@@ -1249,7 +1265,7 @@ if (oldRoomId) {
     );
 
 }
-
+closeChat();
 roomId = null;
 
 gameStarted = false;
