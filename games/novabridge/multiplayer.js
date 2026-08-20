@@ -465,15 +465,9 @@ export async function joinRandomRoom() {
 
 function getPlayerName() {
 
-    const input =
-        document.getElementById(
-            "playerName"
-        );
-
-
     return (
-        input?.value.trim() ||
-        "Oyuncu"
+        localStorage.getItem("username") ||
+        "Misafir"
     );
 
 }
@@ -1064,7 +1058,7 @@ character.userData.targetRotationY =
 
                 const currentY =
                    (data.y ?? 0.6) - 0.3;
-                   
+
                 const currentZ =
                     data.z ?? 0;
 
@@ -1713,4 +1707,7 @@ export async function readyForNextRound() {
 
     }
 
+}
+export function getCurrentPlayerName() {
+    return getPlayerName();
 }

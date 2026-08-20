@@ -7,7 +7,10 @@ import {
     playSound
 } from "./sound.js";
 import { showGameOver } from "./ui.js";
-
+import {
+    initLeaderboard,
+    addWin
+} from "./leaderboard.js";
 import {
     joinRandomRoom,
     updatePlayerPosition,
@@ -19,9 +22,10 @@ import {
     updateOtherPlayerMovement,
     setPlayerFinished,
     restartRoom,
-    readyForNextRound
+    readyForNextRound,
+    getPlayerId,
+    getCurrentPlayerName
 } from "./multiplayer.js";
-
 import {
     createBridge,
     isSafeTile,
@@ -529,22 +533,69 @@ if (!player) {
 // ======================================
 // FIREBASE
 // ======================================
-window.addEventListener(
-    "novabridge-start",
-    async () => {
+// ======================================
+// OYNA BUTONU
+// ======================================
 
-        const menu =
-            document.getElementById("menu");
+const playButton =
+    document.getElementById("play-button");
 
-        if (menu) {
-            menu.style.display = "none";
+if (playButton) {
+
+    playButton.addEventListener(
+        "click",
+        async () => {
+
+            console.log("🎮 Oyna butonuna basıldı!");
+
+            // Butona tekrar tekrar basılmasını engelle
+            playButton.disabled = true;
+
+            const menu =
+                document.getElementById("menu");
+
+            if (menu) {
+                menu.style.display = "none";
+            }
+
+            try {
+
+                await joinRandomRoom();
+
+                playWaitingMusic();
+
+                console.log(
+                    "🚪 Odaya giriş başarılı!"
+                );
+
+            }
+            catch (error) {
+
+                console.error(
+                    "❌ Odaya girilemedi:",
+                    error
+                );
+
+                // Hata olursa butonu tekrar aktif et
+                playButton.disabled = false;
+
+                if (menu) {
+                    menu.style.display = "flex";
+                }
+
+            }
+
         }
+    );
 
-        await joinRandomRoom();
-        playWaitingMusic();
+}
+else {
 
-    }
-);
+    console.error(
+        "❌ #play-button bulunamadı!"
+    );
+
+}
 window.addEventListener(
     "novabridge-game-start",
     () => {
@@ -1736,7 +1787,10 @@ function playerFinished() {
 
     // Firebase'e bitiş bilgisini gönder
     setPlayerFinished();
-
+    addWin(
+    getPlayerId(),
+    getCurrentPlayerName()
+);
     // Tur sonu menüsünü aç
     showRoundEndScreen();
 
@@ -2467,5 +2521,5 @@ function animate() {
 
 }
 
-
+initLeaderboard();
 animate();
