@@ -844,138 +844,302 @@ document.addEventListener(
     }
 );
 
+// ======================================
+// CAM SINIR KONTROLÜ
+// ======================================
 
+function getGlassAtPosition(x, z) {
+
+    const tileIndex =
+        Math.round(-z / 3);
+
+    if (
+        tileIndex < 0 ||
+        tileIndex >= 20
+    ) {
+        return null;
+    }
+
+    const tileZ =
+        -tileIndex * 3;
+
+    // Camın gerçek Z alanı
+    if (
+        z < tileZ - 1 ||
+        z > tileZ + 1
+    ) {
+        return null;
+    }
+
+    // SOL CAM
+    if (
+        x >= -2.5 &&
+        x <= -0.5
+    ) {
+        return {
+            side: "left",
+            index: tileIndex
+        };
+    }
+
+    // SAĞ CAM
+    if (
+        x >= 0.5 &&
+        x <= 2.5
+    ) {
+        return {
+            side: "right",
+            index: tileIndex
+        };
+    }
+
+    return null;
+}
 // ======================================
 // OYUNCU HAREKETİ
 // ======================================
 
 function updateMovement() {
-   if (window.chatTyping) {
-        return;
-    }
+
+    if (window.chatTyping) return;
 
     if (!gameStarted) return;
     if (!entranceDoorOpen) return;
 
-    if (
-        gameOver &&
-        !spectatorMode
-    ) {
-        return;
-    }
-
+    if (gameOver && !spectatorMode) return;
     if (!player) return;
 
     const speed = 0.08;
 
-
     let forward = mobileForward;
     let right = mobileRight;
 
-    // W
-    if (
-        keys["w"] ||
-        keys["arrowup"]
-    ) {
-
+    if (keys["w"] || keys["arrowup"]) {
         forward += 1;
-
     }
 
-
-    // S
-    if (
-        keys["s"] ||
-        keys["arrowdown"]
-    ) {
-
+    if (keys["s"] || keys["arrowdown"]) {
         forward -= 1;
-
     }
 
-
-    // D
-    if (
-        keys["d"] ||
-        keys["arrowright"]
-    ) {
-
+    if (keys["d"] || keys["arrowright"]) {
         right += 1;
-
     }
 
-
-    // A
-    if (
-        keys["a"] ||
-        keys["arrowleft"]
-    ) {
-
+    if (keys["a"] || keys["arrowleft"]) {
         right -= 1;
-
     }
-
 
     if (
-        forward !== 0 ||
-        right !== 0
+        forward === 0 &&
+        right === 0
     ) {
+        return;
+    }
 
-        // Kameranın baktığı yön
-        const direction =
-            new THREE.Vector3(
-                0,
-                0,
-                -1
-            );
+    // ==================================
+    // HAREKET YÖNLERİ
+    // ==================================
 
+    const direction =
+        new THREE.Vector3(0, 0, -1);
 
-        direction.applyAxisAngle(
-            new THREE.Vector3(0, 1, 0),
-            yaw
+    direction.applyAxisAngle(
+        new THREE.Vector3(0, 1, 0),
+        yaw
+    );
+
+    const rightDirection =
+        new THREE.Vector3(1, 0, 0);
+
+    rightDirection.applyAxisAngle(
+        new THREE.Vector3(0, 1, 0),
+        yaw
+    );
+
+    let moveX =
+        direction.x * forward * speed +
+        rightDirection.x * right * speed;
+
+    let moveZ =
+        direction.z * forward * speed +
+        rightDirection.z * right * speed;
+
+    // ==================================
+    // NORMALİZE ET
+    // ÇAPRAZ HAREKET ÇOK HIZLI OLMASIN
+    // ==================================
+
+    const moveLength =
+        Math.sqrt(
+            moveX * moveX +
+            moveZ * moveZ
         );
 
+    if (moveLength > speed) {
 
-        // Sağ yön
-        const rightDirection =
-            new THREE.Vector3(
-                1,
-                0,
-                0
-            );
+        moveX =
+            (moveX / moveLength) * speed;
 
-
-        rightDirection.applyAxisAngle(
-            new THREE.Vector3(0, 1, 0),
-            yaw
-        );
-
-
-        player.position.add(
-            direction
-                .multiplyScalar(
-                    forward * speed
-                )
-        );
-
-
-        player.position.add(
-            rightDirection
-                .multiplyScalar(
-                    right * speed
-                )
-        );
-
-
-        updatePlayerPosition(
-    player.position.x,
-    player.position.y,
-    player.position.z,
-    player.rotation.y
-);
+        moveZ =
+            (moveZ / moveLength) * speed;
 
     }
 
+    const oldX = player.position.x;
+    const oldZ = player.position.z;
+
+    const testX = oldX + moveX;
+    const testZ = oldZ + moveZ;
+
+    // ==================================
+    // HAVADAYKEN
+    // ==================================
+    //
+    // Oyuncu zıplıyorsa cam sınırlarına
+    // takılmasına izin vermiyoruz.
+    //
+    // Böylece:
+    //
+    //     ↗
+    //   oyuncu
+    //      ↗
+    //   diğer cam
+    //
+    // şeklinde çapraz zıplayabilir.
+    // ==================================
+
+    if (!grounded) {
+
+        // Köprü alanının dışına tamamen
+        // çıkmasını engelle.
+
+        const minX = -2.9;
+        const maxX = 2.9;
+
+        const minZ = -61.5;
+        const maxZ = 5.5;
+
+        player.position.x =
+            THREE.MathUtils.clamp(
+                testX,
+                minX,
+                maxX
+            );
+
+        player.position.z =
+            THREE.MathUtils.clamp(
+                testZ,
+                minZ,
+                maxZ
+            );
+
+    }
+
+    // ==================================
+    // YERDEYKEN
+    // ==================================
+
+    else {
+
+        // ------------------------------
+        // X HAREKETİ
+        // ------------------------------
+
+        const currentTile =
+            getGlassAtPosition(
+                oldX,
+                oldZ
+            );
+
+        const nextTileX =
+            getGlassAtPosition(
+                testX,
+                oldZ
+            );
+
+        let finalX = oldX;
+
+        // Aynı cam üzerinde
+        if (nextTileX) {
+
+            finalX = testX;
+
+        }
+
+        // İki cam arasındaki orta boşluk
+        else if (
+            testX > -0.5 &&
+            testX < 0.5
+        ) {
+
+            finalX = testX;
+
+        }
+
+        // Başlangıç / bitiş platformu
+        else if (
+            oldZ > 0.5 ||
+            oldZ < -57
+        ) {
+
+            finalX = testX;
+
+        }
+
+        // ------------------------------
+        // Z HAREKETİ
+        // ------------------------------
+
+        const nextTileZ =
+            getGlassAtPosition(
+                finalX,
+                testZ
+            );
+
+        let finalZ = oldZ;
+
+        if (nextTileZ) {
+
+            finalZ = testZ;
+
+        }
+
+        // Başlangıç platformu
+        else if (
+            finalZ > 0.5
+        ) {
+
+            finalZ = testZ;
+
+        }
+
+        // Bitiş platformu
+        else if (
+            finalZ < -57
+        ) {
+
+            finalZ = testZ;
+
+        }
+
+        player.position.x =
+            finalX;
+
+        player.position.z =
+            finalZ;
+    }
+
+    // ==================================
+    // FIREBASE
+    // ==================================
+
+    updatePlayerPosition(
+        player.position.x,
+        player.position.y,
+        player.position.z,
+        player.rotation.y
+    );
 }
 function getCurrentTile() {
 
@@ -984,6 +1148,7 @@ function getCurrentTile() {
     const x = player.position.x;
     const z = player.position.z;
 
+    const playerHalfWidth = 0.45;
 
     // ==================================
     // HANGİ SIRA?
@@ -992,56 +1157,80 @@ function getCurrentTile() {
     const index =
         Math.round(-z / 3);
 
-
     if (
         index < 0 ||
         index >= 20
     ) {
-
         return null;
-
     }
-
 
     // ==================================
-    // HANGİ TARAF?
+    // CAMIN Z SINIRLARI
     // ==================================
 
-    let side = null;
+    const tileCenterZ =
+        -index * 3;
 
+    const tileMinZ =
+        tileCenterZ - 1;
+
+    const tileMaxZ =
+        tileCenterZ + 1;
+
+    // Oyuncunun camın Z alanına
+    // gerçekten temas edip etmediğini kontrol et
+    const playerMinZ =
+        z - 0.45;
+
+    const playerMaxZ =
+        z + 0.45;
 
     if (
-        x >= -2.5 &&
-        x <= -0.5
+        playerMaxZ < tileMinZ ||
+        playerMinZ > tileMaxZ
     ) {
-
-        side = "left";
-
-    }
-
-
-    if (
-        x >= 0.5 &&
-        x <= 2.5
-    ) {
-
-        side = "right";
-
-    }
-
-
-    if (!side) {
-
         return null;
+    }
+
+    // ==================================
+    // SOL CAM
+    // ==================================
+
+    const leftMinX = -2.5;
+    const leftMaxX = -0.5;
+
+    if (
+        x + playerHalfWidth >= leftMinX &&
+        x - playerHalfWidth <= leftMaxX
+    ) {
+
+        return {
+            index,
+            side: "left"
+        };
 
     }
 
+    // ==================================
+    // SAĞ CAM
+    // ==================================
 
-    return {
-        index,
-        side
-    };
+    const rightMinX = 0.5;
+    const rightMaxX = 2.5;
 
+    if (
+        x + playerHalfWidth >= rightMinX &&
+        x - playerHalfWidth <= rightMaxX
+    ) {
+
+        return {
+            index,
+            side: "right"
+        };
+
+    }
+
+    return null;
 }
 
 
@@ -1111,17 +1300,15 @@ else {
 
     if (tile) {
 
-        const groundY = 1.1;
+const groundY = 0.1;
 
-        // Oyuncunun ayaklarının cama
-        // yeterince yaklaşmasını bekle.
-        const playerBottom =
-            player.position.y - 1;
+const playerBottom =
+    player.position.y - 1;
 
-        const standingOnGlass =
-            playerBottom <= groundY + 0.15 &&
-            playerBottom >= groundY - 0.25;
-
+// Oyuncu cama yeterince yaklaştıysa
+// doğrudan camın üzerine oturt.
+const standingOnGlass =
+    playerBottom <= groundY + 0.15;
         // Havada geçiyorsa camı kontrol etme
         if (!standingOnGlass) {
 
@@ -1143,8 +1330,8 @@ else {
 
             if (safe) {
 
-                player.position.y =
-                    groundY + 1;
+                player.position.y = 1.1
+                   
 
                 velocityY = 0;
                 grounded = true;
