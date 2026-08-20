@@ -9,6 +9,7 @@ import {
 
 import { db } from "./firebase.js";
 
+
 // ======================================
 // CHAT DURUMU
 // ======================================
@@ -22,72 +23,91 @@ let messagesListener = null;
 
 
 // ======================================
-// SOHBETİ BAŞLAT
+// CHAT BAŞLAT
 // ======================================
 
-export function initChat(roomId, playerId, username = "Oyuncu") {
+export function initChat(
+    roomId,
+    playerId,
+    username = "Oyuncu"
+) {
 
     if (!roomId || !playerId) {
-        console.warn("❌ Chat başlatılamadı. Room ID veya Player ID yok.");
+
+        console.warn(
+            "❌ Chat başlatılamadı. Room ID veya Player ID eksik."
+        );
+
         return;
     }
 
-    chatRoomId = roomId;
-    chatPlayerId = playerId;
-    chatUsername = username || "Oyuncu";
 
-    messagesRef =
-        ref(
-            db,
-            `rooms/${chatRoomId}/messages`
-        );
-
-
-    const messagesQuery =
-        query(
-            messagesRef,
-            orderByChild("timestamp"),
-            limitToLast(50)
-        );
-
-
-    // Eski listener varsa kapat
+    // Eski listener varsa kaldır
     if (messagesListener) {
+
         messagesListener();
+
         messagesListener = null;
+
     }
+
+
+    chatRoomId = roomId;
+
+    chatPlayerId = playerId;
+
+    chatUsername =
+        username || "Oyuncu";
+
+
+    messagesRef = ref(
+        db,
+        `rooms/${chatRoomId}/messages`
+    );
+
+
+    const messagesQuery = query(
+        messagesRef,
+        orderByChild("timestamp"),
+        limitToLast(50)
+    );
 
 
     // ==================================
     // MESAJLARI DİNLE
     // ==================================
 
-    messagesListener =
-        onValue(
-            messagesQuery,
-            snapshot => {
+    messagesListener = onValue(
+        messagesQuery,
+        snapshot => {
 
-                const messages = [];
+            const messages = [];
 
-                snapshot.forEach(
-                    child => {
 
-                        messages.push({
-                            id: child.key,
-                            ...child.val()
-                        });
+            snapshot.forEach(
+                child => {
 
-                    }
-                );
+                    messages.push({
 
-                renderMessages(messages);
+                        id: child.key,
 
-            }
-        );
+                        ...child.val()
+
+                    });
+
+                }
+            );
+
+
+            renderMessages(messages);
+
+        }
+    );
 
 
     console.log(
-        "💬 NovaBridge sohbeti başlatıldı."
+        "💬 NovaBridge sohbeti başlatıldı:",
+        roomId
     );
 
 }
@@ -100,15 +120,18 @@ export function initChat(roomId, playerId, username = "Oyuncu") {
 export async function sendChatMessage(text) {
 
     if (!messagesRef) {
+
         console.warn(
             "❌ Chat henüz başlatılmadı."
         );
+
         return;
+
     }
 
 
     text =
-        String(text)
+        String(text || "")
             .trim();
 
 
@@ -118,13 +141,11 @@ export async function sendChatMessage(text) {
 
 
     // Maksimum 200 karakter
-    if (text.length > 200) {
-        text =
-            text.substring(
-                0,
-                200
-            );
-    }
+    text =
+        text.substring(
+            0,
+            200
+        );
 
 
     try {
@@ -132,6 +153,7 @@ export async function sendChatMessage(text) {
         await push(
             messagesRef,
             {
+
                 playerId:
                     chatPlayerId,
 
@@ -143,7 +165,13 @@ export async function sendChatMessage(text) {
 
                 timestamp:
                     Date.now()
+
             }
+        );
+
+
+        console.log(
+            "💬 Mesaj gönderildi."
         );
 
     }
@@ -172,7 +200,13 @@ function renderMessages(messages) {
 
 
     if (!container) {
+
+        console.warn(
+            "❌ #chatMessages bulunamadı."
+        );
+
         return;
+
     }
 
 
@@ -187,24 +221,35 @@ function renderMessages(messages) {
                     "div"
                 );
 
+
             messageElement.className =
                 "chat-message";
 
+
+            // ==================================
+            // OYUNCU ADI
+            // ==================================
 
             const nameElement =
                 document.createElement(
                     "strong"
                 );
 
+
             nameElement.textContent =
                 message.username ||
                 "Oyuncu";
 
 
+            // ==================================
+            // MESAJ
+            // ==================================
+
             const textElement =
                 document.createElement(
                     "span"
                 );
+
 
             textElement.textContent =
                 ": " +
@@ -218,12 +263,16 @@ function renderMessages(messages) {
                 nameElement
             );
 
+
             messageElement.appendChild(
                 textElement
             );
 
 
-            // Kendi mesajımız
+            // ==================================
+            // KENDİ MESAJIMIZ
+            // ==================================
+
             if (
                 message.playerId ===
                 chatPlayerId
@@ -252,6 +301,82 @@ function renderMessages(messages) {
 
 
 // ======================================
+// CHAT AÇ
+// ======================================
+
+export function showChat() {
+
+    const chatBox =
+        document.getElementById(
+            "chatBox"
+        );
+
+
+    const chatToggle =
+        document.getElementById(
+            "chatToggle"
+        );
+
+
+    if (!chatBox) {
+        return;
+    }
+
+
+    chatBox.classList.remove(
+        "chat-hidden"
+    );
+
+
+    if (chatToggle) {
+
+        chatToggle.textContent =
+            "✕";
+
+    }
+
+}
+
+
+// ======================================
+// CHAT GİZLE
+// ======================================
+
+export function hideChat() {
+
+    const chatBox =
+        document.getElementById(
+            "chatBox"
+        );
+
+
+    const chatToggle =
+        document.getElementById(
+            "chatToggle"
+        );
+
+
+    if (!chatBox) {
+        return;
+    }
+
+
+    chatBox.classList.add(
+        "chat-hidden"
+    );
+
+
+    if (chatToggle) {
+
+        chatToggle.textContent =
+            "💬";
+
+    }
+
+}
+
+
+// ======================================
 // CHAT KAPAT
 // ======================================
 
@@ -265,137 +390,242 @@ export function closeChat() {
 
     }
 
-    const chatBox =
-        document.getElementById("chatBox");
-
-    if (chatBox) {
-        chatBox.style.display = "none";
-    }
 
     chatRoomId = null;
+
     chatPlayerId = null;
+
     chatUsername = "Oyuncu";
+
     messagesRef = null;
+
+
+    hideChat();
+
+
+    const container =
+        document.getElementById(
+            "chatMessages"
+        );
+
+
+    if (container) {
+
+        container.innerHTML = "";
+
+    }
+
+
+    console.log(
+        "💬 Chat kapatıldı."
+    );
+
 }
+
+
 // ======================================
 // CHAT UI
 // ======================================
 
-document.addEventListener(
-    "DOMContentLoaded",
-    () => {
+// ======================================
+// CHAT BUTONU
+// ======================================
 
-        const input =
-            document.getElementById(
-                "chatInput"
+function setupChatUI() {
+
+    const chatToggle =
+        document.getElementById("chatToggle");
+
+    const chatBox =
+        document.getElementById("chatBox");
+
+    const input =
+        document.getElementById("chatInput");
+
+    const sendButton =
+        document.getElementById("chatSend");
+
+
+    console.log("💬 Chat UI kontrolü:", {
+        chatToggle,
+        chatBox,
+        input,
+        sendButton
+    });
+
+
+    if (!chatToggle || !chatBox) {
+
+        console.error(
+            "❌ Chat butonu veya chat kutusu bulunamadı!"
+        );
+
+        return;
+    }
+
+
+    // Başlangıçta kapalı
+    chatBox.classList.add("chat-hidden");
+
+    chatToggle.textContent = "💬";
+
+
+    // ==================================
+    // CHAT AÇ / KAPAT
+    // ==================================
+
+    chatToggle.onclick = function (event) {
+
+        event.preventDefault();
+
+        event.stopPropagation();
+
+
+        const isHidden =
+            chatBox.classList.contains(
+                "chat-hidden"
             );
 
-        const sendButton =
-            document.getElementById(
-                "chatSend"
+
+        if (isHidden) {
+
+            chatBox.classList.remove(
+                "chat-hidden"
+            );
+
+            chatToggle.textContent = "✕";
+
+            console.log(
+                "💬 Sohbet açıldı."
             );
 
 
-        if (!input || !sendButton) {
+            if (input) {
+
+                setTimeout(() => {
+
+                    input.focus();
+
+                }, 100);
+
+            }
+
+        }
+        else {
+
+            chatBox.classList.add(
+                "chat-hidden"
+            );
+
+            chatToggle.textContent = "💬";
+
+            console.log(
+                "💬 Sohbet kapatıldı."
+            );
+
+
+            if (input) {
+                input.blur();
+            }
+
+        }
+
+    };
+
+
+    // ==================================
+    // MESAJ GÖNDER
+    // ==================================
+
+    async function sendMessage() {
+
+        if (!input) {
             return;
         }
 
 
-        // Gönder butonu
-        sendButton.addEventListener(
-            "click",
-            () => {
-
-                sendChatMessage(
-                    input.value
-                );
-
-                input.value = "";
-
-                input.focus();
-
-            }
-        );
+        const text =
+            input.value.trim();
 
 
-        // Enter ile gönder
-        input.addEventListener(
-    "keydown",
-    event => {
+        if (!text) {
+            return;
+        }
 
-        window.chatTyping = true;
 
-        if (event.key === "Enter") {
+        await sendChatMessage(text);
+
+
+        input.value = "";
+
+        input.focus();
+
+    }
+
+
+    // ==================================
+    // GÖNDER BUTONU
+    // ==================================
+
+    if (sendButton) {
+
+        sendButton.onclick = function (event) {
 
             event.preventDefault();
 
-            sendChatMessage(
-                input.value
-            );
+            event.stopPropagation();
 
-            input.value = "";
+            sendMessage();
 
-            return;
-        }
+        };
 
     }
-);
 
-    }
-);
-// ======================================
-// CHAT GÖSTER / GİZLE
-// ======================================
 
-export function showChat() {
+    // ==================================
+    // ENTER
+    // ==================================
 
-    const chatBox =
-        document.getElementById("chatBox");
+    if (input) {
 
-    if (chatBox) {
-        chatBox.style.display = "flex";
+        input.onkeydown = function (event) {
+
+            event.stopPropagation();
+
+            window.chatTyping = true;
+
+
+            if (event.key === "Enter") {
+
+                event.preventDefault();
+
+                sendMessage();
+
+            }
+
+        };
+
+
+        input.onfocus = function () {
+
+            window.chatTyping = true;
+
+        };
+
+
+        input.onblur = function () {
+
+            window.chatTyping = false;
+
+        };
+
     }
 
 }
 
 
-export function hideChat() {
-
-    const chatBox =
-        document.getElementById("chatBox");
-
-    if (chatBox) {
-        chatBox.style.display = "none";
-    }
-
-}
 // ======================================
-// CHAT AÇ / KAPAT
+// BAŞLAT
 // ======================================
 
-const chatToggle =
-    document.getElementById("chatToggle");
-
-const chatBox =
-    document.getElementById("chatBox");
-
-if (chatToggle && chatBox) {
-
-    chatToggle.addEventListener(
-        "click",
-        () => {
-
-            const isHidden =
-                chatBox.classList.toggle(
-                    "chat-hidden"
-                );
-
-            chatToggle.textContent =
-                isHidden
-                    ? "💬"
-                    : "✕";
-
-        }
-    );
-
-}
+setupChatUI();

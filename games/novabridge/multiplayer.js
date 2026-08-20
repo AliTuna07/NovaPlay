@@ -517,7 +517,7 @@ function listenRoom() {
 
                     gameStarted = true;
 
-                    showChat();
+                    
 
                     stopCountdown();
 

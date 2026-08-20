@@ -19,6 +19,10 @@
 
 <body>
 
+    <!-- ======================================
+         ANA MENÜ
+    ====================================== -->
+
     <div id="ui">
 
         <div id="menu">
@@ -47,78 +51,97 @@
     </div>
 
 
-   
+    <!-- ======================================
+         OYUN
+    ====================================== -->
+
     <canvas id="game"></canvas>
-<!-- ======================================
-     MOBİL KONTROLLER
-====================================== -->
 
-<div id="mobile-controls">
 
-    <div id="joystick">
-        <div id="joystick-knob"></div>
+    <!-- ======================================
+         MOBİL KONTROLLER
+    ====================================== -->
+
+    <div id="mobile-controls">
+
+        <div id="joystick">
+
+            <div id="joystick-knob"></div>
+
+        </div>
+
+        <div id="mobile-buttons">
+
+            <button id="jump-button">
+                ↑
+            </button>
+
+        </div>
+
     </div>
 
-    <div id="mobile-buttons">
-        <button id="jump-button">↑</button>
+
+    <!-- ======================================
+         SOHBET AÇ / KAPAT
+    ====================================== -->
+
+    <button id="chatToggle">
+        💬
+    </button>
+
+
+    <!-- ======================================
+         SOHBET KUTUSU
+    ====================================== -->
+
+    <div id="chatBox" class="chat-hidden">
+
+        <!-- Başlık -->
+
+        <div id="chatHeader">
+            💬 Sohbet
+        </div>
+
+
+        <!-- Mesajlar -->
+
+        <div id="chatMessages"></div>
+
+
+        <!-- Mesaj gönderme -->
+
+        <div id="chatInputArea">
+
+            <input
+                id="chatInput"
+                type="text"
+                maxlength="200"
+                placeholder="Mesaj yaz..."
+                autocomplete="off">
+
+            <button id="chatSend">
+                ➤
+            </button>
+
+        </div>
+
     </div>
 
-</div>
+
+    <!-- ======================================
+         SCRIPT
+    ====================================== -->
 
     <script
         type="module"
         src="script.js">
     </script>
-    <script type="module" src="chat.js"></script>
-<!-- ======================================
-     SOHBET
-====================================== -->
 
-<button id="chatToggle">
-    💬
-</button>
+    <script
+        type="module"
+        src="chat.js">
+    </script>
 
-<div id="chatBox" class="chat-hidden"></div>
-
-    <div id="chatHeader">
-        💬 Sohbet
-    </div>
-
-    <div id="chatMessages"></div>
-
-    <div id="chatInputArea">
-
-        <input
-            id="chatInput"
-            type="text"
-            maxlength="200"
-            placeholder="Mesaj yaz..."
-            autocomplete="off"
-        >
-
-        <button id="chatSend">
-            ➤
-        </button>
-
-    </div>
-
-</div>
-
-    <div id="chatMessages"></div>
-
-    <div id="chatInputArea">
-        <input
-            id="chatInput"
-            type="text"
-            maxlength="200"
-            placeholder="Mesaj yaz..."
-            autocomplete="off"
-        >
-
-        <button id="chatSend">➤</button>
-    </div>
-
-</div>
 </body>
 
 </html>

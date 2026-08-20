@@ -1,10 +1,14 @@
+/* =====================================
+   GENEL
+===================================== */
+
+html,
 body {
+    width: 100%;
+    height: 100%;
     margin: 0;
-
     overflow: hidden;
-
     font-family: Arial, sans-serif;
-
     background: #87ceeb;
 }
 
@@ -15,15 +19,12 @@ body {
 
 #game {
     display: block;
-
     position: fixed;
-
     inset: 0;
-
     width: 100vw;
     height: 100vh;
-
     z-index: 1;
+    cursor: crosshair;
 }
 
 
@@ -33,29 +34,24 @@ body {
 
 #ui {
     position: fixed;
-
     inset: 0;
 
     display: flex;
-
     align-items: center;
-
     justify-content: center;
 
     z-index: 100;
+
+    pointer-events: none;
 }
 
-
 #menu {
-
     width: min(360px, 85vw);
 
     display: flex;
-
     flex-direction: column;
 
     gap: 12px;
-
     padding: 30px;
 
     text-align: center;
@@ -66,11 +62,11 @@ body {
 
     box-shadow:
         0 20px 60px rgba(0, 0, 0, 0.4);
+
+    pointer-events: auto;
 }
 
-
 #menu h1 {
-
     margin: 0 0 10px;
 
     color: white;
@@ -78,10 +74,8 @@ body {
     font-size: 32px;
 }
 
-
 #menu input,
 #menu button {
-
     box-sizing: border-box;
 
     width: 100%;
@@ -93,23 +87,18 @@ body {
     font-size: 16px;
 }
 
-
 #menu input {
-
     border: 1px solid #777;
 
     outline: none;
 }
 
-
 #menu button {
-
     border: none;
 
     cursor: pointer;
 
     background: white;
-
     color: #111;
 
     transition:
@@ -117,9 +106,7 @@ body {
         background 0.15s;
 }
 
-
 #menu button:hover {
-
     transform: scale(1.03);
 
     background: #e8f7ff;
@@ -131,11 +118,9 @@ body {
 ===================================== */
 
 #game-info {
-
     position: fixed;
 
     top: 15px;
-
     right: 15px;
 
     z-index: 200;
@@ -145,7 +130,6 @@ body {
     padding: 12px 15px;
 
     display: flex;
-
     flex-direction: column;
 
     gap: 7px;
@@ -161,9 +145,7 @@ body {
     backdrop-filter: blur(6px);
 }
 
-
 #game-info span {
-
     font-weight: bold;
 }
 
@@ -173,15 +155,12 @@ body {
 ===================================== */
 
 #game-over-screen {
-
     position: fixed;
-
     inset: 0;
 
     display: flex;
 
     align-items: center;
-
     justify-content: center;
 
     background: rgba(0, 0, 0, 0.75);
@@ -189,9 +168,7 @@ body {
     z-index: 9999;
 }
 
-
 .game-over-box {
-
     width: min(420px, 90vw);
 
     padding: 35px;
@@ -206,9 +183,7 @@ body {
         0 15px 50px rgba(0, 0, 0, 0.5);
 }
 
-
 .game-over-box h1 {
-
     margin: 0 0 15px;
 
     font-size: 42px;
@@ -216,19 +191,14 @@ body {
     color: white;
 }
 
-
 .game-over-box p {
-
     color: #ddd;
 
     font-size: 18px;
 }
 
-
 #game-over-buttons {
-
     display: flex;
-
     flex-direction: column;
 
     gap: 12px;
@@ -236,9 +206,7 @@ body {
     margin-top: 25px;
 }
 
-
 #game-over-buttons button {
-
     border: none;
 
     padding: 14px 20px;
@@ -254,102 +222,15 @@ body {
     color: #111;
 }
 
-
 #game-over-buttons button:hover {
-
     transform: scale(1.03);
 }
+
+
 /* =====================================
    BEKLEME ODASI
 ===================================== */
 
-#waiting-room {
-
-    position: fixed;
-
-    inset: 0;
-
-    z-index: 500;
-
-    display: flex;
-
-    align-items: center;
-
-    justify-content: center;
-
-    background:
-        rgba(0, 0, 0, 0.75);
-}
-
-
-#waiting-box {
-
-    width: min(420px, 90vw);
-
-    padding: 30px;
-
-    text-align: center;
-
-    color: white;
-
-    background:
-        rgba(20, 25, 40, 0.96);
-
-    border-radius: 18px;
-
-    box-shadow:
-        0 20px 60px
-        rgba(0, 0, 0, 0.5);
-}
-
-
-#waiting-box h1 {
-
-    margin-top: 0;
-
-    font-size: 30px;
-}
-
-
-#waiting-countdown {
-
-    margin: 20px 0;
-
-    font-size: 64px;
-
-    font-weight: bold;
-}
-
-
-#waiting-player-count {
-
-    font-weight: bold;
-}
-
-
-#waiting-player-list {
-
-    max-height: 180px;
-
-    overflow-y: auto;
-
-    margin-top: 15px;
-
-    padding: 10px;
-
-    border-radius: 10px;
-
-    background:
-        rgba(255, 255, 255, 0.08);
-}
-
-
-#waiting-player-list div {
-
-    padding: 6px;
-
-    text-align: left;
-}
 #waiting-room {
     position: fixed;
     inset: 0;
@@ -365,7 +246,7 @@ body {
 }
 
 #waiting-box {
-    width: 380px;
+    width: min(380px, 90vw);
 
     padding: 35px;
 
@@ -378,13 +259,13 @@ body {
     border-radius: 20px;
 
     box-shadow:
-        0 15px 50px
-        rgba(0, 0, 0, 0.5);
+        0 15px 50px rgba(0, 0, 0, 0.5);
 }
 
 #waiting-box h1 {
+    margin-top: 0;
+
     font-size: 36px;
-    margin-bottom: 5px;
 }
 
 #waiting-box h2 {
@@ -392,77 +273,58 @@ body {
 }
 
 #waiting-countdown {
+    margin: 20px 0;
+
     font-size: 80px;
 
     font-weight: bold;
-
-    margin: 20px 0;
-}
-#game {
-    display: block;
-
-    width: 100vw;
-    height: 100vh;
-
-    cursor: crosshair;
-}
-#ui {
-    position: absolute;
-
-    top: 10px;
-    left: 10px;
-
-    z-index: 100;
-
-    pointer-events: none;
 }
 
-#menu {
-    pointer-events: auto;
-}
-html,
-body {
-    width: 100%;
-    height: 100%;
-    margin: 0;
-    overflow: hidden;
+#waiting-player-count {
+    font-weight: bold;
 }
 
-#game {
-    display: block;
-    width: 100vw;
-    height: 100vh;
+#waiting-player-list {
+    max-height: 180px;
+
+    overflow-y: auto;
+
+    margin-top: 15px;
+
+    padding: 10px;
+
+    border-radius: 10px;
+
+    background: rgba(255, 255, 255, 0.08);
 }
 
-#ui {
-    pointer-events: none;
+#waiting-player-list div {
+    padding: 6px;
+
+    text-align: left;
 }
 
-#menu {
-    pointer-events: auto;
-}
+
+/* =====================================
+   TUR SONU EKRANI
+===================================== */
+
 #round-end-screen {
-
     position: fixed;
-
     inset: 0;
 
     display: flex;
 
     align-items: center;
-
     justify-content: center;
 
-    background:
-        rgba(20, 0, 0, 0.85);
+    background: rgba(20, 0, 0, 0.85);
 
     z-index: 10000;
-
 }
 
 #round-end-box {
-
-    width: 420px;
+    width: min(420px, 90vw);
 
     padding: 35px;
 
@@ -475,51 +337,41 @@ body {
             #080000
         );
 
-    border:
-        2px solid #ff0000;
+    border: 2px solid #ff0000;
 
     border-radius: 18px;
 
     box-shadow:
-        0 0 40px
-        rgba(255, 0, 0, 0.6);
-
+        0 0 40px rgba(255, 0, 0, 0.6);
 }
 
 .round-end-title {
+    margin-bottom: 15px;
 
     font-size: 38px;
 
     font-weight: bold;
 
     color: white;
-
-    margin-bottom: 15px;
-
 }
 
 .round-end-text {
+    margin-bottom: 30px;
 
     color: #ddd;
 
     font-size: 18px;
-
-    margin-bottom: 30px;
-
 }
 
 .round-end-buttons {
-
     display: flex;
 
     gap: 15px;
 
     justify-content: center;
-
 }
 
 .round-end-buttons button {
-
     border: none;
 
     border-radius: 10px;
@@ -535,76 +387,93 @@ body {
     transition:
         transform 0.15s,
         box-shadow 0.15s;
-
 }
 
 #stay-room-button {
-
     background: #c40000;
 
     color: white;
-
 }
 
 #leave-room-button {
-
     background: #333;
 
     color: white;
-
 }
 
 .round-end-buttons button:hover {
-
     transform: scale(1.05);
 
     box-shadow:
-        0 0 15px
-        rgba(255, 0, 0, 0.5);
-
+        0 0 15px rgba(255, 0, 0, 0.5);
 }
 
 
-/* ======================================
+/* =====================================
    NOVABRIDGE CHAT
-====================================== */
+===================================== */
 
-#chatBox {
+#chatToggle {
     position: fixed;
 
+    right: 20px;
     top: 20px;
-    left: 20px;
 
-    width: 300px;
-    height: 360px;
+    width: 55px;
+    height: 55px;
 
-    display: none;
+    border: none;
 
-    flex-direction: column;
+    border-radius: 50%;
 
-    background: rgba(10, 10, 20, 0.92);
+    background: #b00000;
 
-    border: 2px solid rgba(255, 255, 255, 0.15);
+    color: white;
 
-    border-radius: 14px;
+    font-size: 25px;
 
-    overflow: hidden;
+    font-weight: bold;
 
-    z-index: 9999;
+    cursor: pointer;
+
+    z-index: 10001;
 
     box-shadow:
-        0 10px 35px rgba(0, 0, 0, 0.45);
+        0 0 15px rgba(255, 0, 0, 0.5);
 
-    backdrop-filter: blur(8px);
+    transition:
+        transform 0.2s,
+        background 0.2s;
+}
+
+#chatToggle:hover {
+    transform: scale(1.08);
+
+    background: #e00000;
 }
 
 
-/* ======================================
+
+/* =====================================
+   CHAT KAPALI
+===================================== */
+
+#chatBox.chat-hidden {
+    opacity: 0;
+
+    transform:
+        translateY(-10px)
+        scale(0.95);
+
+    pointer-events: none;
+}
+
+
+/* =====================================
    CHAT BAŞLIK
-====================================== */
+===================================== */
 
 #chatHeader {
-
     height: 45px;
 
     display: flex;
@@ -613,25 +482,27 @@ body {
 
     padding: 0 15px;
 
+    box-sizing: border-box;
+
     font-size: 17px;
 
     font-weight: bold;
 
     color: white;
 
-    background: rgba(255, 255, 255, 0.08);
+    background:
+        rgba(255, 255, 255, 0.08);
 
     border-bottom:
         1px solid rgba(255, 255, 255, 0.12);
 }
 
 
-/* ======================================
-   MESAJLAR
-====================================== */
+/* =====================================
+   CHAT MESAJLARI
+===================================== */
 
 #chatMessages {
-
     flex: 1;
 
     padding: 10px;
@@ -649,46 +520,32 @@ body {
     font-size: 14px;
 }
 
-
-/* ======================================
-   MESAJ
-====================================== */
-
 .chat-message {
-
     padding: 6px 9px;
 
-    background: rgba(255, 255, 255, 0.07);
+    background:
+        rgba(255, 255, 255, 0.07);
 
     border-radius: 8px;
 
     word-break: break-word;
 }
 
-
 .chat-message strong {
-
     color: #4fc3f7;
-
 }
-
-
-/* Kendi mesajımız */
 
 .chat-message.own-message {
-
     background:
         rgba(52, 152, 219, 0.18);
-
 }
 
 
-/* ======================================
-   INPUT ALANI
-====================================== */
+/* =====================================
+   CHAT INPUT
+===================================== */
 
 #chatInputArea {
-
     display: flex;
 
     padding: 8px;
@@ -699,9 +556,7 @@ body {
         rgba(0, 0, 0, 0.25);
 }
 
-
 #chatInput {
-
     flex: 1;
 
     min-width: 0;
@@ -722,17 +577,12 @@ body {
     font-size: 14px;
 }
 
-
 #chatInput::placeholder {
-
     color:
         rgba(255, 255, 255, 0.55);
-
 }
 
-
 #chatSend {
-
     width: 42px;
 
     border: none;
@@ -746,30 +596,34 @@ body {
     color: white;
 
     font-size: 18px;
-
 }
-
 
 #chatSend:hover {
-
     filter: brightness(1.15);
-
 }
-/* ======================================
+
+
+/* =====================================
    MOBİL KONTROLLER
-====================================== */
+===================================== */
 
 #mobile-controls {
     display: none;
+
     position: fixed;
+
     inset: 0;
+
     z-index: 9999;
+
     pointer-events: none;
+
     touch-action: none;
 }
 
 #joystick {
     position: absolute;
+
     left: 25px;
     bottom: 30px;
 
@@ -778,10 +632,14 @@ body {
 
     border-radius: 50%;
 
-    background: rgba(255, 0, 0, 0.18);
-    border: 2px solid rgba(255, 80, 80, 0.5);
+    background:
+        rgba(255, 0, 0, 0.18);
+
+    border:
+        2px solid rgba(255, 80, 80, 0.5);
 
     pointer-events: auto;
+
     touch-action: none;
 }
 
@@ -796,8 +654,11 @@ body {
 
     border-radius: 50%;
 
-    background: rgba(255, 50, 50, 0.75);
-    border: 2px solid rgba(255,255,255,0.5);
+    background:
+        rgba(255, 50, 50, 0.75);
+
+    border:
+        2px solid rgba(255, 255, 255, 0.5);
 
     pointer-events: none;
 }
@@ -816,16 +677,26 @@ body {
     height: 75px;
 
     border-radius: 50%;
-    border: 2px solid rgba(255,255,255,0.5);
 
-    background: rgba(255, 0, 0, 0.45);
+    border:
+        2px solid rgba(255, 255, 255, 0.5);
+
+    background:
+        rgba(255, 0, 0, 0.45);
 
     color: white;
+
     font-size: 32px;
+
     font-weight: bold;
 
     touch-action: none;
 }
+
+
+/* =====================================
+   MOBİL EKRAN
+===================================== */
 
 @media (max-width: 900px) {
 
@@ -833,19 +704,82 @@ body {
         display: block;
     }
 
+    /* -----------------------------
+       CHAT BUTONU
+    ----------------------------- */
+
+    #chatToggle {
+        right: 15px;
+        top: 15px;
+
+        width: 55px;
+        height: 55px;
+
+        font-size: 24px;
+    }
+
+   #chatBox {
+    position: fixed;
+    right: 20px;
+    top: 85px;
+    width: 300px;
+    height: 380px;
+
+    display: flex;
+    flex-direction: column;
+
+    background: rgba(15, 0, 0, 0.94);
+    border: 1px solid #ff2222;
+    border-radius: 12px;
+
+    overflow: hidden;
+
+    z-index: 10000;
+
+    transition:
+        opacity 0.2s,
+        transform 0.2s;
+
+    box-shadow:
+        0 10px 35px rgba(0, 0, 0, 0.45);
+}
+
+    /* -----------------------------
+       TUR SONU BUTONLARI
+    ----------------------------- */
+
+    .round-end-buttons {
+        flex-direction: column;
+    }
+
+    #round-end-box {
+        width: min(420px, 85vw);
+    }
+
+    /* -----------------------------
+       BEKLEME ODASI
+    ----------------------------- */
+
+    #waiting-box {
+        width: min(380px, 85vw);
+    }
+
 }
 /* ======================================
-   CHAT AÇ / KAPAT
+   CHAT BUTONU GARANTİ
 ====================================== */
 
 #chatToggle {
-    position: fixed;
-
-    right: 20px;
-    bottom: 20px;
+    position: fixed !important;
+    right: 20px !important;
+    top: 20px !important;
 
     width: 55px;
     height: 55px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
     border: none;
     border-radius: 50%;
@@ -858,14 +792,9 @@ body {
 
     cursor: pointer;
 
-    z-index: 10001;
+    z-index: 999999 !important;
 
-    box-shadow:
-        0 0 15px rgba(255, 0, 0, 0.5);
-
-    transition:
-        transform 0.2s,
-        background 0.2s;
+    pointer-events: auto !important;
 }
 
 #chatToggle:hover {
@@ -879,25 +808,33 @@ body {
 ====================================== */
 
 #chatBox {
-    position: fixed;
+    position: fixed !important;
 
-    right: 20px;
-    bottom: 85px;
+    right: 20px !important;
+    top: 85px !important;
 
     width: 300px;
     height: 380px;
 
     display: flex;
+
     flex-direction: column;
 
     background: rgba(15, 0, 0, 0.94);
 
     border: 1px solid #ff2222;
+
     border-radius: 12px;
 
     overflow: hidden;
 
-    z-index: 10000;
+    z-index: 999998 !important;
+
+    pointer-events: auto;
+
+    opacity: 1;
+
+    transform: translateY(0) scale(1);
 
     transition:
         opacity 0.2s,
@@ -905,7 +842,9 @@ body {
 }
 
 
-/* KAPALI */
+/* ======================================
+   CHAT KAPALI
+====================================== */
 
 #chatBox.chat-hidden {
 
@@ -916,36 +855,4 @@ body {
         scale(0.95);
 
     pointer-events: none;
-
-}
-
-
-/* ======================================
-   MOBİL
-====================================== */
-
-@media (max-width: 900px) {
-
-    #chatToggle {
-
-        right: 15px;
-        bottom: 15px;
-
-        width: 55px;
-        height: 55px;
-
-    }
-
-    #chatBox {
-
-        right: 15px;
-        bottom: 80px;
-
-        width: calc(100vw - 30px);
-        max-width: 350px;
-
-        height: 360px;
-
-    }
-
 }
