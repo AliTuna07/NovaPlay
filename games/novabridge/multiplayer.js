@@ -1063,8 +1063,7 @@ character.userData.targetRotationY =
                     data.x ?? -1.5;
 
                 const currentY =
-                    data.y ?? 0.6;
-
+                   (data.y ?? 0.6) - 0.3;
                 const currentZ =
                     data.z ?? 0;
 
