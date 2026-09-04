@@ -1,0 +1,320 @@
+* {
+  box-sizing: border-box;
+  }
+
+body {
+margin: 0;
+overflow: hidden;
+background: #000;
+
+font-family: Arial, sans-serif;
+}
+
+canvas {
+display: block;
+}
+
+/* =========================
+ANA MENÜ
+========================= */
+
+#menu {
+position: fixed;
+top: 0;
+left: 0;
+
+width: 100%;
+height: 100%;
+
+display: flex;
+
+flex-direction: column;
+
+justify-content: center;
+align-items: center;
+
+background:
+    radial-gradient(circle, rgba(40, 40, 40, 0.8), rgba(0, 0, 0, 0.95));
+
+color: white;
+
+z-index: 10;
+
+text-align: center;
+}
+
+#menu h1 {
+margin: 0;
+font-size: 70px;
+
+letter-spacing: 10px;
+
+color: #d9d9d9;
+
+text-shadow:
+    0 0 20px rgba(255, 255, 255, 0.4);
+}
+
+#menu h2 {
+margin-top: 10px;
+font-size: 25px;
+
+letter-spacing: 8px;
+
+color: #777;
+}
+
+#startButton {
+margin-top: 40px;
+padding:
+    18px
+    50px;
+
+font-size: 20px;
+
+font-weight: bold;
+
+letter-spacing: 3px;
+
+border: 2px solid #aaa;
+
+background: #111;
+
+color: white;
+
+cursor: pointer;
+
+transition: 0.2s;
+}
+
+#startButton:hover {
+background: #333;
+transform: scale(1.05);
+}
+
+/* =========================
+NİŞANGAH
+========================= */
+
+#crosshair {
+position: fixed;
+left: 50%;
+top: 50%;
+
+transform:
+    translate(-50%, -50%);
+
+font-size: 35px;
+
+color: white;
+
+z-index: 5;
+
+pointer-events: none;
+
+text-shadow:
+    0 0 5px black;
+}
+
+/* =========================
+HUD
+========================= */
+
+#hud {
+position: fixed;
+left: 20px;
+bottom: 20px;
+
+color: white;
+
+font-size: 18px;
+
+z-index: 5;
+
+pointer-events: none;
+
+text-shadow:
+    2px 2px 4px black;
+}
+
+#weapon {
+margin-top: 10px;
+}
+#score {
+    margin-top: 10px;
+}
+#gameOverScreen {
+    position: fixed;
+
+    top: 0;
+    left: 0;
+
+    width: 100%;
+    height: 100%;
+
+    display: none;
+
+    flex-direction: column;
+
+    justify-content: center;
+    align-items: center;
+
+    background:
+        radial-gradient(
+            circle,
+            rgba(35, 35, 35, 0.92),
+            rgba(0, 0, 0, 0.98)
+        );
+
+    color: white;
+
+    z-index: 20;
+
+    text-align: center;
+}
+
+#gameOverTitle {
+    font-size: 64px;
+
+    font-weight: bold;
+
+    letter-spacing: 8px;
+
+    text-shadow:
+        0 0 20px rgba(255,255,255,0.4);
+}
+
+#gameOverMessage {
+    margin-top: 15px;
+
+    font-size: 20px;
+
+    color: #aaa;
+}
+
+#finalScore {
+    margin-top: 25px;
+
+    font-size: 24px;
+
+    font-weight: bold;
+}
+
+#restartButton {
+    margin-top: 35px;
+
+    padding: 15px 45px;
+
+    font-size: 18px;
+
+    font-weight: bold;
+
+    letter-spacing: 2px;
+
+    border: 2px solid #aaa;
+
+    background: #111;
+
+    color: white;
+
+    cursor: pointer;
+
+    transition: 0.2s;
+}
+
+#restartButton:hover {
+    background: #333;
+
+    transform: scale(1.05);
+}
+/* =====================================
+   DÜRBÜN
+   ===================================== */
+
+#scopeOverlay {
+    position: fixed;
+
+    top: 0;
+    left: 0;
+
+    width: 100%;
+    height: 100%;
+
+    display: none;
+
+    pointer-events: none;
+
+    z-index: 6;
+
+    background:
+        radial-gradient(
+            circle,
+            transparent 0%,
+            transparent 32%,
+            rgba(0, 0, 0, 0.92) 33%,
+            rgba(0, 0, 0, 0.98) 100%
+        );
+}
+
+
+/* Dürbün kenarındaki ince çember */
+
+#scopeOverlay::before {
+    content: "";
+
+    position: absolute;
+
+    left: 50%;
+    top: 50%;
+
+    width: 65vw;
+    height: 65vw;
+
+    max-width: 700px;
+    max-height: 700px;
+
+    transform: translate(
+        -50%,
+        -50%
+    );
+
+    border: 2px solid rgba(
+        80,
+        80,
+        80,
+        0.8
+    );
+
+    border-radius: 50%;
+}
+
+
+/* Ortadaki kırmızı nokta */
+
+#scopeDot {
+    position: absolute;
+
+    left: 50%;
+    top: 50%;
+
+    width: 5px;
+    height: 5px;
+
+    transform:
+        translate(
+            -50%,
+            -50%
+        );
+
+    background: red;
+
+    border-radius: 50%;
+
+    box-shadow:
+        0 0 5px rgba(
+            255,
+            0,
+            0,
+            0.9
+        );
+}
