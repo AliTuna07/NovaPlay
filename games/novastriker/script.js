@@ -44,6 +44,8 @@ camera.rotation.order = "YXZ";
 
 let currentWeapon = "automatic";
 
+let gameStarted = false;
+
 let ammo = 30;
 const maxAmmo = 30;
 
@@ -355,40 +357,28 @@ function eliminateBot(bot) {
     if (!bot.alive) return;
 
     bot.alive = false;
+
     playSound("botDeath");
-    scene.remove(
-        bot.mesh
-    );
+
+    scene.remove(bot.mesh);
 
     score += 100;
 
     const scoreElement =
-        document.getElementById(
-            "score"
-        );
+        document.getElementById("score");
 
     scoreElement.textContent =
         `🎯 SKOR: ${score}`;
 
+    // Ölen botu bots listesinden kaldır
+    const botIndex = bots.indexOf(bot);
 
-    // =================================
-    // TÜM BOTLAR BİTTİ Mİ?
-    // =================================
-
-    const remainingBots =
-        bots.filter(
-            b => b.alive
-        );
-
-
-    if (
-        remainingBots.length === 0
-    ) {
-
-        playerWon();
-
+    if (botIndex !== -1) {
+        bots.splice(botIndex, 1);
     }
 
+    // Sonsuz bot sistemi
+    spawnOneBot();
 }
 // =====================================
 // OYUNCU ÖLDÜ
@@ -1781,28 +1771,211 @@ createBarrier(
     -95,
     -0.3
 );
+// =====================================
+// HARİTA SINIRLARI
+// =====================================
 
+function createMapBoundary(
+    x,
+    z,
+    width,
+    depth
+) {
+
+    const wall = new THREE.Mesh(
+        new THREE.BoxGeometry(
+            width,
+            5,
+            depth
+        ),
+        new THREE.MeshBasicMaterial({
+            transparent: true,
+            opacity: 0
+        })
+    );
+
+    wall.position.set(
+        x,
+        2.5,
+        z
+    );
+
+    scene.add(wall);
+
+    const box = new THREE.Box3();
+
+    box.setFromObject(wall);
+
+    obstacles.push({
+        mesh: wall,
+        box: box
+    });
+}
+
+
+// Sol sınır
+createMapBoundary(
+    -12,
+    -55,
+    1,
+    180
+);
+
+// Sağ sınır
+createMapBoundary(
+    12,
+    -55,
+    1,
+    180
+);
+
+// Arka sınır
+createMapBoundary(
+    0,
+    -146,
+    24,
+    1
+);
+
+// Başlangıç tarafı sınırı
+createMapBoundary(
+    0,
+    36,
+    24,
+    1
+);
 // =====================================
 // BOTLAR
 // =====================================
 
-createBot(-6, -35);
-createBot(6, -55);
+function spawnBots() {
+    const BOT_COUNT = 12;
+    const MIN_DISTANCE_FROM_PLAYER = 35;
+    const MIN_DISTANCE_BETWEEN_BOTS = 12;
 
-createBot(-5, -70);
-createBot(5, -82);
+    let spawned = 0;
+    let attempts = 0;
 
-createBot(-6, -95);
-createBot(6, -108);
+    while (spawned < BOT_COUNT && attempts < 500) {
+        attempts++;
 
-createBot(-5, -120);
-createBot(5, -132);
+        // Ana yol üzerinde rastgele bir nokta
+        // =====================================
+        // BOT SPAWN ALANI
+        // =====================================
 
-createBot(-7, -145);
-createBot(7, -155);
+        const x = Math.random() * 14 - 7;
 
-createBot(-5, -170);
-createBot(5, -180);
+        // Harita sınırları: z = -145 ile -35 arası
+        const z = Math.random() * 110 - 145;
+        const spawnPosition = new THREE.Vector3(x, 0, z);
+
+        // Oyuncudan yeterince uzak mı?
+        if (spawnPosition.distanceTo(camera.position) < MIN_DISTANCE_FROM_PLAYER) {
+            continue;
+        }
+
+        // Bir engelin içinde mi?
+        let blocked = false;
+
+        for (const obstacle of obstacles) {
+            if (!obstacle.box) continue;
+
+            const box = obstacle.box.clone();
+            box.expandByScalar(1.5);
+
+            if (box.containsPoint(spawnPosition)) {
+                blocked = true;
+                break;
+            }
+        }
+
+        if (blocked) continue;
+
+        // Başka bir botun çok yakınına doğmasın
+        let tooCloseToBot = false;
+
+       for (const bot of bots) {
+    const distance = Math.hypot(
+        bot.mesh.position.x - x,
+        bot.mesh.position.z - z
+    );
+
+    if (distance < MIN_DISTANCE_BETWEEN_BOTS) {
+        tooCloseToBot = true;
+        break;
+    }
+}
+
+        if (tooCloseToBot) continue;
+
+        createBot(x, z);
+        spawned++;
+    }
+
+   
+}
+spawnBots();
+
+function spawnOneBot() {
+    const MIN_DISTANCE_FROM_PLAYER = 35;
+    const MIN_DISTANCE_BETWEEN_BOTS = 12;
+
+    let attempts = 0;
+
+    while (attempts < 500) {
+        attempts++;
+
+        const x = THREE.MathUtils.randFloat(-7, 7);
+        const z = THREE.MathUtils.randFloat(-180, -35);
+
+        const spawnPosition = new THREE.Vector3(x, 0, z);
+
+        // Oyuncuya çok yakınsa tekrar dene
+        if (spawnPosition.distanceTo(camera.position) < MIN_DISTANCE_FROM_PLAYER) {
+            continue;
+        }
+
+        // Binanın/engelin içine spawn olmasın
+        let blocked = false;
+
+        for (const obstacle of obstacles) {
+            if (!obstacle.box) continue;
+
+            const box = obstacle.box.clone();
+            box.expandByScalar(1.5);
+
+            if (box.containsPoint(spawnPosition)) {
+                blocked = true;
+                break;
+            }
+        }
+
+        if (blocked) continue;
+
+        // Diğer botlara çok yakın olmasın
+        let tooCloseToBot = false;
+
+        for (const bot of bots) {
+            const distance = Math.hypot(
+                bot.mesh.position.x - x,
+                bot.mesh.position.z - z
+            );
+
+            if (distance < MIN_DISTANCE_BETWEEN_BOTS) {
+                tooCloseToBot = true;
+                break;
+            }
+        }
+
+        if (tooCloseToBot) continue;
+
+        createBot(x, z);
+        return;
+    }
+
+    
+}
 // =====================================
 // BOT OYUNCUYU GÖRÜYOR MU?
 // =====================================
@@ -2015,8 +2188,6 @@ function botAttack(bot) {
 // =====================================
 // FPS CONTROLLER
 // =====================================
-
-let gameStarted = false;
 
 document
     .getElementById("scopeOverlay")
@@ -2334,7 +2505,305 @@ document
 
         }
     );
+// =====================================
+// MİNİ HARİTA
+// =====================================
 
+const minimapCanvas =
+    document.getElementById("minimapCanvas");
+
+const minimapCtx =
+    minimapCanvas.getContext("2d");
+
+
+// Haritanın dünya koordinatları
+const MAP_MIN_X = -70;
+const MAP_MAX_X = 70;
+
+const MAP_MIN_Z = -150;
+const MAP_MAX_Z = 40;
+
+
+function worldToMinimap(x, z) {
+
+    const mapWidth =
+        MAP_MAX_X - MAP_MIN_X;
+
+    const mapHeight =
+        MAP_MAX_Z - MAP_MIN_Z;
+
+    const px =
+        ((x - MAP_MIN_X) / mapWidth) *
+        minimapCanvas.width;
+
+    const pz =
+        ((MAP_MAX_Z - z) / mapHeight) *
+        minimapCanvas.height;
+
+    return {
+        x: px,
+        y: pz
+    };
+}
+
+
+function drawMinimap() {
+
+    const ctx = minimapCtx;
+
+    const width =
+        minimapCanvas.width;
+
+    const height =
+        minimapCanvas.height;
+
+
+    // Arka plan
+    ctx.fillStyle = "#101416";
+    ctx.fillRect(
+        0,
+        0,
+        width,
+        height
+    );
+
+
+    // =================================
+    // YOL
+    // =================================
+
+    const roadTop =
+        worldToMinimap(
+            -9,
+            40
+        );
+
+    const roadBottom =
+        worldToMinimap(
+            9,
+            -150
+        );
+
+    ctx.fillStyle = "#292d30";
+
+    ctx.fillRect(
+        roadTop.x,
+        roadTop.y,
+        roadBottom.x - roadTop.x,
+        roadBottom.y - roadTop.y
+    );
+
+
+    // =================================
+    // BİNALAR / ENGELLER
+    // =================================
+
+    for (const obstacle of obstacles) {
+
+        if (!obstacle.box) continue;
+
+        const box =
+            obstacle.box;
+
+
+        const min =
+            worldToMinimap(
+                box.min.x,
+                box.max.z
+            );
+
+        const max =
+            worldToMinimap(
+                box.max.x,
+                box.min.z
+            );
+
+
+        ctx.fillStyle = "#555b5f";
+
+        ctx.fillRect(
+            min.x,
+            min.y,
+            max.x - min.x,
+            max.y - min.y
+        );
+
+    }
+
+
+    // =================================
+    // YOL ÇİZGİSİ
+    // =================================
+
+    ctx.strokeStyle =
+        "rgba(180,180,180,0.35)";
+
+    ctx.lineWidth = 1;
+
+    ctx.setLineDash([
+        5,
+        5
+    ]);
+
+    const centerTop =
+        worldToMinimap(
+            0,
+            40
+        );
+
+    const centerBottom =
+        worldToMinimap(
+            0,
+            -150
+        );
+
+    ctx.beginPath();
+
+    ctx.moveTo(
+        centerTop.x,
+        centerTop.y
+    );
+
+    ctx.lineTo(
+        centerBottom.x,
+        centerBottom.y
+    );
+
+    ctx.stroke();
+
+    ctx.setLineDash([]);
+
+
+    // =================================
+    // BOTLAR
+    // =================================
+
+    for (const bot of bots) {
+
+        if (!bot.alive) continue;
+
+        const position =
+            worldToMinimap(
+                bot.mesh.position.x,
+                bot.mesh.position.z
+            );
+
+
+        ctx.fillStyle =
+            "#ff3030";
+
+        ctx.beginPath();
+
+        ctx.arc(
+            position.x,
+            position.y,
+            4,
+            0,
+            Math.PI * 2
+        );
+
+        ctx.fill();
+
+    }
+
+
+    // =================================
+    // OYUNCU
+    // =================================
+
+    const player =
+        worldToMinimap(
+            camera.position.x,
+            camera.position.z
+        );
+
+
+    ctx.fillStyle =
+        "#00ff88";
+
+    ctx.beginPath();
+
+    ctx.arc(
+        player.x,
+        player.y,
+        5,
+        0,
+        Math.PI * 2
+    );
+
+    ctx.fill();
+
+
+    // Oyuncunun baktığı yön
+    const direction =
+        new THREE.Vector3(
+            0,
+            0,
+            -1
+        );
+
+    direction.applyQuaternion(
+        camera.quaternion
+    );
+
+
+    const lookLength = 10;
+
+    ctx.strokeStyle =
+        "#00ff88";
+
+    ctx.lineWidth = 2;
+
+    ctx.beginPath();
+
+    ctx.moveTo(
+        player.x,
+        player.y
+    );
+
+    ctx.lineTo(
+        player.x +
+        direction.x *
+        lookLength,
+
+        player.y +
+        direction.z *
+        -lookLength
+    );
+
+    ctx.stroke();
+
+
+    // =================================
+    // ÇERÇEVE
+    // =================================
+
+    ctx.strokeStyle =
+        "rgba(255,255,255,0.25)";
+
+    ctx.lineWidth = 2;
+
+    ctx.strokeRect(
+        0,
+        0,
+        width,
+        height
+    );
+
+
+    // Başlık
+    ctx.fillStyle =
+        "rgba(255,255,255,0.8)";
+
+    ctx.font =
+        "bold 12px Arial";
+
+    ctx.fillText(
+        "HARİTA",
+        8,
+        16
+    );
+}
 // =====================================
 // ANIMATION
 // =====================================
@@ -2346,8 +2815,10 @@ function animate() {
     );
 
     updatePlayer();
-    
+
     updateBots();
+
+    drawMinimap();
 
     if (
         mouseDown &&
