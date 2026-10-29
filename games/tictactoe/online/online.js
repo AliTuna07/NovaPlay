@@ -31,187 +31,150 @@ document.getElementById("randomMatch");
 
 const waitingRef =
 collection(db,"xoxWaiting");
-
-
-
-randomMatch.onclick = async()=>{
-
-
-status.textContent =
-"🔍 Rakip aranıyor...";
-
-
-
-const waiting =
-await getDocs(waitingRef);
-
-
-
-// Bekleyen yoksa
-
-if(waiting.empty){
-
-
-const me = await addDoc(waitingRef,{
-    id: playerId,
-    profile: getProfile(),
-    createdAt: Date.now()
-});
-
-
-
-onSnapshot(me,(snap)=>{
-
-
-const data=snap.data();
-
-
-
-if(data.room){
-
-
-localStorage.setItem(
-"roomCode",
-data.room
-);
-
-
-
-localStorage.setItem(
-"side",
-"X"
-);
-
-
-
-location.href="room.html";
-
-
-}
-
-
-});
-
-
-return;
-
-}
-
-
-
-
-
-
-
-// Bekleyen oyuncu varsa
-
-
-const opponent = waiting.docs.find(
-    d => d.data().id !== playerId
-);
-
-if (!opponent) {
-
-    status.textContent = "🔍 Rakip bekleniyor...";
-
-    return;
-
-}
-const roomCode =
-createCode();
-
-
-
-
-
-await setDoc(
-doc(db,"xoxRooms",roomCode),
-{
-
-
-players:{
-
-
-X:{
-    id: opponent.data().id,
-    ...opponent.data().profile
-},
-
-O:{
-    id: playerId,
-    ...getProfile()
-},
-
-
-},
-
-
-
-board:[
-
-"","","",
-
-"","","",
-
-"","",""
-
-],
-
-
-
-turn:"X",
-
-
-
-finished:false,
-winner:""
-
-}
-
-);
-
-
-
-
-
-
-
-await updateDoc(
-doc(db,"xoxWaiting",opponent.id),
-{
-
-room:roomCode
-
-}
-
-);
-
-
-
-
-await deleteDoc(
-doc(db,"xoxWaiting",opponent.id)
-);
-
-
-
-localStorage.setItem(
-"roomCode",
-roomCode
-);
-
-
-
-localStorage.setItem(
-"side",
-"O"
-);
-
-
-
-location.href="room.html";
-
+let waitingUnsubscribe = null;
+let waitingHeartbeat = null;
+
+
+
+randomMatch.onclick = async () => {
+    try {
+        randomMatch.disabled = true;
+        status.textContent = "🔍 Rakip aranıyor...";
+
+        // Önceki bekleme dinleyicisini temizle
+        if (waitingUnsubscribe) {
+            waitingUnsubscribe();
+            waitingUnsubscribe = null;
+        }
+
+        if (waitingHeartbeat) {
+            clearInterval(waitingHeartbeat);
+            waitingHeartbeat = null;
+        }
+
+        const now = Date.now();
+        const waiting = await getDocs(waitingRef);
+
+        // Eski bekleme kayıtlarını temizle
+        for (const player of waiting.docs) {
+            const data = player.data();
+
+            if (
+                !data.room &&
+                (!data.lastSeen || now - data.lastSeen > 20000)
+            ) {
+                await deleteDoc(player.ref);
+            }
+        }
+
+        // Güncel kayıtları yeniden oku
+        const refreshed = await getDocs(waitingRef);
+
+        const opponent = refreshed.docs.find((d) => {
+            const data = d.data();
+
+            return (
+                data.id !== playerId &&
+                !data.room &&
+                data.lastSeen &&
+                Date.now() - data.lastSeen <= 20000
+            );
+        });
+
+        // Rakip yoksa sıraya gir
+        if (!opponent) {
+            const me = await addDoc(waitingRef, {
+                id: playerId,
+                profile: getProfile(),
+                createdAt: Date.now(),
+                lastSeen: Date.now(),
+                room: null
+            });
+
+            waitingHeartbeat = setInterval(async () => {
+                try {
+                    await updateDoc(me, {
+                        lastSeen: Date.now()
+                    });
+                } catch (error) {
+                    console.error("Bekleme güncelleme hatası:", error);
+                }
+            }, 5000);
+
+            waitingUnsubscribe = onSnapshot(me, async (snap) => {
+                if (!snap.exists()) return;
+
+                const data = snap.data();
+
+                if (data.room) {
+                    if (waitingHeartbeat) {
+                        clearInterval(waitingHeartbeat);
+                        waitingHeartbeat = null;
+                    }
+
+                    if (waitingUnsubscribe) {
+                        waitingUnsubscribe();
+                        waitingUnsubscribe = null;
+                    }
+
+                    localStorage.setItem("roomCode", data.room);
+                    localStorage.setItem("side", "X");
+
+                    try {
+                        await deleteDoc(me);
+                    } catch (error) {
+                        console.warn("Bekleme kaydı temizlenemedi:", error);
+                    }
+
+                    location.href = "room.html";
+                }
+            });
+
+            status.textContent = "🔍 Rakip bekleniyor...";
+            randomMatch.disabled = false;
+            return;
+        }
+
+        // Rakip bulundu, oda oluştur
+        const roomCode = createCode();
+        const opponentData = opponent.data();
+
+        await setDoc(doc(db, "xoxRooms", roomCode), {
+            players: {
+                X: {
+                    id: opponentData.id,
+                    ...opponentData.profile
+                },
+                O: {
+                    id: playerId,
+                    ...getProfile()
+                }
+            },
+            board: ["", "", "", "", "", "", "", "", ""],
+            turn: "X",
+            finished: false,
+            winner: ""
+        });
+
+        // Rakibin bekleme kaydına oda kodunu yaz.
+        // Kaydı hemen silme, rakibin dinleyicisi oda kodunu görmeli.
+        await updateDoc(opponent.ref, {
+            room: roomCode
+        });
+
+        localStorage.setItem("roomCode", roomCode);
+        localStorage.setItem("side", "O");
+
+        status.textContent = "✅ Rakip bulundu!";
+        location.href = "room.html";
+
+    } catch (error) {
+        console.error("Rastgele eşleşme hatası:", error);
+        status.textContent = "❌ Eşleşme başarısız: " + error.message;
+        randomMatch.disabled = false;
+    }
 };
+
 const createRoom =
 document.getElementById("createRoom");
 
