@@ -6,7 +6,9 @@ const sounds = {
     botDeath: new Audio("./sounds/botDeath.mp3"),
     win: new Audio("./sounds/win.mp3"),
     lose: new Audio("./sounds/lose.mp3"),
-    ambience: new Audio("./sounds/ambience.mp3")
+    ambience: new Audio("./sounds/ambience.mp3"),
+    snipershoot: new Audio("./sounds/snipershoot.mp3")
+
 };
 
 sounds.ambience.loop = true;
