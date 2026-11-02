@@ -212,3 +212,17 @@ function diamondEffect(){
     },1000);
 
 }
+function goldEffect(){
+
+    const avatar=document.getElementById("avatar");
+     if(!avatar) return;
+     const sparkle=document.createElement("span");
+     sparkle.textContent="✧";
+     sparkle.className="gold-sparkle";
+     avatar.appendChild(sparkle);
+
+
+     setTimeout(()=>{
+         sparkle.remove();
+     },1000);
+}

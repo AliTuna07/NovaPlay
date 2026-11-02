@@ -315,7 +315,13 @@ button:hover {
     0 0 60px #8a2be2 !important;
 
 }
+.gold-profile:hover{
 
+    box-shadow:
+    0 0 25px gold,
+    0 0 60px gold !important;
+
+}
 #avatar{
     width: 60px;
     height: 60px;
@@ -916,8 +922,37 @@ button:hover {
 
     animation: diamondGlow 2s infinite alternate;
 }
+.gold-frame {
+    border: 3px solid gold;
+    box-shadow:
+        0 0 10px gold,
+        0 0 25px gold,
+        0 0 45px gold;
 
+    animation: goldGlow 2s infinite alternate;
+}
+.gold-frame::after {
 
+    content:"";
+
+    position:absolute;
+
+    width:100%;
+    height:100%;
+
+    background:
+    linear-gradient(
+        120deg,
+        transparent,
+        rgba(255,215,0,.8),
+        transparent
+    );
+
+    transform:translateX(-100%);
+
+    animation:goldShine 3s infinite;
+
+}
 @keyframes diamondGlow {
 
     from {
@@ -959,13 +994,40 @@ button:hover {
     animation:diamondShine 3s infinite;
 
 }
+@keyframes goldGlow {
 
+    from {
+        filter: brightness(1);
+        transform: scale(1);
+    }
 
+    to {
+        filter: brightness(1.4);
+        transform: scale(1.05);
+    }
+
+}
+@keyframes goldShine {
+
+    100% {
+        transform:translateX(100%);
+    }
+
+}
 @keyframes diamondShine {
 
     100% {
         transform:translateX(100%);
     }
+
+}
+.gold-sparkle{
+
+    position:absolute;
+
+    color:gold;
+
+    animation:sparkleMove 1s forwards;
 
 }
 .diamond-sparkle{
@@ -1018,6 +1080,21 @@ button:hover {
         box-shadow:
         0 0 25px #00eaff,
         0 0 60px #8a2be2;
+    }
+
+}
+@keyframes goldProfileGlow{
+
+    from{
+        box-shadow:
+        0 0 10px gold,
+        0 0 25px gold;
+    }
+
+    to{
+        box-shadow:
+        0 0 25px gold,
+        0 0 60px gold;
     }
 
 }

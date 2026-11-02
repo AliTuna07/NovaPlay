@@ -362,7 +362,14 @@ if(localStorage.getItem("frameDiamond") === "true"){
     if(profileBox){
         profileBox.classList.add("diamond-profile");
     }
+    
+}
+if(localStorage.getItem("frameGold") === "true"){
 
+    const profileBox = document.querySelector(".profile-box");
+    if(profileBox){
+        profileBox.classList.add("gold-profile");
+    }
 }
 if(item.category==="car"){
 
