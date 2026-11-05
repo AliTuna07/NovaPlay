@@ -762,3 +762,39 @@ document.addEventListener("click", function(event) {
 });
 
 window.toggleSideMenu = toggleSideMenu;
+
+// =====================================
+// NOVAPLAY - DEVELOPER TOOLS CAYDIRICI
+// =====================================
+
+document.addEventListener("keydown", function (e) {
+    // F12
+    if (e.key === "F12") {
+        e.preventDefault();
+        e.stopPropagation();
+        return false;
+    }
+
+    // Ctrl + Shift + I / J / C
+    if (
+        e.ctrlKey &&
+        e.shiftKey &&
+        ["I", "J", "C"].includes(e.key.toUpperCase())
+    ) {
+        e.preventDefault();
+        e.stopPropagation();
+        return false;
+    }
+
+    // Ctrl + U (sayfa kaynağı)
+    if (e.ctrlKey && e.key.toUpperCase() === "U") {
+        e.preventDefault();
+        e.stopPropagation();
+        return false;
+    }
+}, true);
+
+// Sağ tık menüsünü engelle
+document.addEventListener("contextmenu", function (e) {
+    e.preventDefault();
+});
