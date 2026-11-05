@@ -1,14 +1,33 @@
+
 /* ==========================================
    NovaPlay Firebase
+   Authentication + Firestore + RTDB + Storage
 ========================================== */
-import {
-    getStorage,
-    ref as storageRef,
-    uploadBytes,
-    getDownloadURL
-} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-storage.js";
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
 
+// Firebase App
+import {
+    initializeApp
+} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+
+// Authentication
+import {
+    getAuth,
+    GoogleAuthProvider
+} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
+
+// Firestore
+import {
+    getFirestore,
+    doc,
+    getDoc,
+    setDoc,
+    updateDoc,
+    onSnapshot,
+    serverTimestamp,
+    runTransaction
+} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
+
+// Realtime Database
 import {
     getDatabase,
     ref,
@@ -18,8 +37,18 @@ import {
     onValue,
     remove
 } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-database.js";
+
+// Storage
+import {
+    getStorage,
+    ref as storageRef,
+    uploadBytes,
+    getDownloadURL
+} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-storage.js";
+
+
 /* ==========================================
-   Firebase Config
+   FIREBASE CONFIG
 ========================================== */
 
 const firebaseConfig = {
@@ -40,23 +69,73 @@ const firebaseConfig = {
 
 };
 
+
 /* ==========================================
-   Firebase Başlat
+   FIREBASE BAŞLAT
 ========================================== */
 
 const app = initializeApp(firebaseConfig);
 
+
+/* ==========================================
+   AUTHENTICATION
+========================================== */
+
+const auth = getAuth(app);
+
+const googleProvider = new GoogleAuthProvider();
+
+googleProvider.setCustomParameters({
+    prompt: "select_account"
+});
+
+
+/* ==========================================
+   FIRESTORE
+========================================== */
+
+const firestore = getFirestore(app);
+
+
+/* ==========================================
+   REALTIME DATABASE
+========================================== */
+
 const db = getDatabase(app);
 
-const storage = getStorage(app);
+
 /* ==========================================
-   Export
+   STORAGE
+========================================== */
+
+const storage = getStorage(app);
+
+
+/* ==========================================
+   EXPORT
 ========================================== */
 
 export {
-    db,
-    storage,
 
+    // Firebase
+    app,
+
+    // Authentication
+    auth,
+    googleProvider,
+
+    // Firestore
+    firestore,
+    doc,
+    getDoc,
+    setDoc,
+    updateDoc,
+    onSnapshot,
+    serverTimestamp,
+    runTransaction,
+
+    // Realtime Database
+    db,
     ref,
     push,
     set,
@@ -64,7 +143,10 @@ export {
     onValue,
     remove,
 
+    // Storage
+    storage,
     storageRef,
     uploadBytes,
     getDownloadURL
+
 };

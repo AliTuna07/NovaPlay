@@ -187,8 +187,18 @@ if(oldAvatar && oldAvatar.length < 10){
 
 window.addEventListener("load", () => {
 
-    updateProfile();
-    updateCoins();
+    if (typeof window.updateProfile === "function") {
+        window.updateProfile();
+    } else {
+        console.error("common.js: updateProfile yüklenemedi!");
+    }
+
+    if (typeof window.updateCoins === "function") {
+        window.updateCoins();
+    } else {
+        console.error("common.js: updateCoins yüklenemedi!");
+    }
+
     loadAvatarInventory();
 
 });
@@ -226,3 +236,64 @@ function goldEffect(){
          sparkle.remove();
      },1000);
 }
+// ==========================
+// NOVAPLAY YAN MENÜ
+// ==========================
+
+function toggleSideMenu() {
+
+    const options = document.getElementById("sideMenuOptions");
+
+    if (!options) return;
+
+    options.classList.toggle("active");
+
+}
+
+// Profil ayarlarını aç
+function openProfileSettings() {
+
+    const modal = document.getElementById("profileModal");
+
+    if (modal) {
+        modal.style.display = "block";
+    }
+
+    const options = document.getElementById("sideMenuOptions");
+
+    if (options) {
+        options.classList.remove("active");
+    }
+
+    loadAvatarInventory();
+
+}
+
+// Henüz bağlanmamış menü seçenekleri
+function openShopMenu() {
+    const options = document.getElementById("sideMenuOptions");
+    options?.classList.remove("active");
+
+    const shopModal = document.getElementById("shopModal");
+
+    if (!shopModal) return;
+
+    shopModal.style.display = "flex";
+
+    window.updateCoins?.();
+    window.drawShop?.();
+}
+
+// Menü dışına tıklanınca kapat
+document.addEventListener("click", function(event) {
+
+    const menu = document.getElementById("sideMenu");
+
+    if (menu && !menu.contains(event.target)) {
+
+        document.getElementById("sideMenuOptions")
+            ?.classList.remove("active");
+
+    }
+
+});

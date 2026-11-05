@@ -56,15 +56,32 @@
 
     
 
-    <a href="shop.html">
-        <button class="shopButton">🛒 NovaShop</button>
-    </a>
-    <button onclick="location.href='bugreport.html'" class="bug-btn">
-    🐞 Hata Bildir
-</button>
-<a href="novashare.html">
-    <button class="shareButton">🌍 NovaShare</button>
-</a>
+   
+<!-- NOVAPLAY YAN MENÜ -->
+<div id="sideMenu">
+
+    <button id="menuToggle" onclick="toggleSideMenu()">
+        ☰ MENÜ
+    </button>
+
+    <div id="sideMenuOptions">
+
+        <button onclick="openAccountModal(); toggleSideMenu();">
+            👤 Kaydol / Giriş Yap
+        </button>
+
+        <button onclick="openProfileSettings();">
+            ⚙️ Profil Ayarları
+        </button>
+
+        <button onclick="openShopMenu()">🛒 Mağaza</button>
+        <button onclick="showMenuMessage('Sıralama');">
+            🏆 Sıralama
+        </button>
+
+    </div>
+
+</div>
 </div>
 <div class="profile-box">
     <div id="avatar">👤</div>
@@ -93,12 +110,13 @@
 </header>
 <div class="search-box">
 
-    <input 
-    type="text" 
-    id="searchInput" 
-    placeholder="🔎 Oyun ara..."
-    >
-
+    <input
+    type="text"
+    id="searchInput"
+    placeholder="Oyun ara..."
+    autocomplete="new-password"
+    name="nova-game-search"
+>
 </div>
 
 <div class="games">
@@ -256,11 +274,85 @@ Yeni oyunlar ve özellikler düzenli olarak eklenmektedir.
 <button onclick="saveProfile()">Kaydet</button>
     </div>
 </div>
-<script src="common.js"></script>
+
+<!-- NOVAPLAY HESAP MODALI -->
+<!-- NOVAPLAY HESAP MODALI -->
+<div id="accountModal" class="account-modal"
+     onclick="closeAccountOutside(event)">
+
+    <div class="account-modal-content">
+
+        <button class="account-close-btn"
+                onclick="closeAccountModal()">✕</button>
+
+        <div id="accountPanel">
+
+            <h2>👤 NovaPlay Hesabı</h2>
+
+            <div id="accountLoggedOut">
+
+          <input
+    type="email"
+    id="accountEmail"
+    placeholder="E-posta adresi"
+    autocomplete="email"
+    name="nova-account-email"
+>
+                <input
+                    type="password"
+                    id="accountPassword"
+                    placeholder="Şifre"
+                    autocomplete="current-password"
+                >
+
+                <button onclick="handleLogin()">Giriş Yap</button>
+
+                <button onclick="handleRegister()">Kaydol</button>
+
+                <button id="googleLoginBtn"
+                        onclick="handleGoogleLogin()">
+                    Google ile Giriş Yap
+                </button>
+
+            </div>
+
+            <div id="accountLoggedIn" style="display:none;">
+
+                <h3 id="accountWelcome"></h3>
+
+                <button onclick="handleLogout()">Çıkış Yap</button>
+
+            </div>
+
+            <p id="accountMessage"></p>
+
+        </div>
+    </div>
+</div>
+
+<script type="module" src="common.js"></script>
+<script src="shop.js"></script>
 <script src="script.js"></script>
 <div id="notification" class="notification">
     <span id="notificationText"></span>
 </div>
 <canvas id="confettiCanvas"></canvas>
+
+
+<div id="shopModal" class="shop-modal">
+    <div class="shop-content">
+
+        <button onclick="document.getElementById('shopModal').style.display='none'">
+            ✕
+        </button>
+
+        <h1>🛒 NovaPlay Mağaza</h1>
+
+        <h3>🪙 NovaCoin: <span id="coins">0</span></h3>
+
+        <div id="shop"></div>
+
+    </div>
+</div>
 </body>
 </html>

@@ -1,11 +1,9 @@
-const shop = document.getElementById("shop");
-const coinDisplay = document.getElementById("coins");
+function getShopElement() {
+    return document.getElementById("shop");
+}
 
-
-function getCoins(){
-
+function getCoins() {
     return Number(localStorage.getItem("novaCoins")) || 0;
-
 }
 
 
@@ -153,10 +151,16 @@ price:1000
 
 
 
-function drawShop(){
+function drawShop() {
 
+    const shop = getShopElement();
 
-shop.innerHTML="";
+    if (!shop) {
+        console.error("Mağaza bulunamadı! HTML içinde id='shop' olmalı.");
+        return;
+    }
+
+    shop.innerHTML = "";
 
 
 const categories=[
@@ -299,113 +303,100 @@ shop.appendChild(row);
 
 
 
-function buy(item){
-if(localStorage.getItem(item.id) === "true"){
+function buy(item) {
+
+    // Ürün zaten satın alınmış mı?
+    if (localStorage.getItem(item.id) === "true") {
+
+        if (item.category === "car") {
+            localStorage.setItem("selectedCar", item.id);
+
+            drawShop();
+
+            alert("🏎️ " + item.name + " seçildi!");
+            return;
+        }
 
         alert("Bu ürüne zaten sahipsin!");
-
         return;
-
     }
 
-let coins=getCoins();
+    // NovaCoin kontrolü
+    const coins = getCoins();
 
-
-if(coins < item.price){
-
-alert("Yeterli NovaCoin yok!");
-
-return;
-
-}
-
-
-
-coins-=item.price;
-
-
-localStorage.setItem(
-"novaCoins",
-coins
-);
-
-
-
-if(item.category==="xp"){
-
-let xp=
-Number(localStorage.getItem("xp")) || 0;
-
-
-xp+=item.xp;
-
-
-localStorage.setItem(
-"xp",
-xp
-);
-
-
-}
-
-
-else{
-
-localStorage.setItem(
-item.id,
-"true"
-);
-if(localStorage.getItem("frameDiamond") === "true"){
-
-    const profileBox = document.querySelector(".profile-box");
-
-    if(profileBox){
-        profileBox.classList.add("diamond-profile");
+    if (coins < item.price) {
+        alert("Yeterli NovaCoin yok!");
+        return;
     }
-    
-}
-if(localStorage.getItem("frameGold") === "true"){
 
-    const profileBox = document.querySelector(".profile-box");
-    if(profileBox){
-        profileBox.classList.add("gold-profile");
+    // NovaCoin düşür
+    if (typeof window.addCoins !== "function") {
+        alert("NovaCoin sistemi yüklenemedi!");
+        return;
     }
+
+    window.addCoins(-item.price);
+
+    // XP ürünü
+    if (item.category === "xp") {
+
+        if (typeof window.addXP !== "function") {
+            alert("XP sistemi yüklenemedi!");
+            return;
+        }
+
+        window.addXP(item.xp);
+
+    } else {
+
+        // Ürünü hesaba kaydet
+        localStorage.setItem(item.id, "true");
+
+        // Araba satın alındıysa otomatik seç
+        if (item.category === "car") {
+            localStorage.setItem("selectedCar", item.id);
+        }
+
+        // Çerçeve efektleri
+        if (item.id === "frameDiamond") {
+            document.querySelector(".profile-box")
+                ?.classList.add("diamond-profile");
+        }
+
+        if (item.id === "frameGold") {
+            document.querySelector(".profile-box")
+                ?.classList.add("gold-profile");
+        }
+    }
+
+    updateShopCoins();
+    drawShop();
+
+    alert("🎉 " + item.name + " satın alındı!");
 }
-if(item.category==="car"){
+function updateShopCoins() {
 
-    localStorage.setItem(
-        item.id,
-        "true"
-    );
+    const coins = getCoins();
 
-    localStorage.setItem(
-        "selectedCar",
-        item.id
-    );
+    const coinDisplay = document.getElementById("coins");
 
+    if (coinDisplay) {
+        coinDisplay.textContent = coins;
+    }
+
+    const profileCoins = document.getElementById("coinText");
+
+    if (profileCoins) {
+        profileCoins.textContent = "🪙 " + coins;
+    }
+
+    window.updateCoins?.();
 }
 
-
-
-updateCoins();
-
-drawShop();
-
-
-alert("🎉 "+item.name+" satın alındı!");
-
-}
-
-}
-
-function updateCoins(){
-
-coinDisplay.textContent=getCoins();
-
-}
+window.drawShop = drawShop;
+window.updateShopCoins = updateShopCoins;
 
 
 
-updateCoins();
+window.updateShopCoins = updateShopCoins;
 
-drawShop();
